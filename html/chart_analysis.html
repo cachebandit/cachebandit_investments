@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Cap vs Trailing P/E</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        #scatterChart {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Market Cap vs Trailing P/E</h1>
+    <div id="scatterChart"></div>
+
+    <script>
+        async function loadCachedData() {
+            try {
+                const response = await fetch('../cache/stock_data.json'); // Correct path to ../cache/stock_data.json
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const cachedData = await response.json();
+                prepareChartData(cachedData);
+            } catch (error) {
+                console.error('Error fetching cached data:', error);
+            }
+        }
+
+        function prepareChartData(cachedData) {
+            const seriesData = [];
+            const naCompanies = [];
+
+            // Prepare data for ECharts
+            Object.keys(cachedData.detailed_data).forEach(symbol => {
+                const stockData = cachedData.detailed_data[symbol];
+                const marketCap = parseMarketCap(stockData["Market Cap"]);
+                const trailingPE = stockData["Trailing P/E"];
+                const category = findCategory(symbol, cachedData.categories);
+
+                if (trailingPE === 'N/A') {
+                    naCompanies.push(stockData.Name); // Collect companies with N/A P/E
+                }
+
+                seriesData.push({
+                    name: stockData.Name,
+                    value: [marketCap / 1e9, trailingPE === 'N/A' ? null : trailingPE], // Convert market cap to billions
+                    category: category
+                });
+            });
+
+            renderChart(seriesData, naCompanies); // Call to render the chart with prepared data
+        }
+
+        function renderChart(seriesData, naCompanies) {
+            const chartDom = document.getElementById('scatterChart');
+            const myChart = echarts.init(chartDom);
+
+            // Step 1: Log the seriesData to verify its structure
+            console.log('Series Data:', seriesData);
+
+            // Step 2: Hardcode unique categories for testing
+            const testCategories = ["Owned", "Tech", "Semiconductors", "Financial Services", "Energy", "Military Defense", "Entertainment", "Automotive", "Industrials", "Healthcare", "Retail", "Food", "Consumer Staples", "Reality", "Travel"];
+            console.log('Test Categories:', testCategories); // Log test categories
+
+            // Step 3: Prepare chart options with simplified legend
+            const option = {
+                title: {
+                    text: "Market Cap vs Trailing P/E",
+                    left: "center"
+                },
+                tooltip: {
+                    formatter: function (params) {
+                        return `${params.data.name}<br/>Market Cap: ${params.data.value[0]}B<br/>Trailing P/E: ${params.data.value[1] === null ? 'N/A' : params.data.value[1]}`;
+                    }
+                },
+                legend: {
+                    data: testCategories, // Use hardcoded test categories for the legend
+                    selectedMode: "multiple",
+                    orient: "horizontal",
+                    top: "10%",
+                    textStyle: {
+                        color: "red"
+                    }
+                },
+                xAxis: {
+                    type: "log",
+                    name: "Market Cap (in Billions)",
+                    nameLocation: "middle",
+                    nameGap: 30,
+                    min: 1,
+                    max: 4000,
+                    axisLabel: {
+                        formatter: function (value) {
+                            return value + 'B';
+                        }
+                    }
+                },
+                yAxis: {
+                    type: "log",
+                    name: "Trailing P/E",
+                    nameLocation: "middle",
+                    nameGap: 30
+                },
+                series: [{
+                    type: "scatter",
+                    data: seriesData,
+                    symbolSize: 10,
+                    emphasis: {
+                        itemStyle: {
+                            borderColor: "#fff",
+                            borderWidth: 2
+                        }
+                    },
+                    itemStyle: {
+                        color: function (params) {
+                            const categoryColors = {
+                                "Owned": "#ff7f50",
+                                "Tech": "#87cefa",
+                                "Automotive": "#ff4500",
+                                "Semiconductors": "#da70d6",
+                                "Financial Services": "#32cd32",
+                                "Energy": "#6495ed",
+                                "Military Defense": "#ffd700",
+                                "Entertainment": "#ff69b4",
+                                "Industrials": "#ff8c00",
+                                "Healthcare": "#00ff7f",
+                                "Retail": "#ff1493",
+                                "Food": "#1e90ff",
+                                "Consumer Staples": "#ff6347",
+                                "Reality": "#ff00ff",
+                                "Travel": "#ffd700",
+                                "Unknown": "#808080" // Default color for unknown categories
+                            };
+                            return categoryColors[params.data.category] || "#000";
+                        }
+                    }
+                }]
+            };
+
+            // Set the chart options
+            myChart.setOption(option);
+
+            // Log companies with N/A P/E
+            console.log('Companies with N/A P/E:', naCompanies);
+        }
+
+        // Function to parse market cap string
+        function parseMarketCap(marketCapStr) {
+            const value = parseFloat(marketCapStr.replace(/[^0-9.]/g, ''));
+            if (marketCapStr.includes('T')) {
+                return value * 1e12; // Convert trillions to numeric value
+            } else if (marketCapStr.includes('B')) {
+                return value * 1e9; // Convert billions to numeric value
+            } else if (marketCapStr.includes('M')) {
+                return value * 1e6; // Convert millions to numeric value
+            }
+            return value; // Return as is for smaller numbers
+        }
+
+        // Function to find the category of a stock symbol
+        function findCategory(symbol, categories) {
+            for (const [cat, stocks] of Object.entries(categories)) {
+                if (stocks.some(stock => stock.Symbol === symbol)) {
+                    return cat; // Return the found category
+                }
+            }
+            return "Unknown"; // Default category if not found
+        }
+
+        // Function to get category color
+        function getCategoryColor(category) {
+            const categoryColors = {
+                "Tech": 'rgba(135, 206, 250, 0.6)',
+                "Automotive": 'rgba(255, 127, 80, 0.6)',
+                "Semiconductors": 'rgba(218, 112, 221, 0.6)',
+                "Financial Services": 'rgba(50, 205, 50, 0.6)',
+                "Energy": 'rgba(100, 149, 237, 0.6)',
+                "Military Defense": 'rgba(255, 215, 0, 0.6)',
+                "Entertainment": 'rgba(255, 105, 180, 0.6)',
+                "Industrials": 'rgba(255, 140, 0, 0.6)',
+                "Healthcare": 'rgba(0, 255, 127, 0.6)',
+                "Retail": 'rgba(255, 20, 147, 0.6)',
+                "Food": 'rgba(30, 144, 255, 0.6)',
+                "Consumer Staples": 'rgba(255, 99, 71, 0.6)',
+                "Reality": 'rgba(255, 0, 255, 0.6)',
+                "Travel": 'rgba(255, 215, 0, 0.6)',
+                "Unknown": 'rgba(128, 128, 128, 0.6)' // Default color for unknown categories
+            };
+            return categoryColors[category] || 'rgba(128, 128, 128, 0.6)'; // Default color if category not found
+        }
+
+        // Load cached data when the document is ready
+        document.addEventListener('DOMContentLoaded', loadCachedData);
+    </script>
+</body>
+</html>

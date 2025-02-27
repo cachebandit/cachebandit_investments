@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Watchlist Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1d78c1;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #1d78c1;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            table-layout: fixed; /* Ensures all columns have a fixed width */
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            text-align: left;
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden;    /* Hide overflow */
+            text-overflow: ellipsis; /* Adds ellipsis for truncated text */
+        }
+        th {
+            background-color: #f5f7fa;
+            color: #1d78c1;
+        }
+        /* Specific column widths */
+        th.company-name, td.company-name {
+            width: 20%;
+        }
+        th.symbol, td.symbol {
+            width: 7%;
+        }
+        th.change, td.change,
+        th.percent-change, td.percent-change,
+        th.rsi, td.rsi,
+        th.open, td.open,
+        th.high, td.high,
+        th.low, td.low,
+        th.close, td.close,
+        th.market-cap, td.market-cap {
+            width: 7%;
+            text-align: left;
+        }
+        .button-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .refresh-button {
+            background-color: #1d78c1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .refresh-button:hover {
+            background-color: #155a8a;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #1d78c1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        async function fetchWatchlistData() {
+            const button = document.getElementById('refresh-button');
+            const spinner = document.getElementById('loading-spinner');
+            
+            button.disabled = true;
+            spinner.style.display = 'inline-block';
+
+            // Clear only the existing stock data sections, not the entire container
+            document.querySelectorAll('.section').forEach(section => section.remove());
+
+            const categories = [
+                'Owned', 
+                'Tech', 
+                'Semiconductors', 
+                'Financial Services',
+                'Energy', 
+                'Military Defense',
+                'Entertainment',
+                'Automotive',
+                'Industrials',
+                'Healthcare',
+                'Retail',
+                'Food',
+                'Consumer Staples',
+                'Reality',
+                'Travel'
+            ];
+
+            // Keep track of processed tickers
+            const processedTickers = new Set();
+            
+            try {
+                for (let category of categories) {
+                    const response = await fetch(`/data_endpoint?category=${encodeURIComponent(category)}`);
+                    if (!response.ok) throw new Error('Network response was not ok.');
+                    const data = await response.json();
+
+                    // Sort data based on category
+                    let sortedData;
+                    if (category === 'Owned') {
+                        sortedData = data.sort((a, b) => a.Symbol.localeCompare(b.Symbol));  // Sort alphabetically by symbol
+                    } else {
+                        sortedData = data.sort((a, b) => b['Market Cap'] - a['Market Cap']);  // Sort by market cap (descending)
+                    }
+
+                    // Render essential data, skipping tickers that have already been processed
+                    renderCategory(category, sortedData, processedTickers);
+
+                    // Fetch detailed info, passing only new symbols (not yet processed)
+                    const newSymbols = sortedData
+                        .map(stock => stock.Symbol)
+                        .filter(symbol => !processedTickers.has(symbol));
+
+                    // Update the processed tickers set
+                    newSymbols.forEach(symbol => processedTickers.add(symbol));
+
+                    if (newSymbols.length > 0) {
+                        fetchDetailedInfo(newSymbols, category);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching watchlist data:', error);
+            } finally {
+                button.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        function renderCategory(category, data) {
+            const section = document.createElement('div');
+            section.className = 'section';
+
+            const heading = document.createElement('h2');
+            heading.textContent = category;
+            section.appendChild(heading);
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th class="company-name">Company Name</th>
+                    <th class="symbol">Symbol</th>
+                    <th class="market-cap">Market Cap (B)</th>
+                    <th class="open">Open</th>
+                    <th class="high">High</th>
+                    <th class="low">Low</th>
+                    <th class="close">Close</th>
+                    <th class="change">Change</th>
+                    <th class="percent-change">% Change</th>
+                    <th class="rsi">RSI</th>
+                </tr>
+            `;
+
+            const tbody = document.createElement('tbody');
+            data.forEach(stock => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-symbol', stock.Symbol);
+                row.innerHTML = `
+                    <td class="company-name truncate">${stock.Name}</td>
+                    <td class="symbol"><a href='chart.html?symbol=${stock.Symbol}'>${stock.Symbol}</a></td>
+                    <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
+                    <td class="open">Loading...</td>
+                    <td class="high">Loading...</td>
+                    <td class="low">Loading...</td>
+                    <td class="close">Loading...</td>
+                    <td class="change">-</td>
+                    <td class="percent-change">-</td>
+                    <td class="rsi">-</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(table);
+            document.querySelector('.container').appendChild(section);
+        }
+
+        async function fetchDetailedInfo(symbols, category) {
+            try {
+                const response = await fetch(`/fetch_detailed_info?symbols=${symbols.join(',')}`);
+                const data = await response.json();
+
+                // Update the DOM with detailed information
+                symbols.forEach(symbol => {
+                    const stockData = data[symbol];
+                    if (!stockData) return;
+
+                    const row = document.querySelector(`tr[data-symbol="${symbol}"]`);
+                    if (!row) return;
+
+                    // Update all cells with consistent formatting
+                    const cells = {
+                        'open': formatValue(stockData.Open),
+                        'high': formatValue(stockData.High),
+                        'low': formatValue(stockData.Low),
+                        'close': formatValue(stockData.Close),
+                        'change': formatValue(stockData['Price Change']),
+                        'percent-change': formatPercentChange(stockData['Percent Change']),
+                        'rsi': formatRsi(stockData.RSI)
+                    };
+
+                    // Update each cell and apply styling
+                    Object.entries(cells).forEach(([className, value]) => {
+                        const cell = row.querySelector(`.${className}`);
+                        if (!cell) return;
+                        
+                        cell.textContent = value;
+                        
+                        // Apply background colors
+                        if (className === 'percent-change') {
+                            cell.style.backgroundColor = getColorForChange(stockData['Percent Change']);
+                        } else if (className === 'change') {
+                            cell.style.backgroundColor = stockData['Price Change'] > 0 ? '#98FB98' : 
+                                                   stockData['Price Change'] < 0 ? '#FF6347' : '';
+                        } else if (className === 'rsi') {
+                            cell.style.backgroundColor = getRsiBackgroundStyle(stockData.RSI);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error updating detailed info:', error);
+            }
+        }
+
+        // Utility functions
+        function formatMarketCap(marketCap) {
+        // Convert marketCap to a number to ensure it's numeric
+        marketCap = Number(marketCap);
+        
+        // Check if marketCap is a valid number
+        if (isNaN(marketCap)) {
+            return 'N/A'; // Return 'N/A' if marketCap is not a number
+        }
+
+        // Market cap is assumed to be in millions
+        if (marketCap >= 1_000_000) {
+            // If the market cap is 1 trillion or more (1,000,000M), convert to trillions
+            return (marketCap / 1_000_000).toFixed(2) + 'T';
+        } else if (marketCap >= 1_000) {
+            // If the market cap is 1 billion or more (1,000M), convert to billions
+            return (marketCap / 1_000).toFixed(2) + 'B';
+        } else if (marketCap > 0) {
+            // Otherwise, display in millions
+            return marketCap.toFixed(2) + 'M';
+        } else {
+            return 'N/A'; // Return 'N/A' for market cap of 0
+        }
+    }
+
+
+        function formatValue(value) {
+            return value !== null ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A';
+        }
+
+        function formatChange(value) {
+            return value !== null ? value.toFixed(2) : 'N/A';
+        }
+
+        function formatPercentChange(value) {
+            return value !== null ? `${value.toFixed(2)}%` : 'N/A';
+        }
+
+        function formatRsi(rsi) {
+            return rsi !== null ? parseFloat(rsi).toFixed(2) : 'N/A';
+        }
+
+        function getColorForChange(percentChange) {
+            if (percentChange <= -4) {
+                return '#B30000';  // Dark Red
+            } else if (percentChange <= -2) {
+                return '#FF6347';  // Lighter Red
+            } else if (percentChange < 0) {
+                return '#FFA07A';  // Lightest Red
+            } else if (percentChange === 0) {
+                return '#808080';  // Grey
+            } else if (percentChange <= 2) {
+                return '#98FB98';  // Light Green
+            } else if (percentChange <= 4) {
+                return '#32CD32';  // Green
+            } else {
+                return '#008000';  // Dark Green
+            }
+        }
+
+        function getRsiBackgroundStyle(rsi) {
+            const rsiValue = parseFloat(rsi);
+            if (rsiValue < 30) {
+                return '#FF6347';  // Light Red (RSI below 30)
+            } else if (rsiValue < 35) {
+                return '#FFA500';  // Orange (RSI below 35)
+            } else if (rsiValue > 70) {
+                return '#98FB98';  // Light Green (RSI above 70)
+            } else if (rsiValue > 65) {
+                return '#FFFF00';  // Yellow (RSI above 65)
+            } else {
+                return '';  // No background color for RSI between 35 and 65
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchWatchlistData);
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Watchlist Report</h1>
+        <div class="button-container">
+            <button id="refresh-button" class="refresh-button" onclick="fetchWatchlistData()">Refresh Data</button>
+            <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+        </div>
+    </div>
+</body>
+</html>
