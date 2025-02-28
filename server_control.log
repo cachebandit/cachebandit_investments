@@ -1,232 +1,10 @@
-127.0.0.1 - - [27/Feb/2025 11:09:58] "GET /html/watchlist.html HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:09:58] "GET /html/chart2.png HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:05] "GET /data_endpoint?category=Owned HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:05] "GET /fetch_detailed_info?symbols=LMT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:05] "GET /fetch_detailed_info?symbols=NVDA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:05] "GET /fetch_detailed_info?symbols=NVO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:06] "GET /fetch_detailed_info?symbols=JNJ HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:06] "GET /fetch_detailed_info?symbols=UNH HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:06] "GET /fetch_detailed_info?symbols=HUM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:06] "GET /fetch_detailed_info?symbols=WBA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:06] "GET /fetch_detailed_info?symbols=TSLA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:07] "GET /fetch_detailed_info?symbols=VZ HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:07] "GET /fetch_detailed_info?symbols=DIS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:07] "GET /fetch_detailed_info?symbols=SONY HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:07] "GET /fetch_detailed_info?symbols=AAPL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=MSFT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=CRWD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=SNOW HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=MDB HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=TGT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:08] "GET /fetch_detailed_info?symbols=NKE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:13] "GET /data_endpoint?category=Tech HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:13] "GET /fetch_detailed_info?symbols=GOOG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=META HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=ORCL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=CRM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=SAP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=ADBE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=IBM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:14] "GET /fetch_detailed_info?symbols=INTU HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:15] "GET /fetch_detailed_info?symbols=ADP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:15] "GET /fetch_detailed_info?symbols=SHOP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:15] "GET /fetch_detailed_info?symbols=PANW HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:15] "GET /fetch_detailed_info?symbols=WDAY HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:15] "GET /fetch_detailed_info?symbols=ZS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:16] "GET /fetch_detailed_info?symbols=ACN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:16] "GET /fetch_detailed_info?symbols=DELL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:19] "GET /data_endpoint?category=Semiconductors HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:19] "GET /fetch_detailed_info?symbols=TSM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:20] "GET /fetch_detailed_info?symbols=AVGO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:20] "GET /fetch_detailed_info?symbols=ASML HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:20] "GET /fetch_detailed_info?symbols=AMD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:20] "GET /fetch_detailed_info?symbols=TXN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:20] "GET /fetch_detailed_info?symbols=ARM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:21] "GET /fetch_detailed_info?symbols=MU HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:21] "GET /fetch_detailed_info?symbols=INTC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:21] "GET /fetch_detailed_info?symbols=AMAT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:21] "GET /fetch_detailed_info?symbols=QCOM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:21] "GET /fetch_detailed_info?symbols=SMCI HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:27] "GET /data_endpoint?category=Financial%20Services HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:27] "GET /fetch_detailed_info?symbols=BAC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:27] "GET /fetch_detailed_info?symbols=JPM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:27] "GET /fetch_detailed_info?symbols=AXP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:27] "GET /fetch_detailed_info?symbols=BRK-B HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=WFC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=SPGI HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=GS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=C HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=MS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:28] "GET /fetch_detailed_info?symbols=BX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:29] "GET /fetch_detailed_info?symbols=USB HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:29] "GET /fetch_detailed_info?symbols=V HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:29] "GET /fetch_detailed_info?symbols=MA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:29] "GET /fetch_detailed_info?symbols=BLK HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:29] "GET /fetch_detailed_info?symbols=PNC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:35] "GET /data_endpoint?category=Energy HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:35] "GET /fetch_detailed_info?symbols=XOM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:35] "GET /fetch_detailed_info?symbols=CVX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:35] "GET /fetch_detailed_info?symbols=SHEL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:36] "GET /fetch_detailed_info?symbols=NEE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:36] "GET /fetch_detailed_info?symbols=COP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:36] "GET /fetch_detailed_info?symbols=FSLR HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:36] "GET /fetch_detailed_info?symbols=BP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:37] "GET /fetch_detailed_info?symbols=XEL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:37] "GET /fetch_detailed_info?symbols=OXY HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:37] "GET /fetch_detailed_info?symbols=MPC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:37] "GET /fetch_detailed_info?symbols=GEV HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:38] "GET /fetch_detailed_info?symbols=CEG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:41] "GET /data_endpoint?category=Military%20Defense HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:41] "GET /fetch_detailed_info?symbols=RTX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:42] "GET /fetch_detailed_info?symbols=HON HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:42] "GET /fetch_detailed_info?symbols=GD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:42] "GET /fetch_detailed_info?symbols=NOC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:42] "GET /fetch_detailed_info?symbols=LHX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:42] "GET /fetch_detailed_info?symbols=BA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:43] "GET /fetch_detailed_info?symbols=GE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:43] "GET /fetch_detailed_info?symbols=PLTR HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:46] "GET /data_endpoint?category=Entertainment HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=T HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=TMUS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=CMCSA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=NFLX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=DKNG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:47] "GET /fetch_detailed_info?symbols=SPOT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:48] "GET /fetch_detailed_info?symbols=WBD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:48] "GET /fetch_detailed_info?symbols=FOX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:51] "GET /data_endpoint?category=Automotive HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:51] "GET /fetch_detailed_info?symbols=TM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:51] "GET /fetch_detailed_info?symbols=RACE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:51] "GET /fetch_detailed_info?symbols=GM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:51] "GET /fetch_detailed_info?symbols=F HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:52] "GET /fetch_detailed_info?symbols=HMC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:52] "GET /fetch_detailed_info?symbols=UBER HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:52] "GET /fetch_detailed_info?symbols=LYFT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:52] "GET /fetch_detailed_info?symbols=STLA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:54] "GET /data_endpoint?category=Industrials HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:54] "GET /fetch_detailed_info?symbols=MMM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=CAT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=DE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=WM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=UPS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=FDX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:10:55] "GET /fetch_detailed_info?symbols=ECL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /data_endpoint?category=Healthcare HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /fetch_detailed_info?symbols=LLY HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /fetch_detailed_info?symbols=MRK HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /fetch_detailed_info?symbols=ABBV HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /fetch_detailed_info?symbols=ZTS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:02] "GET /fetch_detailed_info?symbols=PFE HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:03] "GET /fetch_detailed_info?symbols=AZN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:03] "GET /fetch_detailed_info?symbols=TMO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:03] "GET /fetch_detailed_info?symbols=CVS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:03] "GET /fetch_detailed_info?symbols=CI HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:03] "GET /fetch_detailed_info?symbols=ABT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:04] "GET /fetch_detailed_info?symbols=MDT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:04] "GET /fetch_detailed_info?symbols=BSX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:04] "GET /fetch_detailed_info?symbols=SYK HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:04] "GET /fetch_detailed_info?symbols=PGR HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:05] "GET /fetch_detailed_info?symbols=AFL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:05] "GET /fetch_detailed_info?symbols=MET HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:05] "GET /fetch_detailed_info?symbols=TRV HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:05] "GET /fetch_detailed_info?symbols=ALL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:06] "GET /fetch_detailed_info?symbols=PRU HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:09] "GET /data_endpoint?category=Retail HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:09] "GET /fetch_detailed_info?symbols=COST HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:09] "GET /fetch_detailed_info?symbols=WMT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=LULU HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=AMZN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=HD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=LOW HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=AZO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=ONON HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:10] "GET /fetch_detailed_info?symbols=DECK HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:13] "GET /data_endpoint?category=Food HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:13] "GET /fetch_detailed_info?symbols=MCD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:13] "GET /fetch_detailed_info?symbols=MDLZ HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=CMG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=YUM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=CAVA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=SBUX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=BUD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:14] "GET /fetch_detailed_info?symbols=DASH HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:19] "GET /data_endpoint?category=Consumer%20Staples HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:19] "GET /fetch_detailed_info?symbols=MO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:19] "GET /fetch_detailed_info?symbols=PM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:19] "GET /fetch_detailed_info?symbols=BTI HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:20] "GET /fetch_detailed_info?symbols=CPB HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:20] "GET /fetch_detailed_info?symbols=PG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:20] "GET /fetch_detailed_info?symbols=UL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:20] "GET /fetch_detailed_info?symbols=KHC HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:21] "GET /fetch_detailed_info?symbols=KO HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:21] "GET /fetch_detailed_info?symbols=PEP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:21] "GET /fetch_detailed_info?symbols=GIS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:21] "GET /fetch_detailed_info?symbols=TSN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:21] "GET /fetch_detailed_info?symbols=KDP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:22] "GET /fetch_detailed_info?symbols=CL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:24] "GET /data_endpoint?category=Reality HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:24] "GET /fetch_detailed_info?symbols=DHI HTTP/1.1" 200 -
-$LEN: possibly delisted; no price data found  (period=1y)
 Server running on port 8000
-Error fetching data for UBER: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for LYFT: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for STLA: Too Many Requests. Rate limited. Try after a while.
-Error fetching historical data for TM: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for TM: local variable 'hist_data' referenced before assignment
-Error fetching historical data for RACE: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for RACE: local variable 'hist_data' referenced before assignment
-Error fetching historical data for GM: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for GM: local variable 'hist_data' referenced before assignment
-Error fetching historical data for HMC: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for HMC: local variable 'hist_data' referenced before assignment
-Error fetching historical data for F: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for F: local variable 'hist_data' referenced before assignment
-Error fetching historical data for UBER: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for UBER: local variable 'hist_data' referenced before assignment
-Error fetching historical data for LYFT: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for LYFT: local variable 'hist_data' referenced before assignment
-Error fetching historical data for STLA: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for STLA: local variable 'hist_data' referenced before assignment
-Error fetching data for MMM: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for CAT: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for DE: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for WM: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for UPS: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for FDX: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for ECL: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for LLY: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for MRK: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for ABBV: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for ZTS: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for PFE: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for AZN: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for TMO: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for CVS: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for CI: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for ABT: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for MDT: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for BSX: Too Many Requests. Rate limited. Try after a while.
-Error fetching data for SYK: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for PGR: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for AFL: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for MET: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for TRV: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for ALL: Too Many Requests. Rate limited. Try after a while.
 Error fetching data for PRU: Too Many Requests. Rate limited. Try after a while.
-Error fetching historical data for MMM: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for MMM: local variable 'hist_data' referenced before assignment
-Error fetching historical data for CAT: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for CAT: local variable 'hist_data' referenced before assignment
-Error fetching historical data for DE: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for DE: local variable 'hist_data' referenced before assignment
-Error fetching historical data for WM: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for WM: local variable 'hist_data' referenced before assignment
-Error fetching historical data for UPS: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for UPS: local variable 'hist_data' referenced before assignment
-Error fetching historical data for FDX: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for FDX: local variable 'hist_data' referenced before assignment
-Error fetching historical data for ECL: Too Many Requests. Rate limited. Try after a while.
-Error calculating RSI for ECL: local variable 'hist_data' referenced before assignment
 Error fetching historical data for LLY: Too Many Requests. Rate limited. Try after a while.
 Error calculating RSI for LLY: local variable 'hist_data' referenced before assignment
 Error fetching historical data for MRK: Too Many Requests. Rate limited. Try after a while.
@@ -261,60 +39,57 @@ Error fetching historical data for MET: Too Many Requests. Rate limited. Try aft
 Error calculating RSI for MET: local variable 'hist_data' referenced before assignment
 Error fetching historical data for TRV: Too Many Requests. Rate limited. Try after a while.
 Error calculating RSI for TRV: local variable 'hist_data' referenced before assignment
-Error fetching historical data for ALL: Too Many Requests. Rate limited. Try after a while.127.0.0.1 - - [27/Feb/2025 11:11:26] "GET /fetch_detailed_info?symbols=LEN HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:26] "GET /fetch_detailed_info?symbols=CSGP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:27] "GET /fetch_detailed_info?symbols=WELL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:27] "GET /fetch_detailed_info?symbols=PLD HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:27] "GET /fetch_detailed_info?symbols=AMT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:27] "GET /fetch_detailed_info?symbols=ZG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:28] "GET /fetch_detailed_info?symbols=O HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:28] "GET /fetch_detailed_info?symbols=EQIX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:32] "GET /data_endpoint?category=Travel HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:32] "GET /fetch_detailed_info?symbols=ABNB HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=LVS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=DAL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=BKNG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=MAR HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=HLT HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:33] "GET /fetch_detailed_info?symbols=RCL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:34] "GET /fetch_detailed_info?symbols=CCL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:34] "GET /fetch_detailed_info?symbols=MGM HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:34] "GET /fetch_detailed_info?symbols=LUV HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:34] "GET /fetch_detailed_info?symbols=UAL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:35] "GET /fetch_detailed_info?symbols=UNP HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:35] "GET /html/watchlist.html HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:41] "GET /data_endpoint?category=Owned HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:45] "GET /fetch_detailed_info?symbols=AAPL,CRWD,DIS,HUM,JNJ,LMT,MDB,MSFT,NKE,NVDA,NVO,SNOW,SONY,TGT,TSLA,UNH,VZ,WBA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:50] "GET /data_endpoint?category=Tech HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:52] "GET /fetch_detailed_info?symbols=GOOG,META,ORCL,SAP,CRM,IBM,ACN,ADBE,INTU,SHOP,ADP,PANW,DELL,WDAY,ZS HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:55] "GET /data_endpoint?category=Semiconductors HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:11:57] "GET /fetch_detailed_info?symbols=AVGO,TSM,ASML,TXN,QCOM,AMD,ARM,AMAT,MU,INTC,SMCI HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:02] "GET /data_endpoint?category=Financial%20Services HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:05] "GET /fetch_detailed_info?symbols=BRK-B,JPM,V,MA,BAC,WFC,MS,AXP,BX,GS,SPGI,C,BLK,PNC,USB HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:09] "GET /data_endpoint?category=Energy HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:11] "GET /fetch_detailed_info?symbols=XOM,CVX,SHEL,NEE,COP,GEV,BP,CEG,MPC,OXY,XEL,FSLR HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:14] "GET /data_endpoint?category=Military%20Defense HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:15] "GET /fetch_detailed_info?symbols=GE,PLTR,RTX,HON,BA,GD,NOC,LHX HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:18] "GET /data_endpoint?category=Entertainment HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:20] "GET /fetch_detailed_info?symbols=NFLX,TMUS,T,CMCSA,SPOT,WBD,FOX,DKNG HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:25] "GET /data_endpoint?category=Automotive HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:34] "GET /fetch_detailed_info?symbols=TM,RACE,GM,HMC,F,UBER,LYFT,STLA HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:12:42] "GET /data_endpoint?category=Industrials HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:13:08] "GET /data_endpoint?category=Healthcare HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:13:16] "GET /fetch_detailed_info?symbols=MMM,CAT,DE,WM,UPS,FDX,ECL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:13:42] "GET /fetch_detailed_info?symbols=LLY,MRK,ABBV,ZTS,PFE,AZN,TMO,CVS,CI,ABT,MDT,BSX,SYK,PGR,AFL,MET,TRV,ALL,PRU HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:13:52] "GET /data_endpoint?category=Retail HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:01] "GET /data_endpoint?category=Food HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:13] "GET /fetch_detailed_info?symbols=COST,WMT,LULU,AMZN,HD,LOW,AZO,ONON,DECK HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:28] "GET /data_endpoint?category=Consumer%20Staples HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:37] "GET /fetch_detailed_info?symbols=MCD,MDLZ,CMG,YUM,CAVA,SBUX,BUD,DASH HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:42] "GET /data_endpoint?category=Reality HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:44] "GET /fetch_detailed_info?symbols=MO,PM,BTI,CPB,PG,UL,KHC,KO,PEP,GIS,TSN,KDP,CL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:44] "GET /html/chart.html?symbol=AAPL HTTP/1.1" 200 -
-127.0.0.1 - - [27/Feb/2025 11:14:44] code 404, message Page not found
-127.0.0.1 - - [27/Feb/2025 11:14:44] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 -
-127.0.0.1 - - [27/Feb/2025 11:14:44] code 404, message Page not found
-127.0.0.1 - - [27/Feb/2025 11:14:44] "GET /apple-touch-icon.png HTTP/1.1" 404 -
-127.0.0.1 - - [27/Feb/2025 11:14:44] code 404, message Page not found
-127.0.0.1 - - [27/Feb/2025 11:14:44] "GET /favicon.ico HTTP/1.1" 404 -
-$LEN: possibly delisted; no price data found  (period=1y)
+Error fetching historical data for ALL: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for ALL: local variable 'hist_data' referenced before assignment
+Error fetching historical data for PRU: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for PRU: local variable 'hist_data' referenced before assignment
+Error fetching data for COST: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for WMT: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for LULU: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for AMZN: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for HD: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for LOW: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for AZO: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for ONON: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for DECK: Too Many Requests. Rate limited. Try after a while.
+Error fetching historical data for COST: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for COST: local variable 'hist_data' referenced before assignment
+Error fetching historical data for WMT: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for WMT: local variable 'hist_data' referenced before assignment
+Error fetching historical data for LULU: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for LULU: local variable 'hist_data' referenced before assignment
+Error fetching historical data for AMZN: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for AMZN: local variable 'hist_data' referenced before assignment
+Error fetching historical data for HD: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for HD: local variable 'hist_data' referenced before assignment
+Error fetching historical data for LOW: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for LOW: local variable 'hist_data' referenced before assignment
+Error fetching historical data for AZO: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for AZO: local variable 'hist_data' referenced before assignment
+Error fetching historical data for ONON: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for ONON: local variable 'hist_data' referenced before assignment
+Error fetching historical data for DECK: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for DECK: local variable 'hist_data' referenced before assignment
+Error fetching data for MCD: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for MDLZ: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for CMG: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for YUM: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for CAVA: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for SBUX: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for BUD: Too Many Requests. Rate limited. Try after a while.
+Error fetching data for DASH: Too Many Requests. Rate limited. Try after a while.
+Error fetching historical data for MCD: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for MCD: local variable 'hist_data' referenced before assignment
+Error fetching historical data for MDLZ: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for MDLZ: local variable 'hist_data' referenced before assignment
+Error fetching historical data for CMG: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for CMG: local variable 'hist_data' referenced before assignment
+Error fetching historical data for YUM: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for YUM: local variable 'hist_data' referenced before assignment
+Error fetching historical data for CAVA: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for CAVA: local variable 'hist_data' referenced before assignment
+Error fetching historical data for SBUX: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for SBUX: local variable 'hist_data' referenced before assignment
+Error fetching historical data for BUD: Too Many Requests. Rate limited. Try after a while.
+Error calculating RSI for BUD: local variable 'hist_data' referenced before assignment
+Error fetching historical data for DASH: Too Many Requests. Rate limited. Try after a while.

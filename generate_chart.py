@@ -1,8 +1,4 @@
 import yfinance as yf
-import yfinance as yf
-import matplotlib.pyplot as plt
-import io
-import base64
 
 def get_chart_data(symbol):
     try:
