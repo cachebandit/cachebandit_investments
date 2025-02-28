@@ -23,7 +23,10 @@ def load_watchlist_data():
                 filtered_stocks = []
                 for stock in stocks:
                     if stock.get("flag", False):  # Check if flag is true
-                        owned_stocks.append(stock)  # Add to owned category
+                        owned_stocks.append({
+                            **stock,  # Include all stock data
+                            'category': category  # Preserve the original category
+                        })  # Add to owned category
                     else:
                         filtered_stocks.append(stock)  # Keep in original category if not owned
 
@@ -62,31 +65,36 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             else:
                 self.send_error(400, "Symbol not provided")
         
-        # Lazy load category data
-        elif parsed_path.path == '/data_endpoint':
+        # Combined endpoint for stock data and detailed info
+        elif parsed_path.path == '/saved_stock_info':
             category = query_params.get('category', [None])[0]
+
             if category:
-                data = fetch_category_data(category)
+                # Fetch and return stock data for the specified category
+                category_data = fetch_category_data(category)
+                symbols_list = [stock['Symbol'] for stock in category_data]  # Get symbols for detailed info
+                detailed_data = fetch_detailed_info(symbols_list)  # Fetch detailed info for all symbols
+
+                # Combine category data with detailed data
+                for stock in category_data:
+                    symbol = stock['Symbol']
+                    if symbol in detailed_data:
+                        stock.update(detailed_data[symbol])  # Add detailed info to the stock data
+
+                # Sort the "Owned" category alphabetically by stock symbol
+                if category == "Owned":
+                    category_data.sort(key=lambda x: x['Symbol'].strip().lower())  # Sort alphabetically by symbol
+                else:
+                    # Sort other categories by market cap
+                    category_data.sort(key=lambda x: (x['Market Cap'] if x['Market Cap'] != 'N/A' else 0), reverse=True)
+
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(data).encode())
+                self.wfile.write(json.dumps(category_data).encode())
             else:
                 self.send_error(400, "Category not provided")
-        
-        # Fetch detailed info for multiple stocks
-        elif parsed_path.path == '/fetch_detailed_info':
-            symbols = query_params.get('symbols', [None])[0]
-            if symbols:
-                symbols_list = symbols.split(',')
-                detailed_data = fetch_detailed_info(symbols_list)
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps(detailed_data).encode())
-            else:
-                self.send_error(400, "Symbols not provided")
-        
+
         # Serve static files like HTML, JS, CSS
         elif parsed_path.path.startswith('/html/'):
             file_path = os.path.join('.', parsed_path.path.lstrip('/'))
@@ -133,12 +141,13 @@ def fetch_category_data(category):
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
 
-            # Append formatted data for each stock
+            # Append formatted data for each stock, including the original category
             result_data.append({
                 'Symbol': symbol,
                 'Name': name,
                 'Market Cap': format_marketcap,
-                'flag': flag  # Include flag status for the frontend
+                'flag': flag,  # Include flag status for the frontend
+                'category': stock_info.get('category', category)  # Add the original category
             })
 
         except Exception as e:
@@ -147,7 +156,8 @@ def fetch_category_data(category):
                 'Symbol': symbol,
                 'Name': 'Unknown',
                 'Market Cap': 'N/A',
-                'flag': flag
+                'flag': flag,
+                'category': category  # Default to the requested category
             })
 
     return result_data
@@ -255,45 +265,4 @@ PORT = 8000
 watchlist_data = {}
 watchlist_last_modified = 0
 
-# Load `list_watchlist.json` data dynamically
-def load_watchlist_data():
-    global watchlist_data, watchlist_last_modified
-
-    try:
-        # Get the last modified time of the file
-        file_modified_time = os.path.getmtime('list_watchlist.json')
-
-        # Reload the file only if it has changed
-        if file_modified_time != watchlist_last_modified:
-            with open('list_watchlist.json', 'r') as file:
-                data = json.load(file)
-                categories = data.get("Categories", {})
-
-                owned_stocks = []
-                filtered_categories = {}
-
-                # Filter each category to separate owned stocks
-                for category, stocks in categories.items():
-                    filtered_stocks = []
-                    for stock in stocks:
-                        if stock.get("flag", False):  # Check if flag is true
-                            owned_stocks.append(stock)  # Add to owned category
-                        else:
-                            filtered_stocks.append(stock)  # Keep in original category if not owned
-
-                    # Store filtered stocks for each category
-                    filtered_categories[category] = filtered_stocks
-
-                # Add the "Owned" category to the filtered categories
-                filtered_categories["Owned"] = owned_stocks
-
-                # Cache the data and update the last modified time
-                watchlist_data = filtered_categories
-                watchlist_last_modified = file_modified_time
-
-                print("Reloaded watchlist data from file.")
-        return watchlist_data
-
-    except Exception as e:
-        print(f"Error loading watchlist data: {e}")
-        return {}
+# Load `
