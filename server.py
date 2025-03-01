@@ -8,42 +8,72 @@ from generate_chart import get_chart_data
 
 PORT = 8000
 
-# Load `list_watchlist.json` data and create the "Owned" category
-def load_watchlist_data():
-    try:
-        with open('list_watchlist.json', 'r') as file:
-            data = json.load(file)
-            categories = data.get("Categories", {})
+# Modify the BasicCache class to add a temporary storage mechanism
+class StockCache:
+    def __init__(self):
+        # Create cache directory if it doesn't exist
+        os.makedirs('cache', exist_ok=True)
+        self.cache_file = 'cache/stock_data.json'
+        self.data = {}
+        self.temp_data = {}  # Temporary storage for refresh operations
+        self.is_refreshing = False  # Flag to track refresh operations
+        self._load()
+    
+    def _load(self):
+        """Load cache from file if it exists"""
+        if os.path.exists(self.cache_file):
+            try:
+                with open(self.cache_file, 'r') as f:
+                    self.data = json.load(f)
+                print(f"Cache loaded with {len(self.data)} entries")
+            except Exception as e:
+                print(f"Error loading cache: {e}")
+                self.data = {}
+    
+    def save(self):
+        """Save cache to file"""
+        try:
+            with open(self.cache_file, 'w') as f:
+                json.dump(self.data, f)
+            print(f"Cache saved with {len(self.data)} entries")
+        except Exception as e:
+            print(f"Error saving cache: {e}")
+    
+    def get(self, key):
+        """Get item from cache"""
+        return self.data.get(key)
+    
+    def set(self, key, value):
+        """Set item in cache and save"""
+        if self.is_refreshing:
+            # During refresh, store in temp_data
+            self.temp_data[key] = value
+            print(f"Temporarily stored {key} during refresh")
+        else:
+            # Normal operation, store directly in data
+            self.data[key] = value
+            self.save()
+    
+    def start_refresh(self):
+        """Start a refresh operation"""
+        self.is_refreshing = True
+        self.temp_data = {}
+        print("Started refresh operation")
+    
+    def commit_refresh(self):
+        """Commit the refresh operation"""
+        if self.is_refreshing and self.temp_data:
+            # Replace cache data with temp data
+            self.data = self.temp_data
+            self.temp_data = {}
+            self.is_refreshing = False
+            self.save()
+            print("Committed refresh operation")
+            return True
+        return False
 
-            owned_stocks = []
-            filtered_categories = {}
-
-            # Filter each category to separate owned stocks
-            for category, stocks in categories.items():
-                filtered_stocks = []
-                for stock in stocks:
-                    if stock.get("flag", False):  # Check if flag is true
-                        owned_stocks.append({
-                            **stock,  # Include all stock data
-                            'category': category  # Preserve the original category
-                        })  # Add to owned category
-                    else:
-                        filtered_stocks.append(stock)  # Keep in original category if not owned
-
-                # Store filtered stocks for each category
-                filtered_categories[category] = filtered_stocks
-
-            # Add the "Owned" category to the filtered categories
-            filtered_categories["Owned"] = owned_stocks
-
-            return filtered_categories
-
-    except Exception as e:
-        print(f"Error loading watchlist data: {e}")
-        return {}
-
-# Global watchlist data, including the dynamically created "Owned" category
-watchlist_data = load_watchlist_data()
+# Initialize cache
+cache = StockCache()
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -68,25 +98,53 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         # Combined endpoint for stock data and detailed info
         elif parsed_path.path == '/saved_stock_info':
             category = query_params.get('category', [None])[0]
+            refresh = query_params.get('refresh', ['false'])[0].lower() == 'true'
+            is_first = query_params.get('first', ['false'])[0].lower() == 'true'
+            is_last = query_params.get('last', ['false'])[0].lower() == 'true'
 
             if category:
-                # Fetch and return stock data for the specified category
-                category_data = fetch_category_data(category)
-                symbols_list = [stock['Symbol'] for stock in category_data]  # Get symbols for detailed info
-                detailed_data = fetch_detailed_info(symbols_list)  # Fetch detailed info for all symbols
+                # Create a cache key for this category
+                cache_key = f"category_{category}"
+                
+                # If this is a refresh request and the first category, start refresh
+                if refresh and is_first:
+                    cache.start_refresh()
+                
+                # Check if we should use cached data or refresh
+                if refresh or cache.get(cache_key) is None:
+                    print(f"Fetching fresh data for category: {category}")
+                    
+                    # Fetch and return stock data for the specified category
+                    category_data = fetch_category_data(category)
+                    symbols_list = [stock['Symbol'] for stock in category_data]
+                    detailed_data = fetch_detailed_info(symbols_list)
 
-                # Combine category data with detailed data
-                for stock in category_data:
-                    symbol = stock['Symbol']
-                    if symbol in detailed_data:
-                        stock.update(detailed_data[symbol])  # Add detailed info to the stock data
+                    # Combine category data with detailed data
+                    for stock in category_data:
+                        symbol = stock['Symbol']
+                        if symbol in detailed_data:
+                            stock.update(detailed_data[symbol])
 
-                # Sort the "Owned" category alphabetically by stock symbol
-                if category == "Owned":
-                    category_data.sort(key=lambda x: x['Symbol'].strip().lower())  # Sort alphabetically by symbol
+                    # Sort the "Owned" category alphabetically by stock symbol
+                    if category == "Owned":
+                        category_data.sort(key=lambda x: x['Symbol'].strip().lower())
+                    else:
+                        # Sort other categories by market cap
+                        try:
+                            category_data.sort(key=lambda x: (float(x['Market Cap']) if x['Market Cap'] != 'N/A' else 0), reverse=True)
+                        except (ValueError, TypeError):
+                            # If sorting by market cap fails, sort by symbol
+                            category_data.sort(key=lambda x: x['Symbol'].strip().lower())
+                    
+                    # Save to cache
+                    cache.set(cache_key, category_data)
+                    
+                    # If this is the last category in a refresh, commit the changes
+                    if refresh and is_last:
+                        cache.commit_refresh()
                 else:
-                    # Sort other categories by market cap
-                    category_data.sort(key=lambda x: (x['Market Cap'] if x['Market Cap'] != 'N/A' else 0), reverse=True)
+                    print(f"Using cached data for category: {category}")
+                    category_data = cache.get(cache_key)
 
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
@@ -94,6 +152,15 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps(category_data).encode())
             else:
                 self.send_error(400, "Category not provided")
+
+        # Add a new endpoint to commit refresh
+        elif parsed_path.path == '/commit_refresh':
+            success = cache.commit_refresh()
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": success}).encode())
 
         # Serve static files like HTML, JS, CSS
         elif parsed_path.path.startswith('/html/'):
@@ -161,6 +228,45 @@ def fetch_category_data(category):
             })
 
     return result_data
+
+
+# Load `list_watchlist.json` data and create the "Owned" category
+def load_watchlist_data():
+    try:
+        with open('list_watchlist.json', 'r') as file:
+            data = json.load(file)
+            categories = data.get("Categories", {})
+
+            owned_stocks = []
+            filtered_categories = {}
+
+            # Filter each category to separate owned stocks
+            for category, stocks in categories.items():
+                filtered_stocks = []
+                for stock in stocks:
+                    if stock.get("flag", False):  # Check if flag is true
+                        owned_stocks.append({
+                            **stock,  # Include all stock data
+                            'category': category  # Preserve the original category
+                        })  # Add to owned category
+                    else:
+                        filtered_stocks.append(stock)  # Keep in original category if not owned
+
+                # Store filtered stocks for each category
+                filtered_categories[category] = filtered_stocks
+
+            # Add the "Owned" category to the filtered categories
+            filtered_categories["Owned"] = owned_stocks
+
+            return filtered_categories
+
+    except Exception as e:
+        print(f"Error loading watchlist data: {e}")
+        return {}
+
+# Global watchlist data, including the dynamically created "Owned" category
+watchlist_data = load_watchlist_data()
+
 
 # Fetch detailed info including RSI and price changes
 def fetch_detailed_info(symbols):
@@ -245,24 +351,3 @@ if __name__ == "__main__":
     with HTTPServer(('localhost', PORT), ChartRequestHandler) as server:
         print(f"Server running on port {PORT}")
         server.serve_forever()
-
-#VERSION 2. Allows for dynamic updating list_watchlist.html
-
-from http.server import SimpleHTTPRequestHandler, HTTPServer
-import json
-from urllib.parse import urlparse, parse_qs
-import subprocess
-import os
-import yfinance as yf
-from generate_chart import get_chart_data
-import os
-import time
-
-PORT = 8000
-
-
-# Global variables for caching
-watchlist_data = {}
-watchlist_last_modified = 0
-
-# Load `

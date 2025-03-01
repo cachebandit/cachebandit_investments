@@ -1,0 +1,28 @@
+- add timestamp to api call, cache, and display it
+- alert for "when yfinance.exceptions.YFRateLimitError: Too Many Requests. Rate limited. Try after a while" and stop making API calls
+- Add more metrics saved to cache, (Trailing P/E, Forward P/E, EV/EBITDA)
+- have the same temporary holder for NA Values for every column
+- build out Chart Analysis page
+- add favorite button to organize Owned category
+- seperate Python, HTML, CSS, and JS files
+            ├── /cache                  # Directory for cached data
+            │   └── stock_data.json     # Cached stock data file
+            │
+            ├── /html                   # Directory for HTML files
+            │   └── watchlist.html      # Your main HTML file
+            │
+            ├── /js                     # Directory for JavaScript files
+            │   └── script.js           # Your external JavaScript file
+            │
+            ├── /css                    # Directory for CSS files
+            │   └── styles.css          # Your CSS file
+            │
+            ├── /server                 # Directory for server-related files
+            │   ├── __init__.py         # Makes this a package
+            │   ├── app.py              # Main application file
+            │   ├── routes.py           # File for route handlers
+            │   ├── cache.py            # File for cache management
+            │   └── utils.py            # File for utility functions
+            │
+            ├── list_watchlist.json     # Your JSON file for stock data
+            └── server_control.py       # Script to run the server
