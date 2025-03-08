@@ -5,8 +5,10 @@ import subprocess
 import os
 import yfinance as yf
 from generate_chart import get_chart_data
+import logging
 
 PORT = 8000
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Modify the BasicCache class to add a temporary storage mechanism
 class StockCache:
@@ -204,6 +206,9 @@ def fetch_category_data(category):
             # Ensure essential fields are present
             marketcap = info.get('marketCap')
             name = info.get('longName', 'Unknown')
+            trailing_pe = info.get('trailingPE', None)
+            forward_pe = info.get('forwardPE', None)
+            enterprise_to_ebitda = info.get('enterpriseToEbitda', None)
             
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
@@ -213,7 +218,10 @@ def fetch_category_data(category):
                 'Symbol': symbol,
                 'Name': name,
                 'Market Cap': format_marketcap,
-                'flag': flag,  # Include flag status for the frontend
+                'Trailing PE': trailing_pe,
+                'Forward PE': forward_pe,
+                'EV/EBITDA': enterprise_to_ebitda,
+                'flag': flag,
                 'category': stock_info.get('category', category)  # Add the original category
             })
 
@@ -224,6 +232,9 @@ def fetch_category_data(category):
                 'Name': 'Unknown',
                 'Market Cap': 'N/A',
                 'flag': flag,
+                'Trailing PE': None,
+                'Forward PE': None,
+                'EV/EBITDA': None,
                 'category': category  # Default to the requested category
             })
 
@@ -277,6 +288,7 @@ def fetch_detailed_info(symbols):
         
         try:
             hist_data = symbol_data.history(period="1y", interval="1d")
+            hist_data_yesterday = hist_data.iloc[:-1]
             if not hist_data.empty:
                 latest_data = hist_data.iloc[-1]
                 previous_close = hist_data.iloc[-2]['Close'] if len(hist_data) > 1 else None
@@ -298,6 +310,8 @@ def fetch_detailed_info(symbols):
 
         try:
             rsi = calculate_rsi(hist_data)
+            yesterday_rsi = calculate_rsi(hist_data_yesterday)
+            logging.debug(f"hist_data: {hist_data}")
         except Exception as e:
             print(f"Error calculating RSI for {stock}: {e}")
             rsi = 'N/A'
@@ -309,7 +323,8 @@ def fetch_detailed_info(symbols):
             'Low': low_price,
             'Price Change': price_change,
             'Percent Change': percent_change,
-            'RSI': rsi
+            'RSI': rsi,
+            'yRSI': yesterday_rsi
         }
 
     return detailed_data
