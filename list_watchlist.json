@@ -1,205 +1,280 @@
 {
   "Categories": {
-    "Military Defense": [
-      { "symbol": "RTX", "flag": false },
-      { "symbol": "LMT", "flag": true },
-      { "symbol": "HON", "flag": false },
-      { "symbol": "GD", "flag": false },
-      { "symbol": "NOC", "flag": false },
-      { "symbol": "LHX", "flag": false },
-      { "symbol": "BA", "flag": false },
-      { "symbol": "GE", "flag": false },
-      { "symbol": "PLTR", "flag": false }
-    ],
-    "Energy": [
-      { "symbol": "XOM", "flag": false },
-      { "symbol": "CVX", "flag": false },
-      { "symbol": "SHEL", "flag": false },
-      { "symbol": "NEE", "flag": false },
-      { "symbol": "COP", "flag": false },
-      { "symbol": "FSLR", "flag": false },
-      { "symbol": "BP", "flag": false },
-      { "symbol": "XEL", "flag": false },
-      { "symbol": "OXY", "flag": false },
-      { "symbol": "MPC", "flag": false },
-      { "symbol": "GEV", "flag": false },
-      { "symbol": "CEG", "flag": false }
-    ],
-    "Semiconductors": [
-      { "symbol": "NVDA", "flag": true },
-      { "symbol": "TSM", "flag": true },
-      { "symbol": "AVGO", "flag": false },
-      { "symbol": "ASML", "flag": false },
-      { "symbol": "AMD", "flag": false },
-      { "symbol": "TXN", "flag": false },
-      { "symbol": "ARM", "flag": false },
-      { "symbol": "MU", "flag": false },
-      { "symbol": "INTC", "flag": false },
-      { "symbol": "AMAT", "flag": false },
-      { "symbol": "QCOM", "flag": false },
-      { "symbol": "SMCI", "flag": false }
-    ],
-    "Food": [
-      { "symbol": "MCD", "flag": false },
-      { "symbol": "MDLZ", "flag": false },
-      { "symbol": "CMG", "flag": false },
-      { "symbol": "YUM", "flag": false },
-      { "symbol": "CAVA", "flag": false },
-      { "symbol": "SBUX", "flag": false },
-      { "symbol": "BUD", "flag": false },
-      { "symbol": "DASH", "flag": false }
-    ],
-    "Consumer Staples": [
-      { "symbol": "MO", "flag": false },
-      { "symbol": "PM", "flag": false },
-      { "symbol": "BTI", "flag": false },
-      { "symbol": "CPB", "flag": false },
-      { "symbol": "PG", "flag": false },
-      { "symbol": "UL", "flag": false },
-      { "symbol": "KHC", "flag": false },
-      { "symbol": "KO", "flag": false },
-      { "symbol": "PEP", "flag": false },
-      { "symbol": "GIS", "flag": false },
-      { "symbol": "TSN", "flag": false },
-      { "symbol": "KDP", "flag": false },
-      { "symbol": "CL", "flag": false }
-    ],
-    "Financial Services": [
-      { "symbol": "BAC", "flag": false },
-      { "symbol": "JPM", "flag": false },
-      { "symbol": "AXP", "flag": false },
-      { "symbol": "BRK-B", "flag": false },
-      { "symbol": "WFC", "flag": false },
-      { "symbol": "SPGI", "flag": false },
-      { "symbol": "GS", "flag": false },
-      { "symbol": "C", "flag": false },
-      { "symbol": "MS", "flag": false },
-      { "symbol": "BX", "flag": false },
-      { "symbol": "USB", "flag": false },
-      { "symbol": "V", "flag": false },
-      { "symbol": "MA", "flag": false },
-      { "symbol": "BLK", "flag": false },
-      { "symbol": "PNC", "flag": false }
-    ],
-    "Healthcare": [
-      { "symbol": "NVO", "flag": true },
-      { "symbol": "JNJ", "flag": false },
-      { "symbol": "LLY", "flag": false },
-      { "symbol": "MRK", "flag": false },
-      { "symbol": "ABBV", "flag": false },
-      { "symbol": "ZTS", "flag": false },
-      { "symbol": "PFE", "flag": false },
-      { "symbol": "UNH", "flag": true },
-      { "symbol": "AZN", "flag": false },
-      { "symbol": "TMO", "flag": false },
-      { "symbol": "CVS", "flag": false },
-      { "symbol": "CI", "flag": false },
-      { "symbol": "HUM", "flag": true },
-      { "symbol": "ABT", "flag": false },
-      { "symbol": "MDT", "flag": false },
-      { "symbol": "BSX", "flag": false },
-      { "symbol": "SYK", "flag": false },
-      { "symbol": "PGR", "flag": false },
-      { "symbol": "AFL", "flag": false },
-      { "symbol": "MET", "flag": false },
-      { "symbol": "TRV", "flag": false },
-      { "symbol": "ALL", "flag": false },
-      { "symbol": "PRU", "flag": false },
-      { "symbol": "WBA", "flag": true }
-    ],
-    "Automotive": [
-      { "symbol": "TSLA", "flag": true },
-      { "symbol": "TM", "flag": false },
-      { "symbol": "RACE", "flag": false },
-      { "symbol": "GM", "flag": false },
-      { "symbol": "F", "flag": false },
-      { "symbol": "HMC", "flag": false },
-      { "symbol": "UBER", "flag": false },
-      { "symbol": "LYFT", "flag": false },
-      { "symbol": "STLA", "flag": false }
-    ],
-    "Entertainment": [
-      { "symbol": "T", "flag": false },
-      { "symbol": "VZ", "flag": false },
-      { "symbol": "TMUS", "flag": false },
-      { "symbol": "CMCSA", "flag": false },
-      { "symbol": "DIS", "flag": true },
-      { "symbol": "NFLX", "flag": false },
-      { "symbol": "SONY", "flag": false },
-      { "symbol": "DKNG", "flag": false },
-      { "symbol": "FLUT", "flag": false },
-      { "symbol": "SPOT", "flag": false },
-      { "symbol": "WBD", "flag": false },
-      { "symbol": "FOX", "flag": false }
-    ],
-    "Industrials": [
-      { "symbol": "MMM", "flag": false },
-      { "symbol": "CAT", "flag": false },
-      { "symbol": "DE", "flag": false },
-      { "symbol": "WM", "flag": false },
-      { "symbol": "UPS", "flag": false },
-      { "symbol": "FDX", "flag": false },
-      { "symbol": "ECL", "flag": false }
-    ],
-    "Tech": [
-      { "symbol": "AAPL", "flag": true },
-      { "symbol": "MSFT", "flag": true },
-      { "symbol": "GOOG", "flag": true },
-      { "symbol": "META", "flag": false },
-      { "symbol": "ORCL", "flag": false },
-      { "symbol": "CRM", "flag": true },
-      { "symbol": "SAP", "flag": false },
-      { "symbol": "ADBE", "flag": false },
-      { "symbol": "IBM", "flag": false },
-      { "symbol": "INTU", "flag": false },
-      { "symbol": "ADP", "flag": false },
-      { "symbol": "SHOP", "flag": false },
-      { "symbol": "PANW", "flag": false },
-      { "symbol": "CRWD", "flag": false },
-      { "symbol": "WDAY", "flag": false },
-      { "symbol": "SNOW", "flag": true },
-      { "symbol": "MDB", "flag": true },
-      { "symbol": "ZS", "flag": false },
-      { "symbol": "ACN", "flag": false },
-      { "symbol": "DELL", "flag": false }
-    ],
-    "Travel": [
-      { "symbol": "ABNB", "flag": false },
-      { "symbol": "LVS", "flag": false },
-      { "symbol": "DAL", "flag": false },
-      { "symbol": "BKNG", "flag": false },
-      { "symbol": "MAR", "flag": false },
-      { "symbol": "HLT", "flag": false },
-      { "symbol": "RCL", "flag": false },
-      { "symbol": "CCL", "flag": false },
-      { "symbol": "MGM", "flag": false },
-      { "symbol": "LUV", "flag": false },
-      { "symbol": "UAL", "flag": false },
-      { "symbol": "UNP", "flag": false }
-    ],
-    "Retail": [
-      { "symbol": "COST", "flag": false },
-      { "symbol": "WMT", "flag": false },
-      { "symbol": "TGT", "flag": true },
-      { "symbol": "NKE", "flag": true },
-      { "symbol": "LULU", "flag": false },
-      { "symbol": "AMZN", "flag": true },
-      { "symbol": "HD", "flag": false },
-      { "symbol": "LOW", "flag": false },
-      { "symbol": "AZO", "flag": false },
-      { "symbol": "ONON", "flag": false },
-      { "symbol": "DECK", "flag": false }
-    ],
-    "Reality": [
-      { "symbol": "DHI", "flag": false },
-      { "symbol": "LEN", "flag": false },
-      { "symbol": "CSGP", "flag": false },
-      { "symbol": "WELL", "flag": false },
-      { "symbol": "PLD", "flag": false },
-      { "symbol": "AMT", "flag": false },
-      { "symbol": "ZG", "flag": false },
-      { "symbol": "O", "flag": false },
-      { "symbol": "EQIX", "flag": false }
-    ]
+    "Information Technology": {
+      "Hardware": [
+        { "symbol": "AAPL", "flag": true },
+        { "symbol": "DELL", "flag": false },
+        { "symbol": "SONY", "flag": false },
+        { "symbol": "CSCO", "flag": false }
+      ],
+      "Software & Cloud": [
+        { "symbol": "CRM", "flag": true },
+        { "symbol": "SNOW", "flag": true },
+        { "symbol": "MDB", "flag": true },
+        { "symbol": "ADBE", "flag": false },
+        { "symbol": "SHOP", "flag": false },
+        { "symbol": "ACN", "flag": false },
+        { "symbol": "PLTR", "flag": false }
+      ],
+      "Enterprise Software": [
+        { "symbol": "SAP", "flag": false },
+        { "symbol": "ORCL", "flag": false },
+        { "symbol": "INTU", "flag": false },
+        { "symbol": "ADP", "flag": false },
+        { "symbol": "WDAY", "flag": false },
+        { "symbol": "IBM", "flag": false },
+        { "symbol": "MSFT", "flag": true }
+      ],
+      "Security": [
+        { "symbol": "PANW", "flag": false },
+        { "symbol": "CRWD", "flag": false },
+        { "symbol": "ZS", "flag": false }
+      ],
+      "Semiconductor": [
+        { "symbol": "NVDA", "flag": true },
+        { "symbol": "AMD", "flag": false },
+        { "symbol": "INTC", "flag": false },
+        { "symbol": "SMCI", "flag": false },
+        { "symbol": "TSM", "flag": true },
+        { "symbol": "AVGO", "flag": false },
+        { "symbol": "ASML", "flag": false },
+        { "symbol": "AMAT", "flag": false },
+        { "symbol": "TXN", "flag": false },
+        { "symbol": "ARM", "flag": false },
+        { "symbol": "MU", "flag": false }
+      ]
+    },
+    "Industrials": {
+      "Chemical": [
+        { "symbol": "MMM", "flag": false },
+        { "symbol": "ECL", "flag": false }
+      ],
+      "Machinery": [
+        { "symbol": "CAT", "flag": false },
+        { "symbol": "DE", "flag": false }
+      ],
+      "Waste Management": [
+        { "symbol": "WM", "flag": false }
+      ],
+      "Logistics": [
+        { "symbol": "UPS", "flag": false },
+        { "symbol": "FDX", "flag": false },
+        { "symbol": "UNP", "flag": false }
+      ],
+      "Delivery": [
+        { "symbol": "DASH", "flag": false },
+        { "symbol": "UBER", "flag": false },
+        { "symbol": "LYFT", "flag": false }
+      ],
+      "Military Defense": [
+        { "symbol": "LMT", "flag": true },
+        { "symbol": "GD", "flag": false },
+        { "symbol": "NOC", "flag": false },
+        { "symbol": "LHX", "flag": false }
+      ],
+      "Aerospace": [
+        { "symbol": "RTX", "flag": false },
+        { "symbol": "BA", "flag": false },
+        { "symbol": "GE", "flag": false },
+        { "symbol": "HON", "flag": false }
+      ]
+    },
+    "Energy & Utilities": {
+      "Oil & Gas": [
+        { "symbol": "XOM", "flag": false },
+        { "symbol": "CVX", "flag": false },
+        { "symbol": "SHEL", "flag": false },
+        { "symbol": "COP", "flag": false },
+        { "symbol": "BP", "flag": false },
+        { "symbol": "OXY", "flag": false },
+        { "symbol": "MPC", "flag": false }
+      ],
+      "Renewables & Utilities": [
+        { "symbol": "FSLR", "flag": false },
+        { "symbol": "NEE", "flag": false },
+        { "symbol": "XEL", "flag": false },
+        { "symbol": "GEV", "flag": false },
+        { "symbol": "CEG", "flag": false }
+      ]
+    },
+    "Consumer Staples": {
+      "Fast Food": [
+        { "symbol": "MCD", "flag": false },
+        { "symbol": "CMG", "flag": false },
+        { "symbol": "YUM", "flag": false },
+        { "symbol": "CAVA", "flag": false }
+      ],
+      "Coffee & Beverages": [
+        { "symbol": "SBUX", "flag": false },
+        { "symbol": "BUD", "flag": false },
+        { "symbol": "KO", "flag": false },
+        { "symbol": "PEP", "flag": false }
+      ],
+      "Tobacco": [
+        { "symbol": "MO", "flag": false },
+        { "symbol": "PM", "flag": false },
+        { "symbol": "BTI", "flag": false }
+      ],
+      "Packaged Foods": [
+        { "symbol": "MDLZ", "flag": false },
+        { "symbol": "CPB", "flag": false },
+        { "symbol": "KHC", "flag": false },
+        { "symbol": "GIS", "flag": false },
+        { "symbol": "TSN", "flag": false }
+      ],
+      "Household Products": [
+        { "symbol": "PG", "flag": false },
+        { "symbol": "UL", "flag": false },
+        { "symbol": "KDP", "flag": false },
+        { "symbol": "CL", "flag": false }
+      ]
+    },
+    "Consumer Discretionary": {
+      "Big Box & Wholesale": [
+        { "symbol": "COST", "flag": false },
+        { "symbol": "WMT", "flag": false },
+        { "symbol": "TGT", "flag": true }
+      ],
+      "Apparel & Footwear": [
+        { "symbol": "NKE", "flag": true },
+        { "symbol": "LULU", "flag": false },
+        { "symbol": "ONON", "flag": false },
+        { "symbol": "DECK", "flag": false }
+      ],
+      "E-Commerce": [
+        { "symbol": "AMZN", "flag": true },
+        { "symbol": "JD", "flag": false },
+        { "symbol": "BABA", "flag": false }
+      ],
+      "Home Improvement": [
+        { "symbol": "HD", "flag": false },
+        { "symbol": "LOW", "flag": false },
+        { "symbol": "AZO", "flag": false }
+      ],
+      "Gambling": [
+        { "symbol": "DKNG", "flag": false },
+        { "symbol": "FLUT", "flag": false },
+        { "symbol": "MGM", "flag": false }
+      ],
+      "Automotive": [
+        { "symbol": "TSLA", "flag": true },
+        { "symbol": "TM", "flag": false },
+        { "symbol": "RACE", "flag": false },
+        { "symbol": "GM", "flag": false },
+        { "symbol": "HMC", "flag": false },
+        { "symbol": "STLA", "flag": false },
+        { "symbol": "F", "flag": false }
+      ],
+      "Airlines": [
+        { "symbol": "DAL", "flag": false },
+        { "symbol": "LUV", "flag": false },
+        { "symbol": "UAL", "flag": false }
+      ],
+      "Hospitality & Entertainment": [
+        { "symbol": "ABNB", "flag": false },
+        { "symbol": "LVS", "flag": false },
+        { "symbol": "BKNG", "flag": false },
+        { "symbol": "MAR", "flag": false },
+        { "symbol": "HLT", "flag": false }
+      ],
+      "Cruises": [
+        { "symbol": "RCL", "flag": false },
+        { "symbol": "CCL", "flag": false }
+      ]
+    },
+    "Financial Services": {
+      "Regional Banks": [
+        { "symbol": "BAC", "flag": false },
+        { "symbol": "JPM", "flag": false },
+        { "symbol": "WFC", "flag": false },
+        { "symbol": "C", "flag": false },
+        { "symbol": "PNC", "flag": false },
+        { "symbol": "USB", "flag": false }
+      ],
+      "Credit & Payments": [
+        { "symbol": "AXP", "flag": false },
+        { "symbol": "V", "flag": false },
+        { "symbol": "MA", "flag": false }
+      ],
+      "Investment Banks": [
+        { "symbol": "SPGI", "flag": false },
+        { "symbol": "GS", "flag": false },
+        { "symbol": "BX", "flag": false },
+        { "symbol": "BLK", "flag": false },
+        { "symbol": "MS", "flag": false }
+      ],
+      "Insurance": [
+        { "symbol": "BRK-B", "flag": false },
+        { "symbol": "PGR", "flag": false },
+        { "symbol": "AFL", "flag": false },
+        { "symbol": "MET", "flag": false },
+        { "symbol": "TRV", "flag": false },
+        { "symbol": "ALL", "flag": false },
+        { "symbol": "PRU", "flag": false }
+      ]
+    },
+    "Healthcare": {
+      "Pharmaceuticals": [
+        { "symbol": "NVO", "flag": true },
+        { "symbol": "JNJ", "flag": false },
+        { "symbol": "LLY", "flag": false },
+        { "symbol": "MRK", "flag": false },
+        { "symbol": "ABBV", "flag": false },
+        { "symbol": "PFE", "flag": false },
+        { "symbol": "AZN", "flag": false }
+      ],
+      "Biotech & Medical Devices": [
+        { "symbol": "ZTS", "flag": false },
+        { "symbol": "TMO", "flag": false },
+        { "symbol": "ABT", "flag": false },
+        { "symbol": "MDT", "flag": false },
+        { "symbol": "BSX", "flag": false },
+        { "symbol": "SYK", "flag": false }
+      ],
+      "Healthcare": [
+        { "symbol": "UNH", "flag": true },
+        { "symbol": "WBA", "flag": true },
+        { "symbol": "CVS", "flag": false },
+        { "symbol": "CI", "flag": false },
+        { "symbol": "HUM", "flag": true }
+      ]
+    },
+    "Communication Services": {
+      "Streaming & Film": [
+        { "symbol": "DIS", "flag": true },
+        { "symbol": "NFLX", "flag": false },
+        { "symbol": "WBD", "flag": false },
+        { "symbol": "FOX", "flag": false },
+        { "symbol": "SPOT", "flag": false }
+      ],
+      "Telecommunication Services": [
+        { "symbol": "T", "flag": false },
+        { "symbol": "VZ", "flag": false },
+        { "symbol": "TMUS", "flag": false },
+        { "symbol": "CMCSA", "flag": false }
+      ],
+      "Media": [
+        { "symbol": "META", "flag": true },
+        { "symbol": "GOOG", "flag": true },
+        { "symbol": "RDDT", "flag": false }
+      ]
+    },
+    "Real Estate": {
+      "Residential": [
+        { "symbol": "DHI", "flag": false },
+        { "symbol": "LEN", "flag": false }
+      ],
+      "Commercial": [
+        { "symbol": "CSGP", "flag": false },
+        { "symbol": "WELL", "flag": false },
+        { "symbol": "PLD", "flag": false }
+      ],
+      "Infrastructure": [
+        { "symbol": "AMT", "flag": false },
+        { "symbol": "ZG", "flag": false },
+        { "symbol": "O", "flag": false },
+        { "symbol": "EQIX", "flag": false }
+      ]
+    }
   }
 }

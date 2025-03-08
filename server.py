@@ -222,7 +222,8 @@ def fetch_category_data(category):
                 'Forward PE': forward_pe,
                 'EV/EBITDA': enterprise_to_ebitda,
                 'flag': flag,
-                'category': stock_info.get('category', category)  # Add the original category
+                'category': stock_info.get('category', category),
+                'industry': stock_info.get('industry', None)
             })
 
         except Exception as e:
@@ -235,7 +236,8 @@ def fetch_category_data(category):
                 'Trailing PE': None,
                 'Forward PE': None,
                 'EV/EBITDA': None,
-                'category': category  # Default to the requested category
+                'category': category,
+                'industry': None
             })
 
     return result_data
@@ -251,24 +253,29 @@ def load_watchlist_data():
             owned_stocks = []
             filtered_categories = {}
 
-            # Filter each category to separate owned stocks
-            for category, stocks in categories.items():
+            # Process each category and its industries
+            for category, industry in categories.items():
                 filtered_stocks = []
-                for stock in stocks:
-                    if stock.get("flag", False):  # Check if flag is true
-                        owned_stocks.append({
-                            **stock,  # Include all stock data
-                            'category': category  # Preserve the original category
-                        })  # Add to owned category
-                    else:
-                        filtered_stocks.append(stock)  # Keep in original category if not owned
+                for industry, stocks in industry.items():
+                    for stock in stocks:
+                        if stock.get("flag", False):  # Check if flag is true
+                            owned_stocks.append({
+                                **stock,  # Include all stock data
+                                'category': category,  # Preserve the original category
+                                'industry': industry  # Add the industry
+                            })  # Add to owned category
+                        else:
+                            filtered_stocks.append({
+                                **stock,
+                                'category': category,
+                                'industry': industry
+                            })  # Keep in original category if not owned
 
                 # Store filtered stocks for each category
                 filtered_categories[category] = filtered_stocks
 
             # Add the "Owned" category to the filtered categories
             filtered_categories["Owned"] = owned_stocks
-
             return filtered_categories
 
     except Exception as e:
@@ -311,7 +318,6 @@ def fetch_detailed_info(symbols):
         try:
             rsi = calculate_rsi(hist_data)
             yesterday_rsi = calculate_rsi(hist_data_yesterday)
-            logging.debug(f"hist_data: {hist_data}")
         except Exception as e:
             print(f"Error calculating RSI for {stock}: {e}")
             rsi = 'N/A'
