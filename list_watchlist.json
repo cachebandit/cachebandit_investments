@@ -27,7 +27,7 @@
     ],
     "Semiconductors": [
       { "symbol": "NVDA", "flag": true },
-      { "symbol": "TSM", "flag": false },
+      { "symbol": "TSM", "flag": true },
       { "symbol": "AVGO", "flag": false },
       { "symbol": "ASML", "flag": false },
       { "symbol": "AMD", "flag": false },
@@ -127,6 +127,7 @@
       { "symbol": "NFLX", "flag": false },
       { "symbol": "SONY", "flag": false },
       { "symbol": "DKNG", "flag": false },
+      { "symbol": "FLUT", "flag": false },
       { "symbol": "SPOT", "flag": false },
       { "symbol": "WBD", "flag": false },
       { "symbol": "FOX", "flag": false }
