@@ -209,6 +209,7 @@ def fetch_category_data(category):
             trailing_pe = info.get('trailingPE', None)
             forward_pe = info.get('forwardPE', None)
             enterprise_to_ebitda = info.get('enterpriseToEbitda', None)
+            stock_description = info.get('longBusinessSummary')
             
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
@@ -223,7 +224,8 @@ def fetch_category_data(category):
                 'EV/EBITDA': enterprise_to_ebitda,
                 'flag': flag,
                 'category': stock_info.get('category', category),
-                'industry': stock_info.get('industry', None)
+                'industry': stock_info.get('industry', None),
+                'stock_description':stock_description
             })
 
         except Exception as e:
@@ -237,7 +239,8 @@ def fetch_category_data(category):
                 'Forward PE': None,
                 'EV/EBITDA': None,
                 'category': category,
-                'industry': None
+                'industry': None,
+                'stock_description': None
             })
 
     return result_data
