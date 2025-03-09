@@ -26,7 +26,7 @@
         { "symbol": "IBM", "flag": false },
         { "symbol": "MSFT", "flag": true }
       ],
-      "Security": [
+      "Cybersurity": [
         { "symbol": "PANW", "flag": false },
         { "symbol": "CRWD", "flag": false },
         { "symbol": "ZS", "flag": false },

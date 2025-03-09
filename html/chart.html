@@ -7,58 +7,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #backButton {
-            align-self: flex-start; /* Align button to the left */
-            margin: 10px;
-            padding: 8px 16px;
-            font-size: 0.9em;
-            background-color: #3498db; /* Light blue color */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        #backButton:hover {
-            background-color: #2980b9; /* Darker blue on hover */
-        }
-
-        #loading {
-            display: none;
-            font-size: 1.2em;
-            color: #555;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
 </head>
 <body>
-    <button id="backButton" onclick="goBack()">&#8592; Back to Watchlist</button>
     <div id="loading">Loading chart data...</div>
     <canvas id="myChart"></canvas>
 
     <script>
-        // Function to go back to the previous page
-        function goBack() {
-            window.history.back();
-        }
-
         const urlParams = new URLSearchParams(window.location.search);
         const symbol = urlParams.get('symbol');
 
@@ -76,21 +30,17 @@
                         throw new Error('Invalid data received from server');
                     }
 
-                    // Function to format numbers to two decimal places
-                    const formatNumber = num => num.toFixed(2);
-
                     const formatDataForCandlestick = (data) => {
                         return data.labels.map((date, index) => ({
                             x: new Date(date).getTime(),
-                            o: formatNumber(data.open[index]),
-                            h: formatNumber(data.high[index]),
-                            l: formatNumber(data.low[index]),
-                            c: formatNumber(data.close[index])
+                            o: data.open[index].toFixed(2),
+                            h: data.high[index].toFixed(2),
+                            l: data.low[index].toFixed(2),
+                            c: data.close[index].toFixed(2)
                         }));
                     };
 
                     const candlestickData = formatDataForCandlestick(chartData);
-
                     const ctx = document.getElementById('myChart').getContext('2d');
                     new Chart(ctx, {
                         type: 'candlestick',
@@ -120,7 +70,7 @@
                                     },
                                     ticks: {
                                         callback: (value) => {
-                                            return value.toFixed(2); // Format y-axis labels
+                                            return value.toFixed(2);
                                         }
                                     }
                                 }
