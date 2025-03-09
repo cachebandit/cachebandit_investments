@@ -8,7 +8,6 @@
         { "symbol": "CSCO", "flag": false }
       ],
       "Software & Cloud": [
-        { "symbol": "CRM", "flag": true },
         { "symbol": "SNOW", "flag": true },
         { "symbol": "MDB", "flag": true },
         { "symbol": "ADBE", "flag": false },
@@ -18,9 +17,11 @@
       ],
       "Enterprise Software": [
         { "symbol": "SAP", "flag": false },
+        { "symbol": "CRM", "flag": true },
         { "symbol": "ORCL", "flag": false },
         { "symbol": "INTU", "flag": false },
         { "symbol": "ADP", "flag": false },
+        { "symbol": "NOW", "flag": false },
         { "symbol": "WDAY", "flag": false },
         { "symbol": "IBM", "flag": false },
         { "symbol": "MSFT", "flag": true }
@@ -28,7 +29,8 @@
       "Security": [
         { "symbol": "PANW", "flag": false },
         { "symbol": "CRWD", "flag": false },
-        { "symbol": "ZS", "flag": false }
+        { "symbol": "ZS", "flag": false },
+        { "symbol": "FTNT", "flag": false }
       ],
       "Semiconductor": [
         { "symbol": "NVDA", "flag": true },
@@ -54,7 +56,9 @@
         { "symbol": "DE", "flag": false }
       ],
       "Waste Management": [
-        { "symbol": "WM", "flag": false }
+        { "symbol": "WM", "flag": false },
+        { "symbol": "RSG", "flag": false },
+        { "symbol": "WCN", "flag": false }
       ],
       "Logistics": [
         { "symbol": "UPS", "flag": false },
@@ -139,7 +143,10 @@
         { "symbol": "NKE", "flag": true },
         { "symbol": "LULU", "flag": false },
         { "symbol": "ONON", "flag": false },
-        { "symbol": "DECK", "flag": false }
+        { "symbol": "DECK", "flag": false },
+        { "symbol": "TJX", "flag": false },
+        { "symbol": "RL", "flag": false },
+        { "symbol": "UA", "flag": false }
       ],
       "E-Commerce": [
         { "symbol": "AMZN", "flag": true },
@@ -149,7 +156,8 @@
       "Home Improvement": [
         { "symbol": "HD", "flag": false },
         { "symbol": "LOW", "flag": false },
-        { "symbol": "AZO", "flag": false }
+        { "symbol": "AZO", "flag": false },
+        { "symbol": "TSCO", "flag": false }
       ],
       "Gambling": [
         { "symbol": "DKNG", "flag": false },
@@ -177,9 +185,10 @@
         { "symbol": "MAR", "flag": false },
         { "symbol": "HLT", "flag": false }
       ],
-      "Cruises": [
+      "Leisure": [
         { "symbol": "RCL", "flag": false },
-        { "symbol": "CCL", "flag": false }
+        { "symbol": "CCL", "flag": false },
+        { "symbol": "MTN", "flag": false }
       ]
     },
     "Financial Services": {

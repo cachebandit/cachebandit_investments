@@ -44,7 +44,7 @@
         th, td {
             padding: 12px;
             border: 1px solid #e0e0e0;
-            font-size: 14px;
+            font-size: 16px;
             text-align: center;
             white-space: nowrap; /* Prevent text wrapping */
             overflow: hidden;    /* Hide overflow */
@@ -107,6 +107,34 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .info-icon {
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em; /* Smaller font size for the icon */
+            padding: 0; /* No padding */
+            border: none; /* Remove default button border */
+            background: none; /* Remove any background */
+            outline: none; /* Remove outline */
+            width: auto; /* Allow width to adjust based on content */
+            height: auto; /* Allow height to adjust based on content */
+        }
+        .popup {
+            position: absolute;
+            background-color: #f0f0f0; /* Gray background */
+            border: 1px solid #e0e0e0; /* Optional border */
+            padding: 10px;
+            border-radius: 4px;
+            z-index: 1000; /* Ensure popup is above other elements */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+            max-width: 600px; /* Set a maximum width for the popup */
+            max-height: 300px; /* Set a maximum height for the popup */
+            font-size: 12px; /* Set a smaller font size */
+            overflow: auto; /* Allow scrolling if content exceeds max height */
+            word-wrap: break-word; /* Allow text to wrap within the popup */
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -129,6 +157,32 @@
             
             // Initial load - use cache
             fetchWatchlistData();
+
+            const infoIcons = document.querySelectorAll('.info-icon');
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            document.body.appendChild(popup); // Append popup to the body
+
+            infoIcons.forEach(icon => {
+
+                icon.addEventListener('click', function(event) {
+                    // Log the click event
+                    // Prevent the popup from closing immediately
+                    event.stopPropagation();
+
+                    // Set the popup content and position
+                    popup.textContent = icon.getAttribute('title'); // Get the title for the popup
+                    const rect = icon.getBoundingClientRect();
+                    popup.style.left = `${rect.left + window.scrollX}px`;
+                    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight - 5}px`; // Position above the icon
+                    popup.style.display = 'block'; // Show popup
+                });
+            });
+
+            // Hide popup when clicking outside
+            document.addEventListener('click', function() {
+                popup.style.display = 'none'; // Hide popup
+            });
         });
 
         async function fetchWatchlistData() {
@@ -139,17 +193,17 @@
             document.querySelectorAll('.section').forEach(section => section.remove());
 
             const categories = [
-            'Owned',
-            'Information Technology',
-            'Industrials',
-            'Energy & Utilities',
-            'Financial Services',
-            'Healthcare',
-            'Communication Services',
-            'Real Estate',
-            'Consumer Staples',
-            'Consumer Discretionary'
-        ];
+                'Owned',
+                'Information Technology',
+                'Industrials',
+                'Energy & Utilities',
+                'Financial Services',
+                'Healthcare',
+                'Communication Services',
+                'Real Estate',
+                'Consumer Staples',
+                'Consumer Discretionary'
+            ];
 
 
             try {
@@ -265,7 +319,12 @@
                     const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
 
                     row.innerHTML = `
-                        <td class="company-name truncate">${stock.Name}</td>
+                        <td class="company-name truncate">
+                            ${stock.Name}
+                            <button class="info-icon" title="${stock.stock_description || 'No description available'}">
+                                <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
+                            </button>
+                        </td>
                         <td class="symbol"><a href='chart.html?symbol=${stock.Symbol}'>${stock.Symbol}</a></td>
                         <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
                         <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
@@ -336,7 +395,12 @@
                         const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
 
                         row.innerHTML = `
-                            <td class="company-name truncate">${stock.Name}</td>
+                            <td class="company-name truncate">
+                                ${stock.Name}
+                                <button class="info-icon" title="${stock.stock_description || 'No description available'}">
+                                    <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
+                                </button>
+                            </td>
                             <td class="symbol"><a href='chart.html?symbol=${stock.Symbol}'>${stock.Symbol}</a></td>
                             <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
                             <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
@@ -360,6 +424,32 @@
             }
 
             document.querySelector('.container').appendChild(section);
+
+            // Attach event listeners to info icons after they are created
+            const infoIcons = section.querySelectorAll('.info-icon');
+            infoIcons.forEach(icon => {
+                icon.addEventListener('click', function(event) {
+                    console.log('Info button clicked for:', icon.parentElement.firstChild.textContent.trim());
+                    event.stopPropagation();
+
+                    const popup = document.createElement('div');
+                    popup.className = 'popup';
+                    popup.textContent = icon.getAttribute('title');
+                    document.body.appendChild(popup);
+
+                    const rect = icon.getBoundingClientRect();
+                    popup.style.left = `${rect.left + window.scrollX}px`;
+                    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight - 5}px`;
+                    popup.style.display = 'block';
+
+                    // Hide popup when clicking outside
+                    document.addEventListener('click', function hidePopup() {
+                        popup.style.display = 'none';
+                        document.body.removeChild(popup);
+                        document.removeEventListener('click', hidePopup); // Remove listener after hiding
+                    });
+                });
+            });
         }
 
         // Utility functions
