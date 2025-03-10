@@ -653,7 +653,7 @@
                     
                     const formatDataForCandlestick = (data) => {
                         return data.labels.map((date, index) => ({
-                            x: new Date(date).getTime(),
+                            x: new Date(date).getTime(), // Keep this as a timestamp
                             o: formatNumber(data.open[index]),
                             h: formatNumber(data.high[index]),
                             l: formatNumber(data.low[index]),
@@ -662,6 +662,7 @@
                     };
                     
                     const candlestickData = formatDataForCandlestick(chartData);
+                    console.log(candlestickData);
                     
                     const ctx = canvas.getContext('2d');
                     new Chart(ctx, {
@@ -680,7 +681,10 @@
                                     type: 'time',
                                     time: {
                                         unit: 'day',
-                                        stepSize: 1
+                                        tooltipFormat: 'MM/dd/yyyy',
+                                        displayFormats: {
+                                            day: 'MM/dd/yyyy'
+                                        }
                                     },
                                     title: {
                                         display: true,
@@ -694,7 +698,23 @@
                                     },
                                     ticks: {
                                         callback: (value) => {
-                                            return value.toFixed(2); // Format y-axis labels
+                                            return value.toFixed(2);
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        title: function(tooltipItems) {
+                                            return new Date(tooltipItems[0].label).toLocaleDateString('en-US', { 
+                                                month: 'short', // Short month name (e.g., "Oct")
+                                                day: 'numeric', // Day of the month
+                                                year: 'numeric'  // Full year
+                                            })
+                                        },
+                                        label: function(tooltipItem) {
+                                            return `O: ${tooltipItem.raw.o}, H: ${tooltipItem.raw.h}, L: ${tooltipItem.raw.l}, C: ${tooltipItem.raw.c}`;
                                         }
                                     }
                                 }
