@@ -23,122 +23,72 @@ function showChartPopup(symbol) {
     popup.style.borderRadius = '5px';
     popup.style.width = '80%';
     popup.style.height = '80%';
-    popup.style.maxWidth = '1200px';
-    popup.style.maxHeight = '800px';
     popup.style.position = 'relative';
     
-    // Create loading indicator
-    const loading = document.createElement('div');
-    loading.textContent = 'Loading chart...';
-    loading.style.textAlign = 'center';
-    loading.style.padding = '20px';
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '&times;';
+    closeButton.style.position = 'absolute';
+    closeButton.style.right = '10px';
+    closeButton.style.top = '10px';
+    closeButton.style.border = 'none';
+    closeButton.style.background = 'none';
+    closeButton.style.fontSize = '24px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.zIndex = '1001';
     
-    popup.appendChild(loading);
+    // Create TradingView widget container
+    const widgetContainer = document.createElement('div');
+    widgetContainer.className = 'tradingview-widget-container';
+    widgetContainer.style.height = '100%';
+    widgetContainer.style.width = '100%';
+    
+    // Create widget div
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = 'calc(100% - 32px)';
+    widgetDiv.style.width = '100%';
+
+    // Add elements to the DOM
+    widgetContainer.appendChild(widgetDiv);
+    popup.appendChild(closeButton);
+    popup.appendChild(widgetContainer);
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
     
-    // Create canvas for chart
-    const canvas = document.createElement('canvas');
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'none'; // Hide until loaded
+    // Create and add the script element for the TradingView widget
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.async = true;
     
-    popup.appendChild(canvas);
+    // Set the widget configuration
+    const widgetConfig = {
+        "autosize": true,
+        "symbol": symbol, // Use the symbol passed to the function
+        "timezone": "Etc/UTC",
+        "theme": "light",
+        "style": "1",
+        "locale": "en",
+        "range": "12M",
+        "allow_symbol_change": true,
+        "calendar": false,
+        "studies": [
+            "STD;RSI"
+        ],
+        "support_host": "https://www.tradingview.com"
+    };
     
-    // Load chart data
-    fetch(`http://localhost:8000/get_chart_data?symbol=${symbol}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(chartData => {
-            if (!chartData || !chartData.labels) {
-                throw new Error('Invalid data received from server');
-            }
-            
-            // Hide loading indicator and show canvas
-            loading.style.display = 'none';
-            canvas.style.display = 'block';
-            
-            // Function to format numbers to two decimal places
-            const formatNumber = num => num.toFixed(2);
-            
-            const formatDataForCandlestick = (data) => {
-                return data.labels.map((date, index) => ({
-                    x: new Date(date).getTime(), // Keep this as a timestamp
-                    o: formatNumber(data.open[index]),
-                    h: formatNumber(data.high[index]),
-                    l: formatNumber(data.low[index]),
-                    c: formatNumber(data.close[index])
-                }));
-            };
-            
-            const candlestickData = formatDataForCandlestick(chartData);
-            
-            const ctx = canvas.getContext('2d');
-            new Chart(ctx, {
-                type: 'candlestick',
-                data: {
-                    datasets: [{
-                        label: chartData.companyName,
-                        data: candlestickData,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'day',
-                                tooltipFormat: 'MM/dd/yyyy',
-                                displayFormats: {
-                                    day: 'MM/dd/yyyy'
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Price'
-                            },
-                            ticks: {
-                                callback: (value) => {
-                                    return value.toFixed(2);
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    return new Date(tooltipItems[0].label).toLocaleDateString('en-US', { 
-                                        month: 'short', // Short month name (e.g., "Oct")
-                                        day: 'numeric', // Day of the month
-                                        year: 'numeric'  // Full year
-                                    })
-                                },
-                                label: function(tooltipItem) {
-                                    return `O: ${tooltipItem.raw.o}, H: ${tooltipItem.raw.h}, L: ${tooltipItem.raw.l}, C: ${tooltipItem.raw.c}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching chart data:', error);
-            loading.textContent = 'Failed to load chart data.';
-        });
+    // Convert the config to a string and assign it to the script's text content
+    script.text = JSON.stringify(widgetConfig);
+    
+    // Append the script to the widget container
+    widgetContainer.appendChild(script);
+    
+    // Close popup when clicking the close button
+    closeButton.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+    });
     
     // Close popup when clicking outside
     overlay.addEventListener('click', function(event) {

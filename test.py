@@ -1,7 +1,7 @@
 import yfinance as yf
 
 # List of potential tickers for Sony
-tickers = ["AAPL"]
+tickers = ["BX"]
 for ticker in tickers:
     print(yf.Ticker(ticker).info)
 """

@@ -74,7 +74,9 @@ def fetch_category_data(category):
             fiftyTwoWeekHigh = info.get('fiftyTwoWeekHigh', None)
             fiftyTwoWeekLow = info.get('fiftyTwoWeekLow', None)
             earningsDate = info.get('earningsTimestampStart', None)
+            exchangeName = info.get('fullExchangeName', None)
             earningsDate = datetime.fromtimestamp(earningsDate).strftime('%m-%d-%Y') if earningsDate else None
+
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
 
@@ -92,7 +94,8 @@ def fetch_category_data(category):
                 'stock_description': stock_description,
                 'fiftyTwoWeekHigh': fiftyTwoWeekHigh,
                 'fiftyTwoWeekLow': fiftyTwoWeekLow,
-                "earningsDate": earningsDate
+                "earningsDate": earningsDate,
+                'exchangeName': exchangeName
             })
 
         except Exception as e:
