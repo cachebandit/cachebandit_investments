@@ -210,6 +210,8 @@ def fetch_category_data(category):
             forward_pe = info.get('forwardPE', None)
             enterprise_to_ebitda = info.get('enterpriseToEbitda', None)
             stock_description = info.get('longBusinessSummary')
+            fiftyTwoWeekHigh = info.get('fiftyTwoWeekHigh', None)
+            fiftyTwoWeekLow = info.get('fiftyTwoWeekLow', None)
             
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
@@ -225,7 +227,9 @@ def fetch_category_data(category):
                 'flag': flag,
                 'category': stock_info.get('category', category),
                 'industry': stock_info.get('industry', None),
-                'stock_description':stock_description
+                'stock_description':stock_description,
+                'fiftyTwoWeekHigh': fiftyTwoWeekHigh,
+                'fiftyTwoWeekLow': fiftyTwoWeekLow
             })
 
         except Exception as e:
@@ -240,7 +244,9 @@ def fetch_category_data(category):
                 'EV/EBITDA': None,
                 'category': category,
                 'industry': None,
-                'stock_description': None
+                'stock_description': None,
+                'fiftyTwoWeekHigh': None,
+                'fiftyTwoWeekLow': None
             })
 
     return result_data

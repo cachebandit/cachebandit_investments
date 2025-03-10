@@ -263,7 +263,7 @@
         { "symbol": "CMCSA", "flag": false }
       ],
       "Media": [
-        { "symbol": "META", "flag": true },
+        { "symbol": "META", "flag": false },
         { "symbol": "GOOG", "flag": true },
         { "symbol": "RDDT", "flag": false }
       ]

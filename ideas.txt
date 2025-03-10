@@ -4,8 +4,6 @@
 - add tracking table for Stock in BUY/SELL Range
 - build out Chart Analysis page
 - notification for earning report date upcoming (earningsTimestampStart)
-- add 52 week high-low into info popup
-- have symbol open up year chart
 - add favorite button to organize Owned category
 - seperate Python, HTML, CSS, and JS files
             ├── /cache                  # Directory for cached data

@@ -56,24 +56,19 @@
         }
         /* Specific column widths */
         th.company-name, td.company-name {
-            width: 15%;
+            width: 12%;
         }
         th.symbol, td.symbol {
-            width: 5%;
+            width: 6%;
         }
         th.change, td.change,
         th.percent-change, td.percent-change,
-        th.rsi, td.rsi,
+        th.rsi, td.rsi
         th.open, td.open,
         th.high, td.high,
         th.low, td.low,
         th.close, td.close,
         th.market-cap, td.market-cap {
-            text-align: center;
-        }
-        th.trailing-pe, td.trailing-pe,
-        th.forward-pe, td.forward-pe,
-        th.enterprise-to-ebitda, td.enterprise-to-ebitda {
             text-align: center;
         }
         .button-container {
@@ -304,9 +299,6 @@
                         <th class="close">Close</th>
                         <th class="change">Change</th>
                         <th class="percent-change">% Change</th>
-                        <th class="trailing-pe">Trailing PE</th>
-                        <th class="forward-pe">Forward PE</th>
-                        <th class="enterprise-to-ebitda">EV/EBITDA</th>
                     </tr>
                 `;
 
@@ -323,10 +315,20 @@
 
                     row.innerHTML = `
                         <td class="company-name truncate">
-                            <button class="info-icon" title="${stock.stock_description || 'No description available'}">
+                            <button class="info-icon" 
+                                    data-stock-name="${stock.Name}"
+                                    data-fifty-two-week-high="${stock['fiftyTwoWeekHigh'] || 'N/A'}"
+                                    data-current-price="${stock['Close'].toFixed(2) || 'N/A'}"
+                                    data-fifty-two-week-low="${stock['fiftyTwoWeekLow'] || 'N/A'}"
+                                    title="${stock.stock_description || 'No description available'}"
+                                    data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
+                                    data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                                    data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                                    data-trailing-pe-color="${trailingPeColor}"
+                                    data-forward-pe-color="${forwardPeColor}">
                                 <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
                             </button>
-                            <span style="margin-left: 10px;">${stock.Name}</span>
+                            <span style="margin-left: 10pt;">${stock.Name}</span>
                         </td>
                         <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
                         <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
@@ -337,9 +339,6 @@
                         <td class="close">${stock.Close !== undefined ? formatValue(stock.Close) : '-'}</td>
                         <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
                         <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-                        <td class="trailing-pe" style="background-color: ${trailingPeColor};">${stock["Trailing PE"] !== undefined ? formatValue(stock["Trailing PE"]) : '-'}</td>
-                        <td class="forward-pe" style="background-color: ${forwardPeColor};">${stock["Forward PE"] !== undefined ? formatValue(stock["Forward PE"]) : '-'}</td>
-                        <td class="enterprise-to-ebitda">${stock["EV/EBITDA"] !== undefined ? formatValue(stock["EV/EBITDA"]) : '-'}</td>
                     `;
 
                     // Add click event listener for the stock symbol
@@ -348,6 +347,13 @@
                         event.preventDefault(); // Prevent default navigation
                         const symbol = this.getAttribute('data-symbol');
                         showChartPopup(symbol); // Call function to show chart popup
+                    });
+
+                    // Add click event listener for the info icon
+                    const infoIcon = row.querySelector('.info-icon');
+                    infoIcon.addEventListener('click', function(event) {
+                        event.stopPropagation(); // Prevent the event from bubbling up
+                        showInfoPopup(this); // Pass the button to the function
                     });
 
                     tbody.appendChild(row);
@@ -389,9 +395,6 @@
                             <th class="close">Close</th>
                             <th class="change">Change</th>
                             <th class="percent-change">% Change</th>
-                            <th class="trailing-pe">Trailing PE</th>
-                            <th class="forward-pe">Forward PE</th>
-                            <th class="enterprise-to-ebitda">EV/EBITDA</th>
                         </tr>
                     `;
 
@@ -408,7 +411,16 @@
 
                         row.innerHTML = `
                             <td class="company-name truncate">
-                                <button class="info-icon" title="${stock.stock_description || 'No description available'}">
+                                <button class="info-icon" 
+                                        title="${stock.stock_description || 'No description available'}"
+                                        data-fifty-two-week-high="${stock['fiftyTwoWeekHigh'] || 'N/A'}"
+                                        data-current-price="${stock['Close'].toFixed(2) || 'N/A'}"
+                                        data-fifty-two-week-low="${stock['fiftyTwoWeekLow'] || 'N/A'}"
+                                        data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
+                                        data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                                        data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                                        data-trailing-pe-color="${trailingPeColor}"
+                                        data-forward-pe-color="${forwardPeColor}">
                                     <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
                                 </button>
                                 <span style="margin-left: 10pt;">${stock.Name}</span>
@@ -422,9 +434,6 @@
                             <td class="close">${stock.Close !== undefined ? formatValue(stock.Close) : '-'}</td>
                             <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
                             <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-                            <td class="trailing-pe" style="background-color: ${trailingPeColor};">${stock["Trailing PE"] !== undefined ? formatValue(stock["Trailing PE"]) : '-'}</td>
-                            <td class="forward-pe" style="background-color: ${forwardPeColor};">${stock["Forward PE"] !== undefined ? formatValue(stock["Forward PE"]) : '-'}</td>
-                            <td class="enterprise-to-ebitda">${stock["EV/EBITDA"] !== undefined ? formatValue(stock["EV/EBITDA"]) : '-'}</td>
                         `;
 
                         // Add click event listener for the stock symbol
@@ -433,6 +442,13 @@
                             event.preventDefault(); // Prevent default navigation
                             const symbol = this.getAttribute('data-symbol');
                             showChartPopup(symbol); // Call function to show chart popup
+                        });
+
+                        // Add click event listener for the info icon
+                        const infoIcon = row.querySelector('.info-icon');
+                        infoIcon.addEventListener('click', function(event) {
+                            event.stopPropagation(); // Prevent the event from bubbling up
+                            showInfoPopup(this); // Pass the button to the function
                         });
 
                         tbody.appendChild(row);
@@ -446,31 +462,7 @@
 
             document.querySelector('.container').appendChild(section);
 
-            // Attach event listeners to info icons after they are created
-            const infoIcons = section.querySelectorAll('.info-icon');
-            infoIcons.forEach(icon => {
-                icon.addEventListener('click', function(event) {
-                    console.log('Info button clicked for:', icon.parentElement.firstChild.textContent.trim());
-                    event.stopPropagation();
 
-                    const popup = document.createElement('div');
-                    popup.className = 'popup';
-                    popup.textContent = icon.getAttribute('title');
-                    document.body.appendChild(popup);
-
-                    const rect = icon.getBoundingClientRect();
-                    popup.style.left = `${rect.left + window.scrollX}px`;
-                    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight - 5}px`;
-                    popup.style.display = 'block';
-
-                    // Hide popup when clicking outside
-                    document.addEventListener('click', function hidePopup() {
-                        popup.style.display = 'none';
-                        document.body.removeChild(popup);
-                        document.removeEventListener('click', hidePopup); // Remove listener after hiding
-                    });
-                });
-            });
         }
 
         // Utility functions
@@ -542,17 +534,14 @@
         }
 
         function getForwardPeColor(pe, trailingPe) {
-            if (pe === null || pe < 0) {
+            if (pe === null || pe < 0 || trailingPe === null) {
                 return '#FF6347';  // Lighter Red
             } 
-            else if (trailingPe === null) {
-                return '#FFA07A';  // Lightest Red
-            }
             else if (pe < trailingPe) {
-                return '#98FB98';  // Lighter Green
+                return '#32CD32';  // Lighter Green
             }
             else if (pe > trailingPe) {
-                return '#FFFF00';  // Yellow
+                return '#FFA500';  // Yellow
             }
             else{
                 return ''; 
@@ -705,6 +694,88 @@
                     console.error('Error fetching chart data:', error);
                     loading.textContent = 'Failed to load chart data.';
                 });
+            
+            // Close popup when clicking outside
+            overlay.addEventListener('click', function(event) {
+                if (event.target === overlay) {
+                    document.body.removeChild(overlay);
+                }
+            });
+        }
+
+        function showInfoPopup(button) {
+            // Get the stock details from the button's data attributes
+            const stockName = button.getAttribute('data-stock-name');
+            const description = button.getAttribute('title');
+            const trailingPE = parseFloat(button.getAttribute('data-trailing-pe')).toFixed(2); // Format to 2 decimal points
+            const forwardPE = parseFloat(button.getAttribute('data-forward-pe')).toFixed(2); // Format to 2 decimal points
+            const evEbitda = parseFloat(button.getAttribute('data-ev-ebitda')).toFixed(2); // Format to 2 decimal points
+            const currentPrice = parseFloat(button.getAttribute('data-current-price')); // Get current price
+            const fiftyTwoWeekHigh = parseFloat(button.getAttribute('data-fifty-two-week-high')); // Get 52-week high
+            const fiftyTwoWeekLow = parseFloat(button.getAttribute('data-fifty-two-week-low')); // Get 52-week low
+
+            // Format current price to 2 decimal points
+            const formattedCurrentPrice = currentPrice ? currentPrice.toFixed(2) : 'N/A';
+            const formattedHigh = fiftyTwoWeekHigh ? fiftyTwoWeekHigh.toFixed(2) : 'N/A';
+            const formattedLow = fiftyTwoWeekLow ? fiftyTwoWeekLow.toFixed(2) : 'N/A';
+
+            // Determine font colors for PE values
+            const trailingPeColor = getTrailingPeColor(parseFloat(trailingPE));
+            const forwardPeColor = getForwardPeColor(parseFloat(forwardPE), parseFloat(trailingPE));
+
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'info-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.zIndex = '1000';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            
+            // Create popup container
+            const popup = document.createElement('div');
+            popup.className = 'info-popup';
+            popup.style.backgroundColor = 'white';
+            popup.style.padding = '15px'; // Reduced padding
+            popup.style.borderRadius = '5px';
+            popup.style.width = '80%';
+            popup.style.maxWidth = '600px';
+            popup.style.position = 'relative';
+
+            // Calculate the position of the current price on the line
+            const position = ((currentPrice - fiftyTwoWeekLow) / (fiftyTwoWeekHigh - fiftyTwoWeekLow)) * 100;
+
+            // Create content for the popup
+            const content = `
+                <h3>${stockName}</h3>
+                <p style="font-size: 14px;">${description}</p>
+                <p>
+                    <span style="color: ${trailingPeColor};"><strong>Trailing PE:</strong> ${trailingPE}</span>
+                    <span style="margin-left: 20px; color: ${forwardPeColor};"><strong>Forward PE:</strong> ${forwardPE}</span>
+                    <span style="margin-left: 20px; color: ${trailingPeColor};"><strong>EV/EBITDA:</strong> ${evEbitda}</span>
+                </p>
+                <div style="display: flex; align-items: center; margin: 10px 0; font-size: 14px;"> <!-- Smaller font size -->
+                    <div style="margin-right: 10px;"><strong>52 Week Low: $${formattedLow}</strong></div>
+                    <div style="flex-grow: 1; position: relative;">
+                        <hr style="border: 1px solid #ccc;"/>
+                        <div style="position: absolute; left: ${position}%; transform: translate(-50%, -60%); color: blue; top: 50%;">
+                            <strong style="font-size: 16px;">&#9670;</strong> <!-- Smaller diamond shape -->
+                        </div>
+                    </div>
+                    <div style="margin-left: 10px;"><strong>52 Week High: $${formattedHigh}</strong></div>
+                </div>
+                <div style="text-align: center; margin-top: 5px; color: black;">
+                    <strong style="font-size: 14px;"><strong>Current Price:</strong> $${formattedCurrentPrice}</strong>
+                </div>
+            `;
+            popup.innerHTML = content; // Set the content of the popup
+            overlay.appendChild(popup);
+            document.body.appendChild(overlay);
             
             // Close popup when clicking outside
             overlay.addEventListener('click', function(event) {
