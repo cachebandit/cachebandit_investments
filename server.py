@@ -6,6 +6,7 @@ import os
 import yfinance as yf
 from generate_chart import get_chart_data
 import logging
+from datetime import datetime
 
 PORT = 8000
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,6 +20,7 @@ class StockCache:
         self.data = {}
         self.temp_data = {}  # Temporary storage for refresh operations
         self.is_refreshing = False  # Flag to track refresh operations
+        self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Initialize with current time
         self._load()
     
     def _load(self):
@@ -38,6 +40,9 @@ class StockCache:
             with open(self.cache_file, 'w') as f:
                 json.dump(self.data, f)
             print(f"Cache saved with {len(self.data)} entries")
+            
+            # Update the last updated timestamp
+            self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Format: MM/DD HH:MM
         except Exception as e:
             print(f"Error saving cache: {e}")
     
@@ -148,10 +153,16 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                     print(f"Using cached data for category: {category}")
                     category_data = cache.get(cache_key)
 
+                # Include the last_updated timestamp in the response
+                response_data = {
+                    'data': category_data,
+                    'last_updated': cache.last_updated
+                }
+
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(category_data).encode())
+                self.wfile.write(json.dumps(response_data).encode())
             else:
                 self.send_error(400, "Category not provided")
 
@@ -212,7 +223,8 @@ def fetch_category_data(category):
             stock_description = info.get('longBusinessSummary')
             fiftyTwoWeekHigh = info.get('fiftyTwoWeekHigh', None)
             fiftyTwoWeekLow = info.get('fiftyTwoWeekLow', None)
-            
+            earningsDate = info.get('earningsTimestampStart', None)
+            earningsDate = datetime.fromtimestamp(earningsDate).strftime('%m-%d-%Y') if earningsDate else None
             # Format market cap in millions, if available
             format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
 
@@ -229,7 +241,8 @@ def fetch_category_data(category):
                 'industry': stock_info.get('industry', None),
                 'stock_description':stock_description,
                 'fiftyTwoWeekHigh': fiftyTwoWeekHigh,
-                'fiftyTwoWeekLow': fiftyTwoWeekLow
+                'fiftyTwoWeekLow': fiftyTwoWeekLow,
+                "earningsDate": earningsDate
             })
 
         except Exception as e:
@@ -246,7 +259,8 @@ def fetch_category_data(category):
                 'industry': None,
                 'stock_description': None,
                 'fiftyTwoWeekHigh': None,
-                'fiftyTwoWeekLow': None
+                'fiftyTwoWeekLow': None,
+                "earningsDate": None
             })
 
     return result_data
