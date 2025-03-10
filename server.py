@@ -20,7 +20,7 @@ class StockCache:
         self.data = {}
         self.temp_data = {}  # Temporary storage for refresh operations
         self.is_refreshing = False  # Flag to track refresh operations
-        self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Initialize with current time
+        self.last_updated = None  # Initialize as None
         self._load()
     
     def _load(self):
@@ -28,21 +28,44 @@ class StockCache:
         if os.path.exists(self.cache_file):
             try:
                 with open(self.cache_file, 'r') as f:
-                    self.data = json.load(f)
+                    cache_data = json.load(f)
+                    
+                    # Check if the cache data has the new format with metadata
+                    if isinstance(cache_data, dict) and 'data' in cache_data and 'last_updated' in cache_data:
+                        self.data = cache_data['data']
+                        self.last_updated = cache_data['last_updated']
+                    else:
+                        # Old format - just data
+                        self.data = cache_data
+                        # Set a default timestamp
+                        self.last_updated = datetime.now().strftime('%m/%d %H:%M')
+                        
                 print(f"Cache loaded with {len(self.data)} entries")
             except Exception as e:
                 print(f"Error loading cache: {e}")
                 self.data = {}
+                self.last_updated = datetime.now().strftime('%m/%d %H:%M')
+        else:
+            # No cache file exists
+            self.data = {}
+            self.last_updated = datetime.now().strftime('%m/%d %H:%M')
     
     def save(self):
         """Save cache to file"""
         try:
-            with open(self.cache_file, 'w') as f:
-                json.dump(self.data, f)
-            print(f"Cache saved with {len(self.data)} entries")
+            # Only update the timestamp when explicitly saving after a refresh
+            if self.is_refreshing:
+                self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Format: MM/DD HH:MM
             
-            # Update the last updated timestamp
-            self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Format: MM/DD HH:MM
+            # Save both the data and the timestamp
+            cache_data = {
+                'data': self.data,
+                'last_updated': self.last_updated
+            }
+            
+            with open(self.cache_file, 'w') as f:
+                json.dump(cache_data, f)
+            print(f"Cache saved with {len(self.data)} entries")
         except Exception as e:
             print(f"Error saving cache: {e}")
     
@@ -74,6 +97,7 @@ class StockCache:
             self.data = self.temp_data
             self.temp_data = {}
             self.is_refreshing = False
+            self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Update timestamp on commit
             self.save()
             print("Committed refresh operation")
             return True
@@ -392,6 +416,7 @@ def kill_existing_process(port):
 
 if __name__ == "__main__":
     kill_existing_process(PORT)
-    with HTTPServer(('localhost', PORT), ChartRequestHandler) as server:
-        print(f"Server running on port {PORT}")
-        server.serve_forever()
+    server_address = ('0.0.0.0', PORT)  # Bind to all interfaces
+    httpd = HTTPServer(server_address, ChartRequestHandler)
+    print(f"Serving on port {PORT}...")
+    httpd.serve_forever()
