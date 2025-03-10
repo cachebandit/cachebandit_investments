@@ -1,0 +1,1 @@
+from generate_chart import get_chart_data
