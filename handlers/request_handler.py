@@ -5,7 +5,6 @@ from urllib.parse import urlparse, parse_qs
 import logging
 
 from config import CHART_ENDPOINT, STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
-from services.chart_service import get_chart_data
 from services.stock_service import fetch_category_data, fetch_detailed_info, cache
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):

@@ -8,8 +8,69 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        /* Style for the ticker tape to make it sticky */
+        .tradingview-widget-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
+
+    <!-- TradingView Widget Container -->
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+    </div>
+
+    <!-- Script to Load TradingView Widget -->
+    <script>
+        function loadTickerTape(symbols) {
+            // Remove existing widget script if present
+            document.querySelectorAll('.tradingview-widget-container script').forEach(el => el.remove());
+
+            // Create new script element
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "symbols": symbols,
+                "showSymbolLogo": true,
+                "isTransparent": false,
+                "displayMode": "compact",
+                "colorTheme": "light",
+                "locale": "en"
+            });
+
+            // Append script to container
+            document.querySelector(".tradingview-widget-container").appendChild(script);
+        }
+
+        // Fetch owned stocks and update the widget
+        fetch('http://localhost:8000/saved_stock_info?category=Owned')
+            .then(response => response.json())
+            .then(data => {
+                const ownedStocks = data.data || []; // Ensure we have an array
+                if (ownedStocks.length > 0) {
+                    const symbols = ownedStocks.map(stock => ({
+                        description: stock.Symbol || "",
+                        proName: `${['NasdaqGS', 'NasdaqGM'].includes(stock.exchangeName) ? 'NASDAQ' : stock.exchangeName}:${stock.Symbol}`
+                    }));
+                    console.log(symbols);
+                    loadTickerTape(symbols); // Load widget with stocks
+                } else {
+                    console.warn('No owned stocks found. Loading default.');
+                    loadTickerTape([]); // Load empty or default symbols
+                }
+            })
+            .catch(error => console.error('Error fetching owned stocks:', error));
+    </script>
+
     <div class="container">
         <h1>Stock Watchlist Report</h1>
         <div class="button-container">
@@ -18,10 +79,11 @@
         </div>
         <div id="last-updated" style="text-align: right; margin-top: -10px; font-size: 12px; color: gray;"></div>
     </div>
-    
+
     <script src="js/utils.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/popup.js"></script>
     <script src="js/main.js"></script>
+
 </body>
 </html>
