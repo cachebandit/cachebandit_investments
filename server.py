@@ -34,6 +34,7 @@ class StockCache:
                     if isinstance(cache_data, dict) and 'data' in cache_data and 'last_updated' in cache_data:
                         self.data = cache_data['data']
                         self.last_updated = cache_data['last_updated']
+
                     else:
                         # Old format - just data
                         self.data = cache_data
@@ -54,8 +55,7 @@ class StockCache:
         """Save cache to file"""
         try:
             # Only update the timestamp when explicitly saving after a refresh
-            if self.is_refreshing:
-                self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Format: MM/DD HH:MM
+            self.last_updated = datetime.now().strftime('%m/%d %H:%M')  # Format: MM/DD HH:MM
             
             # Save both the data and the timestamp
             cache_data = {
