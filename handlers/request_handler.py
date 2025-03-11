@@ -4,7 +4,7 @@ import os
 from urllib.parse import urlparse, parse_qs
 import logging
 
-from config import CHART_ENDPOINT, STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
+from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
 from services.stock_service import fetch_category_data, fetch_detailed_info, cache
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):
@@ -15,12 +15,8 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         parsed_path = urlparse(self.path)
         query_params = parse_qs(parsed_path.query)
 
-        # Handle chart data request
-        if parsed_path.path == CHART_ENDPOINT:
-            self._handle_chart_data(query_params)
-        
         # Combined endpoint for stock data and detailed info
-        elif parsed_path.path == STOCK_INFO_ENDPOINT:
+        if parsed_path.path == STOCK_INFO_ENDPOINT:
             self._handle_stock_info(query_params)
 
         # Add a new endpoint to commit refresh
@@ -33,20 +29,6 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         else:
             self.send_error(404, "Page not found")
 
-    def _handle_chart_data(self, query_params):
-        """Handle chart data requests"""
-        symbol = query_params.get('symbol', [None])[0]
-        if symbol:
-            chart_data = get_chart_data(symbol)
-            if chart_data:
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps(chart_data).encode())
-            else:
-                self.send_error(500, "Error fetching chart data")
-        else:
-            self.send_error(400, "Symbol not provided")
 
     def _handle_stock_info(self, query_params):
         """Handle stock info requests"""

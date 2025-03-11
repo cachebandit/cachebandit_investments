@@ -1,3 +1,18 @@
+import { 
+    formatMarketCap, 
+    formatValue, 
+    formatChange, 
+    formatPercentChange, 
+    formatRsi, 
+    getColorForChange, 
+    getTrailingPeColor, 
+    getForwardPeColor, 
+    getRsiBackgroundStyle
+} from './utils.js';
+
+import { showInfoPopup } from './popup.js';
+import { showChartPopup } from './chart.js';
+
 // Main JavaScript functionality
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -119,6 +134,7 @@ function renderCategory(category, data) {
             const rsiColor = getRsiBackgroundStyle(stock.RSI);
             const trailingPeColor = getTrailingPeColor(stock["Trailing PE"]);
             const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
+            const logoUrl = stock["stockUrl"];
 
             row.innerHTML = `
                 <td class="company-name truncate">
@@ -133,10 +149,13 @@ function renderCategory(category, data) {
                             data-forward-pe="${stock['Forward PE'] || 'N/A'}"
                             data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
                             data-trailing-pe-color="${trailingPeColor}"
-                            data-forward-pe-color="${forwardPeColor}">
+                            data-forward-pe-color="${forwardPeColor}"
+                            data-url="${logoUrl}">
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
-                    <span style="margin-left: 10pt;">${stock.Name}</span>
+                    <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
+                        style="width: 20px; height: 20px; margin-left: 10px;  "/>
+                    <span style="margin-left: 5pt;">${stock.Name}</span>
                 </td>
                 <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
                 <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
@@ -202,6 +221,7 @@ function renderCategory(category, data) {
                 const rsiColor = getRsiBackgroundStyle(stock.RSI);
                 const trailingPeColor = getTrailingPeColor(stock["Trailing PE"]);
                 const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
+                const logoUrl = stock["stockUrl"];
 
                 row.innerHTML = `
                     <td class="company-name truncate">
@@ -219,7 +239,9 @@ function renderCategory(category, data) {
                                 data-forward-pe-color="${forwardPeColor}">
                             <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
                         </button>
-                        <span style="margin-left: 10pt;">${stock.Name}</span>
+                        <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
+                            style="width: 20px; height: 20px; margin-left: 10px;  "/>
+                        <span style="margin-left: 5pt;">${stock.Name}</span>
                     </td>
                     <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
                     <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
@@ -258,4 +280,4 @@ function renderCategory(category, data) {
             showInfoPopup(this);
         });
     });
-} 
+}

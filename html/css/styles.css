@@ -56,7 +56,8 @@ th {
 }
 
 th.company-name, td.company-name {
-    width: 12%;
+    width: 20%;
+    text-align: left;
 }
 
 th.symbol, td.symbol {
