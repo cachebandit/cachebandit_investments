@@ -66,7 +66,7 @@ function showChartPopup(symbol) {
     const widgetConfig = {
         "autosize": true,
         "symbol": symbol, // Use the symbol passed to the function
-        "timezone": "Etc/UTC",
+        "timezone": "America/Chicago",
         "theme": "light",
         "style": "1",
         "locale": "en",
