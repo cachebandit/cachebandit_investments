@@ -14,7 +14,6 @@
     <!-- TradingView Ticker Tape Container -->
     <div id="owned-ticker-tape" class="tradingview-widget-container-tape">
         <div class="tradingview-widget-container__widget"></div>
-        </div>
     </div>
 
     <div class="container">
@@ -38,10 +37,11 @@
         import { loadTickerTape, loadMarketTrendsWidget } from './js/widgets.js';
 
         // Fetch owned stocks and update the ticker tape widget
-        fetch('http://localhost:8000/saved_stock_info?category=Owned')
+        fetch('http://192.168.68.52:8000/saved_stock_info?category=Owned')
             .then(response => response.json())
             .then(data => {
                 const ownedStocks = data.data || []; // Ensure we have an array
+                console.log('Owned stocks:', ownedStocks);
                 if (ownedStocks.length > 0) {
                     const symbols = ownedStocks.map(stock => ({
                         description: stock.Symbol || "",
@@ -56,6 +56,7 @@
             .catch(error => console.error('Error fetching owned stocks:', error));
 
         // Load the market trends widget
+        
         loadMarketTrendsWidget();
     </script>
 
