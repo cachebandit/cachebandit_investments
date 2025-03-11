@@ -1,289 +1,1214 @@
 {
-  "Categories": {
-    "Information Technology": {
-      "Hardware": [
-        { "symbol": "AAPL", "flag": true },
-        { "symbol": "DELL", "flag": false },
-        { "symbol": "SONY", "flag": false },
-        { "symbol": "CSCO", "flag": false }
-      ],
-      "Software & Cloud": [
-        { "symbol": "SNOW", "flag": true },
-        { "symbol": "MDB", "flag": true },
-        { "symbol": "ADBE", "flag": false },
-        { "symbol": "SHOP", "flag": false },
-        { "symbol": "ACN", "flag": false },
-        { "symbol": "PLTR", "flag": false }
-      ],
-      "Enterprise Software": [
-        { "symbol": "SAP", "flag": false },
-        { "symbol": "CRM", "flag": true },
-        { "symbol": "ORCL", "flag": false },
-        { "symbol": "INTU", "flag": false },
-        { "symbol": "ADP", "flag": false },
-        { "symbol": "NOW", "flag": false },
-        { "symbol": "WDAY", "flag": false },
-        { "symbol": "IBM", "flag": false },
-        { "symbol": "MSFT", "flag": true }
-      ],
-      "Cybersecurity": [
-        { "symbol": "PANW", "flag": false },
-        { "symbol": "CRWD", "flag": false },
-        { "symbol": "ZS", "flag": false },
-        { "symbol": "FTNT", "flag": false }
-      ],
-      "Semiconductor": [
-        { "symbol": "NVDA", "flag": true },
-        { "symbol": "AMD", "flag": false },
-        { "symbol": "INTC", "flag": false },
-        { "symbol": "SMCI", "flag": false },
-        { "symbol": "TSM", "flag": true },
-        { "symbol": "AVGO", "flag": false },
-        { "symbol": "ASML", "flag": false },
-        { "symbol": "AMAT", "flag": false },
-        { "symbol": "TXN", "flag": false },
-        { "symbol": "ARM", "flag": false },
-        { "symbol": "MU", "flag": false }
-      ]
-    },
-    "Industrials": {
-      "Chemical": [
-        { "symbol": "MMM", "flag": false },
-        { "symbol": "ECL", "flag": false }
-      ],
-      "Machinery": [
-        { "symbol": "CAT", "flag": false },
-        { "symbol": "DE", "flag": false }
-      ],
-      "Waste Management": [
-        { "symbol": "WM", "flag": false },
-        { "symbol": "RSG", "flag": false },
-        { "symbol": "WCN", "flag": false }
-      ],
-      "Logistics": [
-        { "symbol": "UPS", "flag": false },
-        { "symbol": "FDX", "flag": false },
-        { "symbol": "UNP", "flag": false }
-      ],
-      "Delivery": [
-        { "symbol": "DASH", "flag": false },
-        { "symbol": "UBER", "flag": false },
-        { "symbol": "LYFT", "flag": false }
-      ],
-      "Military Defense": [
-        { "symbol": "LMT", "flag": true },
-        { "symbol": "GD", "flag": false },
-        { "symbol": "NOC", "flag": false },
-        { "symbol": "LHX", "flag": false }
-      ],
-      "Aerospace": [
-        { "symbol": "RTX", "flag": false },
-        { "symbol": "BA", "flag": false },
-        { "symbol": "GE", "flag": false },
-        { "symbol": "HON", "flag": false }
-      ]
-    },
-    "Energy & Utilities": {
-      "Oil & Gas": [
-        { "symbol": "XOM", "flag": false },
-        { "symbol": "CVX", "flag": false },
-        { "symbol": "SHEL", "flag": false },
-        { "symbol": "COP", "flag": false },
-        { "symbol": "BP", "flag": false },
-        { "symbol": "OXY", "flag": false },
-        { "symbol": "MPC", "flag": false }
-      ],
-      "Renewables & Utilities": [
-        { "symbol": "FSLR", "flag": false },
-        { "symbol": "NEE", "flag": false },
-        { "symbol": "XEL", "flag": false },
-        { "symbol": "GEV", "flag": false },
-        { "symbol": "CEG", "flag": false }
-      ]
-    },
-    "Consumer Staples": {
-      "Fast Food": [
-        { "symbol": "MCD", "flag": false },
-        { "symbol": "CMG", "flag": false },
-        { "symbol": "YUM", "flag": false },
-        { "symbol": "CAVA", "flag": false }
-      ],
-      "Coffee & Beverages": [
-        { "symbol": "SBUX", "flag": false },
-        { "symbol": "BUD", "flag": false },
-        { "symbol": "KO", "flag": false },
-        { "symbol": "PEP", "flag": false }
-      ],
-      "Tobacco": [
-        { "symbol": "MO", "flag": false },
-        { "symbol": "PM", "flag": false },
-        { "symbol": "BTI", "flag": false }
-      ],
-      "Packaged Foods": [
-        { "symbol": "MDLZ", "flag": false },
-        { "symbol": "CPB", "flag": false },
-        { "symbol": "KHC", "flag": false },
-        { "symbol": "GIS", "flag": false },
-        { "symbol": "TSN", "flag": false }
-      ],
-      "Household Products": [
-        { "symbol": "PG", "flag": false },
-        { "symbol": "UL", "flag": false },
-        { "symbol": "KDP", "flag": false },
-        { "symbol": "CL", "flag": false }
-      ]
-    },
-    "Consumer Discretionary": {
-      "Big Box & Wholesale": [
-        { "symbol": "COST", "flag": false },
-        { "symbol": "WMT", "flag": false },
-        { "symbol": "TGT", "flag": true }
-      ],
-      "Apparel & Footwear": [
-        { "symbol": "NKE", "flag": true },
-        { "symbol": "LULU", "flag": false },
-        { "symbol": "ONON", "flag": false },
-        { "symbol": "DECK", "flag": false },
-        { "symbol": "TJX", "flag": false },
-        { "symbol": "RL", "flag": false },
-        { "symbol": "UA", "flag": false }
-      ],
-      "E-Commerce": [
-        { "symbol": "AMZN", "flag": true },
-        { "symbol": "JD", "flag": false },
-        { "symbol": "BABA", "flag": false }
-      ],
-      "Home Improvement": [
-        { "symbol": "HD", "flag": false },
-        { "symbol": "LOW", "flag": false },
-        { "symbol": "AZO", "flag": false },
-        { "symbol": "TSCO", "flag": false }
-      ],
-      "Gambling": [
-        { "symbol": "DKNG", "flag": false },
-        { "symbol": "FLUT", "flag": false },
-        { "symbol": "MGM", "flag": false }
-      ],
-      "Automotive": [
-        { "symbol": "TSLA", "flag": true },
-        { "symbol": "TM", "flag": false },
-        { "symbol": "RACE", "flag": false },
-        { "symbol": "GM", "flag": false },
-        { "symbol": "HMC", "flag": false },
-        { "symbol": "STLA", "flag": false },
-        { "symbol": "F", "flag": false }
-      ],
-      "Airlines": [
-        { "symbol": "DAL", "flag": false },
-        { "symbol": "LUV", "flag": false },
-        { "symbol": "UAL", "flag": false }
-      ],
-      "Hospitality & Entertainment": [
-        { "symbol": "ABNB", "flag": false },
-        { "symbol": "LVS", "flag": false },
-        { "symbol": "BKNG", "flag": false },
-        { "symbol": "MAR", "flag": false },
-        { "symbol": "HLT", "flag": false }
-      ],
-      "Leisure": [
-        { "symbol": "RCL", "flag": false },
-        { "symbol": "CCL", "flag": false },
-        { "symbol": "MTN", "flag": false }
-      ]
-    },
-    "Financial Services": {
-      "Regional Banks": [
-        { "symbol": "BAC", "flag": false },
-        { "symbol": "JPM", "flag": false },
-        { "symbol": "WFC", "flag": false },
-        { "symbol": "C", "flag": false },
-        { "symbol": "PNC", "flag": false },
-        { "symbol": "USB", "flag": false }
-      ],
-      "Credit & Payments": [
-        { "symbol": "AXP", "flag": false },
-        { "symbol": "V", "flag": false },
-        { "symbol": "MA", "flag": false }
-      ],
-      "Investment Banks": [
-        { "symbol": "SPGI", "flag": false },
-        { "symbol": "GS", "flag": false },
-        { "symbol": "BX", "flag": false },
-        { "symbol": "BLK", "flag": false },
-        { "symbol": "MS", "flag": false }
-      ],
-      "Insurance": [
-        { "symbol": "BRK-B", "flag": false },
-        { "symbol": "PGR", "flag": false },
-        { "symbol": "AFL", "flag": false },
-        { "symbol": "MET", "flag": false },
-        { "symbol": "TRV", "flag": false },
-        { "symbol": "ALL", "flag": false },
-        { "symbol": "PRU", "flag": false }
-      ]
-    },
-    "Healthcare": {
-      "Pharmaceuticals": [
-        { "symbol": "NVO", "flag": true },
-        { "symbol": "JNJ", "flag": false },
-        { "symbol": "LLY", "flag": false },
-        { "symbol": "MRK", "flag": false },
-        { "symbol": "ABBV", "flag": false },
-        { "symbol": "PFE", "flag": false },
-        { "symbol": "AZN", "flag": false }
-      ],
-      "Biotech & Medical Devices": [
-        { "symbol": "ZTS", "flag": false },
-        { "symbol": "TMO", "flag": false },
-        { "symbol": "ABT", "flag": false },
-        { "symbol": "MDT", "flag": false },
-        { "symbol": "BSX", "flag": false },
-        { "symbol": "SYK", "flag": false }
-      ],
-      "Healthcare": [
-        { "symbol": "UNH", "flag": true },
-        { "symbol": "WBA", "flag": true },
-        { "symbol": "CVS", "flag": false },
-        { "symbol": "CI", "flag": false },
-        { "symbol": "HUM", "flag": true }
-      ]
-    },
-    "Communication Services": {
-      "Streaming & Film": [
-        { "symbol": "DIS", "flag": true },
-        { "symbol": "NFLX", "flag": false },
-        { "symbol": "WBD", "flag": false },
-        { "symbol": "FOX", "flag": false },
-        { "symbol": "SPOT", "flag": false }
-      ],
-      "Telecommunication Services": [
-        { "symbol": "T", "flag": false },
-        { "symbol": "VZ", "flag": false },
-        { "symbol": "TMUS", "flag": false },
-        { "symbol": "CMCSA", "flag": false }
-      ],
-      "Media": [
-        { "symbol": "META", "flag": false },
-        { "symbol": "GOOG", "flag": true },
-        { "symbol": "RDDT", "flag": false }
-      ]
-    },
-    "Real Estate": {
-      "Residential": [
-        { "symbol": "DHI", "flag": false },
-        { "symbol": "LEN", "flag": false }
-      ],
-      "Commercial": [
-        { "symbol": "CSGP", "flag": false },
-        { "symbol": "WELL", "flag": false },
-        { "symbol": "PLD", "flag": false }
-      ],
-      "Infrastructure": [
-        { "symbol": "AMT", "flag": false },
-        { "symbol": "ZG", "flag": false },
-        { "symbol": "O", "flag": false },
-        { "symbol": "EQIX", "flag": false }
-      ]
+    "Categories": {
+        "Information Technology": {
+            "Hardware": [
+                {
+                    "symbol": "AAPL",
+                    "flag": true,
+                    "Name": "Apple Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/apple.svg"
+                },
+                {
+                    "symbol": "DELL",
+                    "flag": false,
+                    "Name": "Dell Technologies Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/dell.svg"
+                },
+                {
+                    "symbol": "SONY",
+                    "flag": false,
+                    "Name": "Sony Group Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sony.svg"
+                },
+                {
+                    "symbol": "CSCO",
+                    "flag": false,
+                    "Name": "Cisco Systems, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cisco.svg"
+                }
+            ],
+            "Software & Cloud": [
+                {
+                    "symbol": "SNOW",
+                    "flag": true,
+                    "Name": "Snowflake Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/snowflake.svg"
+                },
+                {
+                    "symbol": "MDB",
+                    "flag": true,
+                    "Name": "MongoDB, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mongodb.svg"
+                },
+                {
+                    "symbol": "ADBE",
+                    "flag": false,
+                    "Name": "Adobe Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/adobe.svg"
+                },
+                {
+                    "symbol": "SHOP",
+                    "flag": false,
+                    "Name": "Shopify Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/shopify.svg"
+                },
+                {
+                    "symbol": "ACN",
+                    "flag": false,
+                    "Name": "Accenture plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/accenture.svg"
+                },
+                {
+                    "symbol": "PLTR",
+                    "flag": false,
+                    "Name": "Palantir Technologies Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/palantir.svg"
+                }
+            ],
+            "Enterprise Software": [
+                {
+                    "symbol": "SAP",
+                    "flag": false,
+                    "Name": "SAP SE",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sap.svg"
+                },
+                {
+                    "symbol": "CRM",
+                    "flag": true,
+                    "Name": "Salesforce, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/salesforce.svg"
+                },
+                {
+                    "symbol": "ORCL",
+                    "flag": false,
+                    "Name": "Oracle Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/oracle.svg"
+                },
+                {
+                    "symbol": "INTU",
+                    "flag": false,
+                    "Name": "Intuit Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/intuit.svg"
+                },
+                {
+                    "symbol": "ADP",
+                    "flag": false,
+                    "Name": "Automatic Data Processing, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/automatic-data-processing.svg"
+                },
+                {
+                    "symbol": "NOW",
+                    "flag": false,
+                    "Name": "ServiceNow, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/servicenow.svg"
+                },
+                {
+                    "symbol": "WDAY",
+                    "flag": false,
+                    "Name": "Workday, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/workday.svg"
+                },
+                {
+                    "symbol": "IBM",
+                    "flag": false,
+                    "Name": "International Business Machines Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/international-bus-mach.svg"
+                },
+                {
+                    "symbol": "MSFT",
+                    "flag": true,
+                    "Name": "Microsoft Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/microsoft.svg"
+                }
+            ],
+            "Cybersecurity": [
+                {
+                    "symbol": "PANW",
+                    "flag": false,
+                    "Name": "Palo Alto Networks, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/palo-alto-networks.svg"
+                },
+                {
+                    "symbol": "CRWD",
+                    "flag": false,
+                    "Name": "CrowdStrike Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/crowdstrike.svg"
+                },
+                {
+                    "symbol": "ZS",
+                    "flag": false,
+                    "Name": "Zscaler, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/zscaler.svg"
+                },
+                {
+                    "symbol": "FTNT",
+                    "flag": false,
+                    "Name": "Fortinet, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/fortinet.svg"
+                }
+            ],
+            "Semiconductor": [
+                {
+                    "symbol": "NVDA",
+                    "flag": true,
+                    "Name": "NVIDIA Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/nvidia.svg"
+                },
+                {
+                    "symbol": "AMD",
+                    "flag": false,
+                    "Name": "Advanced Micro Devices, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/advanced-micro-devices.svg"
+                },
+                {
+                    "symbol": "INTC",
+                    "flag": false,
+                    "Name": "Intel Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/intel.svg"
+                },
+                {
+                    "symbol": "SMCI",
+                    "flag": false,
+                    "Name": "Super Micro Computer, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/super-micro-computer.svg"
+                },
+                {
+                    "symbol": "TSM",
+                    "flag": true,
+                    "Name": "Taiwan Semiconductor Manufacturing Company Limited",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/taiwan-semiconductor.svg"
+                },
+                {
+                    "symbol": "AVGO",
+                    "flag": false,
+                    "Name": "Broadcom Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/broadcom.svg"
+                },
+                {
+                    "symbol": "ASML",
+                    "flag": false,
+                    "Name": "ASML Holding N.V.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/asml.svg"
+                },
+                {
+                    "symbol": "AMAT",
+                    "flag": false,
+                    "Name": "Applied Materials, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/applied-materials.svg"
+                },
+                {
+                    "symbol": "TXN",
+                    "flag": false,
+                    "Name": "Texas Instruments Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/texas-instruments.svg"
+                },
+                {
+                    "symbol": "ARM",
+                    "flag": false,
+                    "Name": "Arm Holdings plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/arm.svg"
+                },
+                {
+                    "symbol": "MU",
+                    "flag": false,
+                    "Name": "Micron Technology, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/micron-technology.svg"
+                }
+            ]
+        },
+        "Industrials": {
+            "Chemical": [
+                {
+                    "symbol": "MMM",
+                    "flag": false,
+                    "Name": "3M Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/3m.svg"
+                },
+                {
+                    "symbol": "ECL",
+                    "flag": false,
+                    "Name": "Ecolab Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ecolab.svg"
+                }
+            ],
+            "Machinery": [
+                {
+                    "symbol": "CAT",
+                    "flag": false,
+                    "Name": "Caterpillar Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/caterpillar.svg"
+                },
+                {
+                    "symbol": "DE",
+                    "flag": false,
+                    "Name": "Deere & Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/deere.svg"
+                }
+            ],
+            "Waste Management": [
+                {
+                    "symbol": "WM",
+                    "flag": false,
+                    "Name": "Waste Management, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/waste-management.svg"
+                },
+                {
+                    "symbol": "RSG",
+                    "flag": false,
+                    "Name": "Republic Services, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/republic-services.svg"
+                },
+                {
+                    "symbol": "WCN",
+                    "flag": false,
+                    "Name": "Waste Connections, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/waste-connections-ca.svg"
+                }
+            ],
+            "Logistics": [
+                {
+                    "symbol": "UPS",
+                    "flag": false,
+                    "Name": "United Parcel Service, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/united-parcel.svg"
+                },
+                {
+                    "symbol": "FDX",
+                    "flag": false,
+                    "Name": "FedEx Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/fedex.svg"
+                },
+                {
+                    "symbol": "UNP",
+                    "flag": false,
+                    "Name": "Union Pacific Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/union-pacific.svg"
+                }
+            ],
+            "Delivery": [
+                {
+                    "symbol": "DASH",
+                    "flag": false,
+                    "Name": "DoorDash, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/doordash.svg"
+                },
+                {
+                    "symbol": "UBER",
+                    "flag": false,
+                    "Name": "Uber Technologies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/uber.svg"
+                },
+                {
+                    "symbol": "LYFT",
+                    "flag": false,
+                    "Name": "Lyft, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lyft.svg"
+                }
+            ],
+            "Military Defense": [
+                {
+                    "symbol": "LMT",
+                    "flag": true,
+                    "Name": "Lockheed Martin Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lockheed-martin.svg"
+                },
+                {
+                    "symbol": "GD",
+                    "flag": false,
+                    "Name": "General Dynamics Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/general-dynamics.svg"
+                },
+                {
+                    "symbol": "NOC",
+                    "flag": false,
+                    "Name": "Northrop Grumman Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/northrop-grumman.svg"
+                },
+                {
+                    "symbol": "LHX",
+                    "flag": false,
+                    "Name": "L3Harris Technologies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/l3-harris.svg"
+                }
+            ],
+            "Aerospace": [
+                {
+                    "symbol": "RTX",
+                    "flag": false,
+                    "Name": "RTX Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/raytheon.svg"
+                },
+                {
+                    "symbol": "BA",
+                    "flag": false,
+                    "Name": "The Boeing Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/boeing.svg"
+                },
+                {
+                    "symbol": "GE",
+                    "flag": false,
+                    "Name": "GE Aerospace",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ge-aerospace.svg"
+                },
+                {
+                    "symbol": "HON",
+                    "flag": false,
+                    "Name": "Honeywell International Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/honeywell.svg"
+                }
+            ]
+        },
+        "Energy & Utilities": {
+            "Oil & Gas": [
+                {
+                    "symbol": "XOM",
+                    "flag": false,
+                    "Name": "Exxon Mobil Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/exxon.svg"
+                },
+                {
+                    "symbol": "CVX",
+                    "flag": false,
+                    "Name": "Chevron Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/chevron.svg"
+                },
+                {
+                    "symbol": "SHEL",
+                    "flag": false,
+                    "Name": "Shell plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/shell.svg"
+                },
+                {
+                    "symbol": "COP",
+                    "flag": false,
+                    "Name": "ConocoPhillips",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/conocophillips.svg"
+                },
+                {
+                    "symbol": "BP",
+                    "flag": false,
+                    "Name": "BP p.l.c.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bp.svg"
+                },
+                {
+                    "symbol": "OXY",
+                    "flag": false,
+                    "Name": "Occidental Petroleum Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/occidental-petroleum.svg"
+                },
+                {
+                    "symbol": "MPC",
+                    "flag": false,
+                    "Name": "Marathon Petroleum Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/marathon-petroleum.svg"
+                }
+            ],
+            "Renewables & Utilities": [
+                {
+                    "symbol": "FSLR",
+                    "flag": false,
+                    "Name": "First Solar, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/first-solar.svg"
+                },
+                {
+                    "symbol": "NEE",
+                    "flag": false,
+                    "Name": "NextEra Energy, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/nextera-energy.svg"
+                },
+                {
+                    "symbol": "XEL",
+                    "flag": false,
+                    "Name": "Xcel Energy Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/xcel-energy.svg"
+                },
+                {
+                    "symbol": "GEV",
+                    "flag": false,
+                    "Name": "GE Vernova Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ge-verona.svg"
+                },
+                {
+                    "symbol": "CEG",
+                    "flag": false,
+                    "Name": "Constellation Energy Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/constellation-energy.svg"
+                }
+            ]
+        },
+        "Consumer Staples": {
+            "Fast Food": [
+                {
+                    "symbol": "MCD",
+                    "flag": false,
+                    "Name": "McDonald's Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mcdonalds.svg"
+                },
+                {
+                    "symbol": "CMG",
+                    "flag": false,
+                    "Name": "Chipotle Mexican Grill, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/chipotle-mexican-grill.svg"
+                },
+                {
+                    "symbol": "YUM",
+                    "flag": false,
+                    "Name": "Yum! Brands, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/yum-brands.svg"
+                },
+                {
+                    "symbol": "CAVA",
+                    "flag": false,
+                    "Name": "CAVA Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cava.svg"
+                }
+            ],
+            "Coffee & Beverages": [
+                {
+                    "symbol": "SBUX",
+                    "flag": false,
+                    "Name": "Starbucks Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/starbucks.svg"
+                },
+                {
+                    "symbol": "BUD",
+                    "flag": false,
+                    "Name": "Anheuser-Busch InBev SA/NV",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/anheuser-busch-inbev.svg"
+                },
+                {
+                    "symbol": "KO",
+                    "flag": false,
+                    "Name": "The Coca-Cola Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/coca-cola.svg"
+                },
+                {
+                    "symbol": "PEP",
+                    "flag": false,
+                    "Name": "PepsiCo, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pepsico.svg"
+                }
+            ],
+            "Tobacco": [
+                {
+                    "symbol": "MO",
+                    "flag": false,
+                    "Name": "Altria Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/altria.svg"
+                },
+                {
+                    "symbol": "PM",
+                    "flag": false,
+                    "Name": "Philip Morris International Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/philip-morris.svg"
+                },
+                {
+                    "symbol": "BTI",
+                    "flag": false,
+                    "Name": "British American Tobacco p.l.c.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/british-american-tobacco.svg"
+                }
+            ],
+            "Packaged Foods": [
+                {
+                    "symbol": "MDLZ",
+                    "flag": false,
+                    "Name": "Mondelez International, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mondelez.svg"
+                },
+                {
+                    "symbol": "CPB",
+                    "flag": false,
+                    "Name": "The Campbell's Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/campbell-soup.svg"
+                },
+                {
+                    "symbol": "KHC",
+                    "flag": false,
+                    "Name": "The Kraft Heinz Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kraft-heinz.svg"
+                },
+                {
+                    "symbol": "GIS",
+                    "flag": false,
+                    "Name": "General Mills, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/general-mills.svg"
+                },
+                {
+                    "symbol": "TSN",
+                    "flag": false,
+                    "Name": "Tyson Foods, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tyson-foods.svg"
+                }
+            ],
+            "Household Products": [
+                {
+                    "symbol": "PG",
+                    "flag": false,
+                    "Name": "The Procter & Gamble Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/procter-and-gamble.svg"
+                },
+                {
+                    "symbol": "UL",
+                    "flag": false,
+                    "Name": "Unilever PLC",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/unilever.svg"
+                },
+                {
+                    "symbol": "KDP",
+                    "flag": false,
+                    "Name": "Keurig Dr Pepper Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/keurig-dr-pepper.svg"
+                },
+                {
+                    "symbol": "CL",
+                    "flag": false,
+                    "Name": "Colgate-Palmolive Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/colgate-palmolive.svg"
+                }
+            ]
+        },
+        "Consumer Discretionary": {
+            "Big Box & Wholesale": [
+                {
+                    "symbol": "COST",
+                    "flag": false,
+                    "Name": "Costco Wholesale Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/costco-wholesale.svg"
+                },
+                {
+                    "symbol": "WMT",
+                    "flag": false,
+                    "Name": "Walmart Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/walmart.svg"
+                },
+                {
+                    "symbol": "TGT",
+                    "flag": true,
+                    "Name": "Target Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/target.svg"
+                }
+            ],
+            "Apparel & Footwear": [
+                {
+                    "symbol": "NKE",
+                    "flag": true,
+                    "Name": "NIKE, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/nike.svg"
+                },
+                {
+                    "symbol": "LULU",
+                    "flag": false,
+                    "Name": "Lululemon Athletica Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lululemon-athletica.svg"
+                },
+                {
+                    "symbol": "ONON",
+                    "flag": false,
+                    "Name": "On Holding AG",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/on-holding.svg"
+                },
+                {
+                    "symbol": "DECK",
+                    "flag": false,
+                    "Name": "Deckers Outdoor Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/deckers-outdoor.svg"
+                },
+                {
+                    "symbol": "TJX",
+                    "flag": false,
+                    "Name": "The TJX Companies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tjx-cos.svg"
+                },
+                {
+                    "symbol": "RL",
+                    "flag": false,
+                    "Name": "Ralph Lauren Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ralph-lauren.svg"
+                },
+                {
+                    "symbol": "UA",
+                    "flag": false,
+                    "Name": "Under Armour, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/under-armour.svg"
+                }
+            ],
+            "E-Commerce": [
+                {
+                    "symbol": "AMZN",
+                    "flag": true,
+                    "Name": "Amazon.com, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/amazon.svg"
+                },
+                {
+                    "symbol": "JD",
+                    "flag": false,
+                    "Name": "JD.com, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/jd-com.svg"
+                },
+                {
+                    "symbol": "BABA",
+                    "flag": false,
+                    "Name": "Alibaba Group Holding Limited",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/alibaba.svg"
+                }
+            ],
+            "Home Improvement": [
+                {
+                    "symbol": "HD",
+                    "flag": false,
+                    "Name": "The Home Depot, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/home-depot.svg"
+                },
+                {
+                    "symbol": "LOW",
+                    "flag": false,
+                    "Name": "Lowe's Companies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lowe-s.svg"
+                },
+                {
+                    "symbol": "AZO",
+                    "flag": false,
+                    "Name": "AutoZone, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/autozone.svg"
+                },
+                {
+                    "symbol": "TSCO",
+                    "flag": false,
+                    "Name": "Tractor Supply Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tractor-supply.svg"
+                }
+            ],
+            "Gambling": [
+                {
+                    "symbol": "DKNG",
+                    "flag": false,
+                    "Name": "DraftKings Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/draftkings.svg"
+                },
+                {
+                    "symbol": "FLUT",
+                    "flag": false,
+                    "Name": "Flutter Entertainment plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/flutter-entertainment.svg"
+                },
+                {
+                    "symbol": "MGM",
+                    "flag": false,
+                    "Name": "MGM Resorts International",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mgm-resorts.svg"
+                }
+            ],
+            "Automotive": [
+                {
+                    "symbol": "TSLA",
+                    "flag": true,
+                    "Name": "Tesla, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tesla.svg"
+                },
+                {
+                    "symbol": "TM",
+                    "flag": false,
+                    "Name": "Toyota Motor Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/toyota.svg"
+                },
+                {
+                    "symbol": "RACE",
+                    "flag": false,
+                    "Name": "Ferrari N.V.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ferrari.svg"
+                },
+                {
+                    "symbol": "GM",
+                    "flag": false,
+                    "Name": "General Motors Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/general-motors.svg"
+                },
+                {
+                    "symbol": "HMC",
+                    "flag": false,
+                    "Name": "Honda Motor Co., Ltd.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/honda.svg"
+                },
+                {
+                    "symbol": "STLA",
+                    "flag": false,
+                    "Name": "Stellantis N.V.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/stellantis.svg"
+                },
+                {
+                    "symbol": "F",
+                    "flag": false,
+                    "Name": "Ford Motor Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ford.svg"
+                }
+            ],
+            "Airlines": [
+                {
+                    "symbol": "DAL",
+                    "flag": false,
+                    "Name": "Delta Air Lines, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/delta-air-lines.svg"
+                },
+                {
+                    "symbol": "LUV",
+                    "flag": false,
+                    "Name": "Southwest Airlines Co.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/southwest.svg"
+                },
+                {
+                    "symbol": "UAL",
+                    "flag": false,
+                    "Name": "United Airlines Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/united-airlines.svg"
+                }
+            ],
+            "Hospitality & Entertainment": [
+                {
+                    "symbol": "ABNB",
+                    "flag": false,
+                    "Name": "Airbnb, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/airbnb.svg"
+                },
+                {
+                    "symbol": "LVS",
+                    "flag": false,
+                    "Name": "Las Vegas Sands Corp.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/las-vegas-sands.svg"
+                },
+                {
+                    "symbol": "BKNG",
+                    "flag": false,
+                    "Name": "Booking Holdings Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/booking.svg"
+                },
+                {
+                    "symbol": "MAR",
+                    "flag": false,
+                    "Name": "Marriott International, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/marriott.svg"
+                },
+                {
+                    "symbol": "HLT",
+                    "flag": false,
+                    "Name": "Hilton Worldwide Holdings Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/hilton-worldwide.svg"
+                }
+            ],
+            "Leisure": [
+                {
+                    "symbol": "RCL",
+                    "flag": false,
+                    "Name": "Royal Caribbean Cruises Ltd.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/royal-caribbean-cruises.svg"
+                },
+                {
+                    "symbol": "CCL",
+                    "flag": false,
+                    "Name": "Carnival Corporation & plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/carnival.svg"
+                },
+                {
+                    "symbol": "MTN",
+                    "flag": false,
+                    "Name": "Vail Resorts, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vail-resorts.svg"
+                }
+            ]
+        },
+        "Financial Services": {
+            "Regional Banks": [
+                {
+                    "symbol": "BAC",
+                    "flag": false,
+                    "Name": "Bank of America Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bank-of-america.svg"
+                },
+                {
+                    "symbol": "JPM",
+                    "flag": false,
+                    "Name": "JPMorgan Chase & Co.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/jpmorgan-chase.svg"
+                },
+                {
+                    "symbol": "WFC",
+                    "flag": false,
+                    "Name": "Wells Fargo & Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/wells-fargo.svg"
+                },
+                {
+                    "symbol": "C",
+                    "flag": false,
+                    "Name": "Citigroup Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/citigroup.svg"
+                },
+                {
+                    "symbol": "PNC",
+                    "flag": false,
+                    "Name": "The PNC Financial Services Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pnc-financial.svg"
+                },
+                {
+                    "symbol": "USB",
+                    "flag": false,
+                    "Name": "U.S. Bancorp",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/us-bancorp.svg"
+                }
+            ],
+            "Credit & Payments": [
+                {
+                    "symbol": "AXP",
+                    "flag": false,
+                    "Name": "American Express Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/american-express.svg"
+                },
+                {
+                    "symbol": "V",
+                    "flag": false,
+                    "Name": "Visa Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/visa.svg"
+                },
+                {
+                    "symbol": "MA",
+                    "flag": false,
+                    "Name": "Mastercard Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mastercard.svg"
+                }
+            ],
+            "Investment Banks": [
+                {
+                    "symbol": "SPGI",
+                    "flag": false,
+                    "Name": "S&P Global Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/s-and-p-global.svg"
+                },
+                {
+                    "symbol": "GS",
+                    "flag": false,
+                    "Name": "The Goldman Sachs Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/goldman-sachs.svg"
+                },
+                {
+                    "symbol": "BX",
+                    "flag": false,
+                    "Name": "Blackstone Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackstone.svg"
+                },
+                {
+                    "symbol": "BLK",
+                    "flag": false,
+                    "Name": "BlackRock, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackrock.svg"
+                },
+                {
+                    "symbol": "MS",
+                    "flag": false,
+                    "Name": "Morgan Stanley",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/morgan-stanley.svg"
+                }
+            ],
+            "Insurance": [
+                {
+                    "symbol": "BRK-B",
+                    "flag": false,
+                    "Name": "Berkshire Hathaway Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/berkshire-hathaway.svg"
+                },
+                {
+                    "symbol": "PGR",
+                    "flag": false,
+                    "Name": "The Progressive Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prog.svg"
+                },
+                {
+                    "symbol": "AFL",
+                    "flag": false,
+                    "Name": "Aflac Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/aflac.svg"
+                },
+                {
+                    "symbol": "MET",
+                    "flag": false,
+                    "Name": "MetLife, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/metlife.svg"
+                },
+                {
+                    "symbol": "TRV",
+                    "flag": false,
+                    "Name": "The Travelers Companies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/travelers.svg"
+                },
+                {
+                    "symbol": "ALL",
+                    "flag": false,
+                    "Name": "The Allstate Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/allstate.svg"
+                },
+                {
+                    "symbol": "PRU",
+                    "flag": false,
+                    "Name": "Prudential Financial, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prudential.svg"
+                }
+            ]
+        },
+        "Healthcare": {
+            "Pharmaceuticals": [
+                {
+                    "symbol": "NVO",
+                    "flag": true,
+                    "Name": "Novo Nordisk A/S",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/novo-nordisk.svg"
+                },
+                {
+                    "symbol": "JNJ",
+                    "flag": false,
+                    "Name": "Johnson & Johnson",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/johnson-and-johnson.svg"
+                },
+                {
+                    "symbol": "LLY",
+                    "flag": false,
+                    "Name": "Eli Lilly and Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/eli-lilly.svg"
+                },
+                {
+                    "symbol": "MRK",
+                    "flag": false,
+                    "Name": "Merck & Co., Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/merck.svg"
+                },
+                {
+                    "symbol": "ABBV",
+                    "flag": false,
+                    "Name": "AbbVie Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/abbvie.svg"
+                },
+                {
+                    "symbol": "PFE",
+                    "flag": false,
+                    "Name": "Pfizer Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pfizer.svg"
+                },
+                {
+                    "symbol": "AZN",
+                    "flag": false,
+                    "Name": "AstraZeneca PLC",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/astrazeneca.svg"
+                }
+            ],
+            "Biotech & Medical Devices": [
+                {
+                    "symbol": "ZTS",
+                    "flag": false,
+                    "Name": "Zoetis Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/zoetis.svg"
+                },
+                {
+                    "symbol": "TMO",
+                    "flag": false,
+                    "Name": "Thermo Fisher Scientific Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/thermo-fisher-scientific.svg"
+                },
+                {
+                    "symbol": "ABT",
+                    "flag": false,
+                    "Name": "Abbott Laboratories",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/abbott.svg"
+                },
+                {
+                    "symbol": "MDT",
+                    "flag": false,
+                    "Name": "Medtronic plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/medtronic.svg"
+                },
+                {
+                    "symbol": "BSX",
+                    "flag": false,
+                    "Name": "Boston Scientific Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/boston-scientific.svg"
+                },
+                {
+                    "symbol": "SYK",
+                    "flag": false,
+                    "Name": "Stryker Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/stryker.svg"
+                }
+            ],
+            "Healthcare": [
+                {
+                    "symbol": "UNH",
+                    "flag": true,
+                    "Name": "UnitedHealth Group Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/unitedhealth.svg"
+                },
+                {
+                    "symbol": "WBA",
+                    "flag": true,
+                    "Name": "Walgreens Boots Alliance, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/walgreens-boots-alliance.svg"
+                },
+                {
+                    "symbol": "CVS",
+                    "flag": false,
+                    "Name": "CVS Health Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cvs-health.svg"
+                },
+                {
+                    "symbol": "CI",
+                    "flag": false,
+                    "Name": "The Cigna Group",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cigna.svg"
+                },
+                {
+                    "symbol": "HUM",
+                    "flag": true,
+                    "Name": "Humana Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/humana.svg"
+                }
+            ]
+        },
+        "Communication Services": {
+            "Streaming & Film": [
+                {
+                    "symbol": "DIS",
+                    "flag": true,
+                    "Name": "The Walt Disney Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/walt-disney.svg"
+                },
+                {
+                    "symbol": "NFLX",
+                    "flag": false,
+                    "Name": "Netflix, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/netflix.svg"
+                },
+                {
+                    "symbol": "WBD",
+                    "flag": false,
+                    "Name": "Warner Bros. Discovery, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/warner-bros-discovery.svg"
+                },
+                {
+                    "symbol": "FOX",
+                    "flag": false,
+                    "Name": "Fox Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/fox.svg"
+                },
+                {
+                    "symbol": "SPOT",
+                    "flag": false,
+                    "Name": "Spotify Technology S.A.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/spotify-technology.svg"
+                }
+            ],
+            "Telecommunication Services": [
+                {
+                    "symbol": "T",
+                    "flag": false,
+                    "Name": "AT&T Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/at-and-t.svg"
+                },
+                {
+                    "symbol": "VZ",
+                    "flag": false,
+                    "Name": "Verizon Communications Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/verizon.svg"
+                },
+                {
+                    "symbol": "TMUS",
+                    "flag": false,
+                    "Name": "T-Mobile US, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/t-mobile.svg"
+                },
+                {
+                    "symbol": "CMCSA",
+                    "flag": false,
+                    "Name": "Comcast Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/comcast.svg"
+                }
+            ],
+            "Media": [
+                {
+                    "symbol": "META",
+                    "flag": false,
+                    "Name": "Meta Platforms, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/meta-platforms.svg"
+                },
+                {
+                    "symbol": "GOOG",
+                    "flag": true,
+                    "Name": "Alphabet Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/alphabet.svg"
+                },
+                {
+                    "symbol": "RDDT",
+                    "flag": false,
+                    "Name": "Reddit, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/reddit.svg"
+                }
+            ]
+        },
+        "Real Estate": {
+            "Residential": [
+                {
+                    "symbol": "DHI",
+                    "flag": false,
+                    "Name": "D.R. Horton, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/dr-horton.svg"
+                },
+                {
+                    "symbol": "LEN",
+                    "flag": false,
+                    "Name": "Lennar Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lennar.svg"
+                }
+            ],
+            "Commercial": [
+                {
+                    "symbol": "CSGP",
+                    "flag": false,
+                    "Name": "CoStar Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/costar-group.svg"
+                },
+                {
+                    "symbol": "WELL",
+                    "flag": false,
+                    "Name": "Welltower Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/welltower-indrn.svg"
+                },
+                {
+                    "symbol": "PLD",
+                    "flag": false,
+                    "Name": "Prologis, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prologis.svg"
+                }
+            ],
+            "Infrastructure": [
+                {
+                    "symbol": "AMT",
+                    "flag": false,
+                    "Name": "American Tower Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/american-tower.svg"
+                },
+                {
+                    "symbol": "ZG",
+                    "flag": false,
+                    "Name": "Zillow Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/zillow-group.svg"
+                },
+                {
+                    "symbol": "O",
+                    "flag": false,
+                    "Name": "Realty Income Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/realty-income.svg"
+                },
+                {
+                    "symbol": "EQIX",
+                    "flag": false,
+                    "Name": "Equinix, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/equinix.svg"
+                }
+            ]
+        }
     }
-  }
 }

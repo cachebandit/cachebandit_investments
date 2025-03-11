@@ -61,7 +61,6 @@
                         description: stock.Symbol || "",
                         proName: `${['NasdaqGS', 'NasdaqGM'].includes(stock.exchangeName) ? 'NASDAQ' : stock.exchangeName}:${stock.Symbol}`
                     }));
-                    console.log(symbols);
                     loadTickerTape(symbols); // Load widget with stocks
                 } else {
                     console.warn('No owned stocks found. Loading default.');
@@ -80,10 +79,10 @@
         <div id="last-updated" style="text-align: right; margin-top: -10px; font-size: 12px; color: gray;"></div>
     </div>
 
-    <script src="js/utils.js"></script>
-    <script src="js/chart.js"></script>
-    <script src="js/popup.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/chart.js"></script>
+    <script type="module" src="js/popup.js"></script>
+    <script type="module" src="js/main.js"></script>
 
 </body>
 </html>

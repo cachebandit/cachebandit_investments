@@ -97,3 +97,5 @@ function showChartPopup(symbol) {
         }
     });
 } 
+
+export { showChartPopup };

@@ -26,13 +26,15 @@ def load_watchlist_data():
                             owned_stocks.append({
                                 **stock,  # Include all stock data
                                 'category': category,  # Preserve the original category
-                                'industry': industry  # Add the industry
+                                'industry': industry,  # Add the industry
+                                'stockUrl': stock.get("stockUrl", None)
                             })  # Add to owned category
                         else:
                             filtered_stocks.append({
                                 **stock,
                                 'category': category,
-                                'industry': industry
+                                'industry': industry,
+                                'stockUrl': stock.get("stockUrl", None)
                             })  # Keep in original category if not owned
 
                 # Store filtered stocks for each category
@@ -58,6 +60,7 @@ def fetch_category_data(category):
     for stock_info in category_data:
         symbol = stock_info["symbol"]
         flag = stock_info.get("flag", False)  # Get the flag status from JSON
+        stockUrl = stock_info.get("stockUrl", None)  # Get the alternative name, if available
 
         # Retrieve data from yfinance for each symbol
         try:
@@ -94,8 +97,9 @@ def fetch_category_data(category):
                 'stock_description': stock_description,
                 'fiftyTwoWeekHigh': fiftyTwoWeekHigh,
                 'fiftyTwoWeekLow': fiftyTwoWeekLow,
-                "earningsDate": earningsDate,
-                'exchangeName': exchangeName
+                'earningsDate': earningsDate,
+                'exchangeName': exchangeName,
+                'stockUrl': stockUrl
             })
 
         except Exception as e:
@@ -108,12 +112,14 @@ def fetch_category_data(category):
                 'Trailing PE': None,
                 'Forward PE': None,
                 'EV/EBITDA': None,
-                'category': category,
+                'category': None,
                 'industry': None,
                 'stock_description': None,
                 'fiftyTwoWeekHigh': None,
                 'fiftyTwoWeekLow': None,
-                "earningsDate": None
+                'earningsDate': None,
+                'exchangeName': None,
+                'stockUrl': stockUrl
             })
 
     return result_data

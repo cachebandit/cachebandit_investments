@@ -1,0 +1,32 @@
+{
+    "Categories": {
+        "Information Technology": {
+            "Hardware": [
+                {
+                    "symbol": "AAPL",
+                    "flag": true,
+                    "Name": "Apple Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/apple.svg"
+                },
+                {
+                    "symbol": "DELL",
+                    "flag": false,
+                    "Name": "Dell Technologies Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ell.svg"
+                },
+                {
+                    "symbol": "SONY",
+                    "flag": false,
+                    "Name": "Sony Group Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sony.svg"
+                },
+                {
+                    "symbol": "CSCO",
+                    "flag": false,
+                    "Name": "Cisco Systems, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cisco.svg"
+                }
+            ]
+        }
+    }
+}

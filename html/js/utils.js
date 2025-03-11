@@ -95,3 +95,15 @@ function getRsiBackgroundStyle(rsi) {
         return '';  // No background color for RSI between 35 and 65
     }
 } 
+
+export { 
+    formatMarketCap, 
+    formatValue, 
+    formatChange, 
+    formatPercentChange, 
+    formatRsi, 
+    getColorForChange, 
+    getTrailingPeColor, 
+    getForwardPeColor, 
+    getRsiBackgroundStyle
+};
