@@ -219,3 +219,42 @@ th.market-cap, td.market-cap {
     text-align: right;
     margin-top: 5px;
 }
+
+/* New styles for the search bar */
+.search-container {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#search-input:focus {
+    border-color: #1d78c1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.clear-search {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #999;
+    display: none;
+}
+
+#search-input:not(:placeholder-shown) + .clear-search {
+    display: block;
+}

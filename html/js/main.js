@@ -41,6 +41,25 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.style.display = 'none';
         });
     });
+
+    // Add event listener to the search input
+    const searchInput = document.getElementById('search-input');
+    const clearSearch = document.getElementById('clear-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            filterTable(this.value);
+            clearSearch.style.display = this.value ? 'inline' : 'none';
+        });
+    }
+
+    // Add event listener to the clear search button
+    if (clearSearch) {
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            filterTable('');
+            clearSearch.style.display = 'none';
+        });
+    }
 });
 
 async function fetchWatchlistData() {
@@ -98,6 +117,10 @@ async function fetchWatchlistData() {
 }
 
 function renderCategory(category, data) {
+    if (data.length === 0) {
+        return; // Skip rendering if there are no stocks in the category
+    }
+
     const section = document.createElement('div');
     section.className = 'section';
 
@@ -190,9 +213,16 @@ function renderCategory(category, data) {
 
         // Create a table for each industry
         for (const [industry, stocks] of Object.entries(industries)) {
+            if (stocks.length === 0) {
+                continue; // Skip rendering if there are no stocks in the industry
+            }
+
+            const industrySection = document.createElement('div');
+            industrySection.className = 'industry-section';
+
             const industryHeading = document.createElement('h3');
             industryHeading.textContent = industry;
-            section.appendChild(industryHeading);
+            industrySection.appendChild(industryHeading);
 
             const table = document.createElement('table');
             const thead = document.createElement('thead');
@@ -259,7 +289,8 @@ function renderCategory(category, data) {
 
             table.appendChild(thead);
             table.appendChild(tbody);
-            section.appendChild(table);
+            industrySection.appendChild(table);
+            section.appendChild(industrySection);
         }
     }
 
@@ -279,5 +310,46 @@ function renderCategory(category, data) {
             event.stopPropagation();
             showInfoPopup(this);
         });
+    });
+}
+
+function filterTable(query) {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        const industrySections = section.querySelectorAll('.industry-section');
+        let hasVisibleIndustry = false;
+        industrySections.forEach(industrySection => {
+            const rows = industrySection.querySelectorAll('table tbody tr');
+            let hasVisibleRow = false;
+            rows.forEach(row => {
+                const companyName = row.querySelector('.company-name span').textContent.toLowerCase();
+                const symbol = row.querySelector('.symbol').textContent.toLowerCase();
+                if (companyName.includes(query.toLowerCase()) || symbol.includes(query.toLowerCase())) {
+                    row.style.display = '';
+                    hasVisibleRow = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            // Hide the industry section if no rows are visible
+            industrySection.style.display = hasVisibleRow ? '' : 'none';
+            if (hasVisibleRow) {
+                hasVisibleIndustry = true;
+            }
+        });
+        // Hide the section if no industry sections are visible
+        section.style.display = hasVisibleIndustry ? '' : 'none';
+
+        // Show all rows and sections if the query is empty
+        if (query === '') {
+            section.style.display = '';
+            industrySections.forEach(industrySection => {
+                industrySection.style.display = '';
+                const rows = industrySection.querySelectorAll('table tbody tr');
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+            });
+        }
     });
 }
