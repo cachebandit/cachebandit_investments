@@ -28,3 +28,7 @@
 127.0.0.1 - - [20/May/2025 13:04:25] "GET /saved_stock_info?category=Communication%20Services&refresh=true HTTP/1.1" 200 -
 127.0.0.1 - - [20/May/2025 13:04:34] "GET /saved_stock_info?category=Real%20Estate&refresh=true HTTP/1.1" 200 -
 127.0.0.1 - - [20/May/2025 13:04:50] "GET /saved_stock_info?category=Consumer%20Staples&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:05:28] "GET /saved_stock_info?category=Consumer%20Discretionary&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:05:28] "GET /html/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:05:28] code 404, message Page not found
+127.0.0.1 - - [20/May/2025 13:05:28] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
