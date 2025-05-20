@@ -23,3 +23,8 @@
 127.0.0.1 - - [20/May/2025 13:03:26] "GET /saved_stock_info?category=Information%20Technology&refresh=true HTTP/1.1" 200 -
 127.0.0.1 - - [20/May/2025 13:03:42] "GET /saved_stock_info?category=Industrials&refresh=true HTTP/1.1" 200 -
 127.0.0.1 - - [20/May/2025 13:03:51] "GET /saved_stock_info?category=Energy%20%26%20Utilities&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:04:06] "GET /saved_stock_info?category=Financial%20Services&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:04:18] "GET /saved_stock_info?category=Healthcare&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:04:25] "GET /saved_stock_info?category=Communication%20Services&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:04:34] "GET /saved_stock_info?category=Real%20Estate&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:04:50] "GET /saved_stock_info?category=Consumer%20Staples&refresh=true HTTP/1.1" 200 -
