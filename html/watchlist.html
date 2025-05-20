@@ -49,7 +49,7 @@
         import { loadTickerTape, loadMarketTrendsWidget } from './js/widgets.js';
 
         // Fetch owned stocks and update the ticker tape widget
-        fetch('http://192.168.68.52:8000/saved_stock_info?category=Owned')
+        fetch('http://localhost:8000/saved_stock_info?category=Owned')
             .then(response => response.json())
             .then(data => {
                 const ownedStocks = data.data || []; // Ensure we have an array

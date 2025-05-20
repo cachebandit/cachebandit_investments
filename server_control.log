@@ -1,0 +1,25 @@
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/watchlist.html HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] code 404, message Page not found
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/js/utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/js/chart.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/js/popup.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/js/main.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /html/js/widgets.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /saved_stock_info?category=Owned HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:41] "GET /saved_stock_info?category=Owned&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Information%20Technology&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /html/info.png HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Industrials&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Energy%20%26%20Utilities&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Financial%20Services&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Healthcare&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:42] "GET /saved_stock_info?category=Communication%20Services&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:43] "GET /saved_stock_info?category=Real%20Estate&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:43] "GET /saved_stock_info?category=Consumer%20Staples&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:02:43] "GET /saved_stock_info?category=Consumer%20Discretionary&refresh=false HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:03:06] "GET /saved_stock_info?category=Owned&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:03:26] "GET /saved_stock_info?category=Information%20Technology&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:03:42] "GET /saved_stock_info?category=Industrials&refresh=true HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2025 13:03:51] "GET /saved_stock_info?category=Energy%20%26%20Utilities&refresh=true HTTP/1.1" 200 -
