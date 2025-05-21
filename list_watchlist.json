@@ -30,7 +30,7 @@
             "Software & Cloud": [
                 {
                     "symbol": "SNOW",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Snowflake Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/snowflake.svg"
                 },
@@ -174,7 +174,7 @@
                 },
                 {
                     "symbol": "TSM",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Taiwan Semiconductor Manufacturing Company Limited",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/taiwan-semiconductor.svg"
                 },
@@ -572,7 +572,7 @@
             "Big Box & Wholesale": [
                 {
                     "symbol": "COST",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Costco Wholesale Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/costco-wholesale.svg"
                 },
@@ -702,7 +702,7 @@
             "Automotive": [
                 {
                     "symbol": "TSLA",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Tesla, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/tesla.svg"
                 },
@@ -1072,7 +1072,7 @@
             "Streaming & Film": [
                 {
                     "symbol": "DIS",
-                    "flag": true,
+                    "flag": false,
                     "Name": "The Walt Disney Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/walt-disney.svg"
                 },
