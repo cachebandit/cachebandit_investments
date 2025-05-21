@@ -258,3 +258,19 @@ th.market-cap, td.market-cap {
 #search-input:not(:placeholder-shown) + .clear-search {
     display: block;
 }
+
+.star-icon {
+    cursor: pointer;
+    color: #ccc;
+    margin-right: 5px;
+    font-size: 18px;
+    transition: color 0.2s ease;
+}
+
+.star-icon.active {
+    color: gold;
+}
+
+.star-icon:hover {
+    transform: scale(1.2);
+}

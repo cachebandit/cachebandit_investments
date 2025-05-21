@@ -151,6 +151,8 @@ function renderCategory(category, data) {
         data.forEach(stock => {
             const row = document.createElement('tr');
             row.setAttribute('data-symbol', stock.Symbol);
+            row.setAttribute('data-category', category);
+            row.setAttribute('data-industry', stock.industry || 'Uncategorized');
             
             const priceChangeColor = getColorForChange(stock['Percent Change']);
             const percentChangeColor = getColorForChange(stock['Percent Change']);
@@ -161,6 +163,11 @@ function renderCategory(category, data) {
 
             row.innerHTML = `
                 <td class="company-name truncate">
+                    <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                          data-symbol="${stock.Symbol}" 
+                          onclick="toggleFlag(event, '${stock.Symbol}', this)">
+                        ★
+                    </span>
                     <button class="info-icon" 
                             data-stock-name="${stock.Name}"
                             data-fifty-two-week-high="${stock['fiftyTwoWeekHigh'] || 'N/A'}"
@@ -177,7 +184,7 @@ function renderCategory(category, data) {
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
                     <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                        style="width: 20px; height: 20px; margin-left: 10px;  "/>
+                        style="width: 20px; height: 20px; margin-left: 10px;"/>
                     <span style="margin-left: 5pt;">${stock.Name}</span>
                 </td>
                 <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
@@ -255,6 +262,11 @@ function renderCategory(category, data) {
 
                 row.innerHTML = `
                     <td class="company-name truncate">
+                        <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                              data-symbol="${stock.Symbol}" 
+                              onclick="toggleFlag(event, '${stock.Symbol}', this)">
+                            ★
+                        </span>
                         <button class="info-icon" 
                                 data-stock-name="${stock.Name}"
                                 title="${stock.stock_description || 'No description available'}"
@@ -353,3 +365,43 @@ function filterTable(query) {
         }
     });
 }
+
+// Constants for table headers
+const TABLE_HEADERS = `
+    <tr>
+        <th class="company-name">Company Name</th>
+        <th class="symbol">Symbol</th>
+        <th class="market-cap">Market Cap</th>
+        <th class="open">Open</th>
+        <th class="high">High</th>
+        <th class="low">Low</th>
+        <th class="close">Close</th>
+        <th class="change">Change</th>
+        <th class="percent-change">% Change</th>
+        <th class="rsi">RSI</th>
+    </tr>
+`;
+
+
+window.toggleFlag = function(event, symbol, element) {
+    event.stopPropagation();
+    const newFlag = !element.classList.contains('active');
+    
+    fetch('/api/update_flag', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            symbol: symbol,
+            flag: newFlag
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            element.classList.toggle('active');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+};

@@ -14,7 +14,7 @@ def start_server():
         # Use Popen with os setsid to detach the process from the terminal
         with open(LOG_FILE, 'w') as log_file:
             process = subprocess.Popen(
-                ['python', SCRIPT_NAME],
+                ['python3', SCRIPT_NAME],
                 stdout=log_file,
                 stderr=log_file,
                 preexec_fn=os.setsid  # This detaches the process so it doesn't get killed when the script exits

@@ -194,4 +194,30 @@ def calculate_rsi(data, window=14):
         return rsi.iloc[-1] if not rsi.empty else 'N/A'
     except Exception as e:
         logging.error(f"Error in RSI calculation: {e}")
-        return 'N/A' 
+        return 'N/A'
+
+def update_stock_flag(symbol, new_flag):
+    """Update the flag status for a stock in the watchlist"""
+    try:
+        with open('list_watchlist.json', 'r') as f:
+            data = json.load(f)
+            
+        # Update the flag for the matching symbol
+        for category in data['Categories'].values():
+            for subcategory in category.values():
+                for stock in subcategory:
+                    if stock.get('symbol') == symbol:
+                        stock['flag'] = new_flag
+                        break
+        
+        with open('list_watchlist.json', 'w') as f:
+            json.dump(data, f, indent=4)
+            
+        # Reload the watchlist data after update
+        global watchlist_data
+        watchlist_data = load_watchlist_data()
+        
+        return True
+    except Exception as e:
+        logging.error(f"Error updating flag for {symbol}: {e}")
+        return False
