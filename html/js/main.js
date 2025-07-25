@@ -162,7 +162,8 @@ function renderCategory(category, data) {
             const logoUrl = stock["stockUrl"];
 
             row.innerHTML = `
-                <td class="company-name truncate">
+                <td class="company-name">
+                    <div class="company-cell-content">
                     <span class="star-icon ${stock.flag ? 'active' : ''}" 
                           data-symbol="${stock.Symbol}" 
                           onclick="toggleFlag(event, '${stock.Symbol}', this)">
@@ -184,8 +185,9 @@ function renderCategory(category, data) {
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
                     <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                        style="width: 20px; height: 20px; margin-left: 10px;"/>
-                    <span style="margin-left: 5pt;">${stock.Name}</span>
+                        style="width: 20px; height: 20px;"/>
+                    <span class="company-text">${stock.Name}</span>
+                    </div>
                 </td>
                 <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
                 <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
@@ -261,7 +263,8 @@ function renderCategory(category, data) {
                 const logoUrl = stock["stockUrl"];
 
                 row.innerHTML = `
-                    <td class="company-name truncate">
+                    <td class="company-name">
+                        <div class="company-cell-content">
                         <span class="star-icon ${stock.flag ? 'active' : ''}" 
                               data-symbol="${stock.Symbol}" 
                               onclick="toggleFlag(event, '${stock.Symbol}', this)">
@@ -282,8 +285,9 @@ function renderCategory(category, data) {
                             <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
                         </button>
                         <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                            style="width: 20px; height: 20px; margin-left: 10px;  "/>
-                        <span style="margin-left: 5pt;">${stock.Name}</span>
+                            style="width: 20px; height: 20px;"/>
+                        <span class="company-text">${stock.Name}</span>
+                        </div>
                     </td>
                     <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
                     <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>

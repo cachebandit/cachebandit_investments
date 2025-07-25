@@ -1,73 +1,137 @@
+/* === Sleek Light Theme Redesign === */
+
+:root {
+    --bg-color: #f8f9fa;
+    --container-bg: #ffffff;
+    --hover-bg: #f1f3f5;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+}
+
 body {
-    font-family: 'Trebuchet MS', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
     margin: 0;
     padding: 0;
 }
 
 .container {
     max-width: 100%;
-    margin-bottom: 20px auto;
+    margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .header-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 h1 {
-    color: #1d78c1;
-    font-size: 24px;
+    color: var(--text-primary);
+    font-size: 28px;
     margin: 0;
+    font-weight: 500;
 }
 
 .section {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .section h2 {
-    color: #1d78c1;
-    font-size: 20px;
-    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-size: 22px;
+    margin: 0;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 500;
+}
+
+.industry-section h3 {
+    padding-left: 20px; /* Indents the subtitle to align with section titles */
+    margin: 25px 0 15px 0; /* Adds vertical spacing for separation */
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
 table {
     width: 100%;
-    table-layout: fixed;
+    table-layout: fixed; /* This is the key for uniform columns */
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 th, td {
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    font-size: 16px;
-    text-align: center;
+    padding: 14px 20px;
+    overflow: hidden; /* Prevent content from overflowing */
+    text-overflow: ellipsis; /* Add '...' for overflowed content */
+    border: none;
+    font-size: 14px;
+    text-align: left;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+}
+
+tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:last-child {
+    border-bottom: none;
 }
 
 th {
-    background-color: #f5f7fa;
-    color: #1d78c1;
+    background-color: transparent;
+    border-bottom: 2px solid var(--border-color); /* Thicker border for header */
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
 }
 
 th.company-name, td.company-name {
-    width: 20%;
+    width: 28%; /* Increased width for company name */
     text-align: left;
 }
 
 th.symbol, td.symbol {
-    width: 6%;
+    width: 7%; /* Decreased width for symbol */
+    text-align: center; /* Centered symbol */
 }
+
+th.market-cap, td.market-cap { width: 10%; }
+th.open, td.open { width: 8%; }
+th.high, td.high { width: 8%; }
+th.low, td.low { width: 8%; }
+th.close, td.close { width: 8%; }
+th.change, td.change { width: 8%; }
+th.percent-change, td.percent-change { width: 9%; }
+th.rsi, td.rsi { width: 8%; }
 
 th.change, td.change,
 th.percent-change, td.percent-change,
@@ -77,34 +141,93 @@ th.high, td.high,
 th.low, td.low,
 th.close, td.close,
 th.market-cap, td.market-cap {
-    text-align: center;
+    text-align: center; /* Centered all other columns */
+}
+
+td.company-name {
+    /* Flexbox properties moved to a child div to fix layout */
+}
+
+.company-cell-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.company-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+td.close {
+    font-weight: 600;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px; /* Space between title and nav */
+}
+
+.navigation a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    min-width: 120px; /* Set a minimum width for consistency */
+    text-align: center; /* Center text inside the button */
+}
+
+.navigation a:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.navigation a.active {
+    background-color: var(--accent-color);
+    color: white;
 }
 
 .button-container {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    gap: 10px;
 }
 
 .refresh-button {
-    background-color: #1d78c1;
+    background-color: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-right: 10px;
+    transition: background-color 0.2s ease;
 }
 
 .refresh-button:hover {
-    background-color: #155a8a;
+    background-color: var(--accent-hover);
 }
 
 .loading-spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #1d78c1;
+    border-left-color: var(--accent-color);
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -117,33 +240,32 @@ th.market-cap, td.market-cap {
 }
 
 .info-icon {
-    display: inline-block;
-    margin-left: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 0.8em;
     padding: 0;
     border: none;
     background: none;
     outline: none;
-    width: auto;
-    height: auto;
+}
+
+.info-icon:hover img {
+    transform: scale(1.1);
 }
 
 .popup {
     position: absolute;
-    background-color: #f0f0f0;
-    border: 1px solid #e0e0e0;
-    padding: 10px;
-    border-radius: 4px;
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 6px;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: none;
-    max-width: 600px;
-    max-height: 300px;
-    font-size: 12px;
-    overflow: auto;
-    word-wrap: break-word;
+    max-width: 350px;
+    font-size: 14px;
+    color: var(--text-primary);
 }
 
 .heatmap-button {
@@ -215,15 +337,15 @@ th.market-cap, td.market-cap {
 
 .last-updated {
     font-size: 12px;
-    color: gray;
+    color: var(--text-secondary);
     text-align: right;
-    margin-top: 5px;
+    margin-top: 8px;
 }
 
 /* New styles for the search bar */
 .search-container {
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 20px;
     position: relative;
@@ -233,26 +355,28 @@ th.market-cap, td.market-cap {
     width: 100%;
     max-width: 400px;
     padding: 10px 15px;
-    font-size: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--container-bg);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 #search-input:focus {
-    border-color: #1d78c1;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
 .clear-search {
     position: absolute;
-    right: 10px;
+    right: 12px;
     cursor: pointer;
     font-size: 20px;
-    color: #999;
+    color: var(--text-secondary);
     display: none;
+    line-height: 1;
 }
 
 #search-input:not(:placeholder-shown) + .clear-search {
