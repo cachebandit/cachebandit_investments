@@ -326,41 +326,30 @@ function renderCategory(category, data) {
 }
 
 function filterTable(query) {
+    // Get all sections including Owned
     const sections = document.querySelectorAll('.section');
+    const searchTerm = query.toLowerCase();
+
     sections.forEach(section => {
-        const industrySections = section.querySelectorAll('.industry-section');
-        let hasVisibleIndustry = false;
-        industrySections.forEach(industrySection => {
-            const rows = industrySection.querySelectorAll('table tbody tr');
-            let hasVisibleRow = false;
+        // Get all rows in the current section, including those in Owned
+        const rows = section.querySelectorAll('table tbody tr');
+        
+        if (searchTerm === '') {
+            // Show all rows when search is empty
             rows.forEach(row => {
-                const companyName = row.querySelector('.company-name span').textContent.toLowerCase();
+                row.style.display = '';
+            });
+        } else {
+            // Filter rows based on search term
+            rows.forEach(row => {
                 const symbol = row.querySelector('.symbol').textContent.toLowerCase();
-                if (companyName.includes(query.toLowerCase()) || symbol.includes(query.toLowerCase())) {
+                const name = row.querySelector('.company-name').textContent.toLowerCase();
+                
+                if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
                     row.style.display = '';
-                    hasVisibleRow = true;
                 } else {
                     row.style.display = 'none';
                 }
-            });
-            // Hide the industry section if no rows are visible
-            industrySection.style.display = hasVisibleRow ? '' : 'none';
-            if (hasVisibleRow) {
-                hasVisibleIndustry = true;
-            }
-        });
-        // Hide the section if no industry sections are visible
-        section.style.display = hasVisibleIndustry ? '' : 'none';
-
-        // Show all rows and sections if the query is empty
-        if (query === '') {
-            section.style.display = '';
-            industrySections.forEach(industrySection => {
-                industrySection.style.display = '';
-                const rows = industrySection.querySelectorAll('table tbody tr');
-                rows.forEach(row => {
-                    row.style.display = '';
-                });
             });
         }
     });
