@@ -18,14 +18,22 @@
 
     <div class="container">
         <div class="header-container">
-            <h1>Stock Watchlist Report</h1>
-            <div class="button-container">
-                <button id="refresh-button" class="refresh-button">Refresh Data</button>
-                <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+            <div class="header-left">
+                <h1>Stock Watchlist Report</h1>
+                <nav class="navigation">
+                    <a href="watchlist.html" class="active">Watchlist</a>
+                    <a href="earnings_calendar.html">Earnings Calendar</a>
+                </nav>
+            </div>
+            <div class="header-controls">
+                <div class="button-container">
+                    <button id="refresh-button" class="refresh-button">Refresh Data</button>
+                    <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+                </div>
+                <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
-        <div id="last-updated" class="last-updated"></div>
-
+        
         <!-- TradingView Market Trends Widget Container -->
 <div id="market-trends-widget" class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
@@ -43,12 +51,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Navigation Menu -->
-    <nav class="navigation">
-        <a href="watchlist.html" class="active">Watchlist</a>
-        <a href="earnings_calendar.html">Earnings Calendar</a>
-    </nav>
 
     <!-- Script to Load TradingView Widgets -->
     <script type="module">
