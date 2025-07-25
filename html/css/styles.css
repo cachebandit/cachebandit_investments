@@ -346,21 +346,34 @@ td.close {
 .search-container {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
     margin-bottom: 20px;
+}
+
+.search-wrapper {
     position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none; /* Make icon non-interactive */
 }
 
 #search-input {
     width: 100%;
-    max-width: 400px;
-    padding: 10px 15px;
+    padding: 10px 40px; /* T/B, L/R padding for icons */
     font-size: 14px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     background-color: var(--container-bg);
     color: var(--text-primary);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 #search-input:focus {
@@ -371,7 +384,9 @@ td.close {
 
 .clear-search {
     position: absolute;
-    right: 12px;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
     font-size: 20px;
     color: var(--text-secondary);
@@ -379,8 +394,8 @@ td.close {
     line-height: 1;
 }
 
-#search-input:not(:placeholder-shown) + .clear-search {
-    display: block;
+#search-input:not(:placeholder-shown) ~ .clear-search {
+    display: inline;
 }
 
 .star-icon {

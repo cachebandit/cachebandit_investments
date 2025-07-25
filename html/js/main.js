@@ -330,51 +330,73 @@ function renderCategory(category, data) {
 }
 
 function filterTable(query) {
-    // Get all sections including Owned
-    const sections = document.querySelectorAll('.section');
     const searchTerm = query.toLowerCase();
+    const sections = document.querySelectorAll('.section');
 
+    // If search is empty, show everything and exit
+    if (searchTerm === '') {
+        sections.forEach(section => {
+            section.style.display = '';
+            section.querySelectorAll('.industry-section').forEach(is => is.style.display = '');
+            section.querySelectorAll('table tbody tr').forEach(row => row.style.display = '');
+        });
+        return;
+    }
+
+    // If there is a search term, filter
     sections.forEach(section => {
-        // Get all rows in the current section, including those in Owned
-        const rows = section.querySelectorAll('table tbody tr');
-        
-        if (searchTerm === '') {
-            // Show all rows when search is empty
-            rows.forEach(row => {
-                row.style.display = '';
+        let isSectionVisible = false;
+
+        const industrySections = section.querySelectorAll('.industry-section');
+        if (industrySections.length > 0) {
+            // Handle categories with industries
+            industrySections.forEach(industrySection => {
+                const rows = industrySection.querySelectorAll('table tbody tr');
+                let isIndustryVisible = false;
+
+                rows.forEach(row => {
+                    const symbol = row.querySelector('.symbol').textContent.toLowerCase();
+                    const name = row.querySelector('.company-name').textContent.toLowerCase();
+                    
+                    if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
+                        row.style.display = '';
+                        isIndustryVisible = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (isIndustryVisible) {
+                    industrySection.style.display = '';
+                    isSectionVisible = true;
+                } else {
+                    industrySection.style.display = 'none';
+                }
             });
         } else {
-            // Filter rows based on search term
+            // Handle "Owned" category
+            const rows = section.querySelectorAll('table tbody tr');
             rows.forEach(row => {
                 const symbol = row.querySelector('.symbol').textContent.toLowerCase();
                 const name = row.querySelector('.company-name').textContent.toLowerCase();
                 
                 if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
                     row.style.display = '';
+                    isSectionVisible = true;
                 } else {
                     row.style.display = 'none';
                 }
             });
         }
+
+        // Show or hide the entire section
+        if (isSectionVisible) {
+            section.style.display = '';
+        } else {
+            section.style.display = 'none';
+        }
     });
 }
-
-// Constants for table headers
-const TABLE_HEADERS = `
-    <tr>
-        <th class="company-name">Company Name</th>
-        <th class="symbol">Symbol</th>
-        <th class="market-cap">Market Cap</th>
-        <th class="open">Open</th>
-        <th class="high">High</th>
-        <th class="low">Low</th>
-        <th class="close">Close</th>
-        <th class="change">Change</th>
-        <th class="percent-change">% Change</th>
-        <th class="rsi">RSI</th>
-    </tr>
-`;
-
 
 window.toggleFlag = function(event, symbol, element) {
     event.stopPropagation();
