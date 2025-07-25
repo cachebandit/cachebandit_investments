@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings Calendar</title>
+    <link rel="stylesheet" href="css/calendar-styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <h1>Earnings Calendar</h1>
+            <nav class="navigation">
+                <a href="watchlist.html">Watchlist</a>
+                <a href="earnings_calendar.html" class="active">Earnings Calendar</a>
+            </nav>
+        </div>
+
+        <div class="calendar-controls">
+            <button id="prev-month">Previous Month</button>
+            <h2 id="current-month"></h2>
+            <button id="next-month">Next Month</button>
+        </div>
+
+        <div id="calendar-container"></div>
+    </div>
+
+    <script type="module" src="js/calendar.js"></script>
+</body>
+</html>
