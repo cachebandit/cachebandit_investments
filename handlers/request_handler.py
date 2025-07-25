@@ -3,9 +3,10 @@ import json
 import os
 from urllib.parse import urlparse, parse_qs
 import logging
+from datetime import datetime
 
 from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
-from services.stock_service import fetch_category_data, fetch_detailed_info, cache, update_stock_flag
+from services.stock_service import fetch_category_data, fetch_detailed_info, cache, update_stock_flag, fetch_earnings_data
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):
     """HTTP request handler for stock chart and data requests"""
@@ -23,11 +24,15 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         elif parsed_path.path == COMMIT_REFRESH_ENDPOINT:
             self._handle_commit_refresh()
 
-        # Serve static files like HTML, JS, CSS
+        # Endpoint for earnings calendar data
+        elif parsed_path.path == '/api/earnings':
+            self._handle_earnings_request(query_params)
+
+        # Serve static files
         elif parsed_path.path.startswith('/html/'):
             self._serve_static_file(parsed_path.path)
         else:
-            self.send_error(404, "Page not found")
+            self.send_error(404, "Not found")
 
 
     def _handle_stock_info(self, query_params):
@@ -102,6 +107,22 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps({"success": success}).encode())
+
+    def _handle_earnings_request(self, query_params):
+        """Handle earnings calendar data requests"""
+        try:
+            month = int(query_params.get('month', [datetime.now().month])[0])
+            year = int(query_params.get('year', [datetime.now().year])[0])
+            
+            # Get earnings data from your stock service
+            earnings_data = fetch_earnings_data(month, year)
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(earnings_data).encode())
+        except Exception as e:
+            self.send_error(500, str(e))
 
     def _serve_static_file(self, path):
         """Serve static files"""

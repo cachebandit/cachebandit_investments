@@ -64,42 +64,46 @@ def fetch_category_data(category):
 
         # Retrieve data from yfinance for each symbol
         try:
-            symbol_data = yf.Ticker(symbol)
-            info = symbol_data.info
+            ticker = yf.Ticker(symbol)
+            info = ticker.info
             
-            # Ensure essential fields are present
-            marketcap = info.get('marketCap')
-            name = info.get('longName', 'Unknown')
-            trailing_pe = info.get('trailingPE', None)
-            forward_pe = info.get('forwardPE', None)
-            enterprise_to_ebitda = info.get('enterpriseToEbitda', None)
-            stock_description = info.get('longBusinessSummary')
-            fiftyTwoWeekHigh = info.get('fiftyTwoWeekHigh', None)
-            fiftyTwoWeekLow = info.get('fiftyTwoWeekLow', None)
-            earningsDate = info.get('earningsTimestampStart', None)
-            exchangeName = info.get('fullExchangeName', None)
-            earningsDate = datetime.fromtimestamp(earningsDate).strftime('%m-%d-%Y') if earningsDate else None
-
-            # Format market cap in millions, if available
-            format_marketcap = round(marketcap / 1_000_000, 2) if marketcap else 'N/A'
-
-            # Append formatted data for each stock, including the original category
+            # Get market data along with other data
+            market_data = fetch_detailed_info([symbol]).get(symbol, {})
+            
+            # Get earnings timestamp
+            earnings_timestamp = info.get('earningsTimestamp')
+            
+            # Determine earnings timing
+            earningsTiming = 'TBA'
+            earningsDate = None
+            
+            if earnings_timestamp:
+                date_obj = datetime.fromtimestamp(earnings_timestamp)
+                earningsDate = date_obj.strftime('%m-%d-%Y')
+                earningsTiming = 'BMO' if date_obj.hour < 12 else 'AMC'
+            
+            # Add to result data
             result_data.append({
                 'Symbol': symbol,
-                'Name': name,
-                'Market Cap': format_marketcap,
-                'Trailing PE': trailing_pe,
-                'Forward PE': forward_pe,
-                'EV/EBITDA': enterprise_to_ebitda,
+                'Name': info.get('longName', 'Unknown'),
+                'Market Cap': round(info.get('marketCap', 0) / 1_000_000, 2) if info.get('marketCap') else 'N/A',
+                'Trailing PE': info.get('trailingPE', None),
+                'Forward PE': info.get('forwardPE', None),
+                'EV/EBITDA': info.get('enterpriseToEbitda', None),
                 'flag': flag,
                 'category': stock_info.get('category', category),
                 'industry': stock_info.get('industry', None),
-                'stock_description': stock_description,
-                'fiftyTwoWeekHigh': fiftyTwoWeekHigh,
-                'fiftyTwoWeekLow': fiftyTwoWeekLow,
+                'stock_description': info.get('longBusinessSummary'),
+                'fiftyTwoWeekHigh': info.get('fiftyTwoWeekHigh', None),
+                'fiftyTwoWeekLow': info.get('fiftyTwoWeekLow', None),
+                'close': market_data.get('Close'),
+                'priceChange': market_data.get('Price Change'),
+                'percentChange': market_data.get('Percent Change'),
+                'rsi': market_data.get('RSI'),
                 'earningsDate': earningsDate,
-                'exchangeName': exchangeName,
-                'stockUrl': stockUrl
+                'earningsTiming': earningsTiming,
+                'stockUrl': stockUrl,
+                'exchangeName': info.get('exchange')
             })
 
         except Exception as e:
@@ -221,3 +225,50 @@ def update_stock_flag(symbol, new_flag):
     except Exception as e:
         logging.error(f"Error updating flag for {symbol}: {e}")
         return False
+
+def fetch_earnings_data(month, year):
+    """Fetch earnings calendar data from cached stock data"""
+    try:
+        # Load cached stock data
+        with open('cache/stock_data.json', 'r') as f:
+            cached_data = json.load(f)
+
+        earnings_data = {}
+        data = cached_data.get('data', {})
+        
+        for category_data in data.values():
+            for stock in category_data:
+                earnings_date = stock.get('earningsDate')
+                
+                if not earnings_date:
+                    continue
+                    
+                try:
+                    date_obj = datetime.strptime(earnings_date, '%m-%d-%Y')
+                    
+                    if date_obj.month == month and date_obj.year == year:
+                        date_str = date_obj.strftime('%m-%d-%Y')
+                        
+                        if date_str not in earnings_data:
+                            earnings_data[date_str] = []
+                            
+                        earnings_data[date_str].append({
+                            'symbol': stock['Symbol'],
+                            'name': stock['Name'],
+                            'earningsTiming': stock.get('earningsTiming', 'TBA'),
+                            'stockUrl': stock.get('stockUrl', ''),
+                            'close': stock.get('close'),
+                            'priceChange': stock.get('priceChange'),
+                            'percentChange': stock.get('percentChange'),
+                            'rsi': stock.get('rsi')
+                        })
+                        
+                except (ValueError, TypeError) as e:
+                    logging.error(f"Error parsing date {earnings_date} for {stock.get('Symbol')}: {e}")
+                    continue
+
+        return earnings_data
+        
+    except Exception as e:
+        logging.error(f"Error fetching earnings data: {e}")
+        return {}
