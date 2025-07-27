@@ -64,6 +64,19 @@
                     "Name": "Palantir Technologies Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/palantir.svg"
                 }
+                ,
+                {
+                    "symbol": "DDOG",
+                    "flag": false,
+                    "Name": "Datadog, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/datadog.svg"
+                },
+                {
+                    "symbol": "APP",
+                    "flag": false,
+                    "Name": "AppLovin Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/applovin.svg"
+                }
             ],
             "Enterprise Software": [
                 {
@@ -229,6 +242,18 @@
                     "flag": false,
                     "Name": "Ecolab Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/ecolab.svg"
+                },
+                {
+                    "symbol": "SHW",
+                    "flag": false,
+                    "Name": "The Sherwin-Williams Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sherwin-williams.svg"
+                },
+                {
+                    "symbol": "LIN",
+                    "flag": false,
+                    "Name": "Linde plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/linde.svg"
                 }
             ],
             "Machinery": [
@@ -243,6 +268,12 @@
                     "flag": false,
                     "Name": "Deere & Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/deere.svg"
+                },
+                {
+                    "symbol": "TSCO",
+                    "flag": false,
+                    "Name": "Tractor Supply Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tractor-supply.svg"
                 }
             ],
             "Waste Management": [
@@ -356,6 +387,14 @@
                     "Name": "Honeywell International Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/honeywell.svg"
                 }
+            ],
+            "Power Management": [
+                {
+                    "symbol": "ETN",
+                    "flag": false,
+                    "Name": "Eaton Corporation plc",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/eaton.svg"
+                }
             ]
         },
         "Energy & Utilities": {
@@ -433,6 +472,13 @@
                     "flag": false,
                     "Name": "Constellation Energy Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/constellation-energy.svg"
+                }
+                ,
+                {
+                    "symbol": "VST",
+                    "flag": false,
+                    "Name": "Vistra Corp.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vistra-energy.svg"
                 }
             ]
         },
@@ -652,6 +698,13 @@
                     "Name": "Alibaba Group Holding Limited",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/alibaba.svg"
                 }
+                ,
+                {
+                    "symbol": "CHWY",
+                    "flag": false,
+                    "Name": "Chewy, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/chewy.svg"
+                }
             ],
             "Home Improvement": [
                 {
@@ -673,10 +726,10 @@
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/autozone.svg"
                 },
                 {
-                    "symbol": "TSCO",
+                    "symbol": "ORLY",
                     "flag": false,
-                    "Name": "Tractor Supply Company",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/tractor-supply.svg"
+                    "Name": "O'Reilly Automotive, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/o-reilly-auto.svg"
                 }
             ],
             "Gambling": [
@@ -873,6 +926,44 @@
                     "flag": false,
                     "Name": "Mastercard Incorporated",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/mastercard.svg"
+                },
+                {
+                    "symbol": "PYPL",
+                    "flag": false,
+                    "Name": "PayPal Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/paypal.svg"
+                },
+                {
+                    "symbol": "XYZ",
+                    "flag": false,
+                    "Name": "Block, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/block.svg"
+                },
+                {
+                    "symbol": "PYPL",
+                    "flag": false,
+                    "Name": "PayPal Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/paypal.svg"
+                }
+            ],
+            "Brokerages and Digital Assets": [
+                {
+                    "symbol": "HOOD",
+                    "flag": false,
+                    "Name": "Robinhood Markets, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/robinhood.svg"
+                },
+                {
+                    "symbol": "COIN",
+                    "flag": false,
+                    "Name": "Coinbase Global, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/coinbase.svg"
+                },
+                {
+                    "symbol": "MSTR",
+                    "flag": false,
+                    "Name": "MicroStrategy Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/microstrategy.svg"
                 }
             ],
             "Investment Banks": [
@@ -905,6 +996,19 @@
                     "flag": false,
                     "Name": "Morgan Stanley",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/morgan-stanley.svg"
+                }
+                ,
+                {
+                    "symbol": "APO",
+                    "flag": false,
+                    "Name": "Apollo Global Management, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/apollo.svg"
+                },
+                {
+                    "symbol": "KKR",
+                    "flag": false,
+                    "Name": "KKR & Co. Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kkr.svg"
                 }
             ],
             "Insurance": [
@@ -1066,6 +1170,13 @@
                     "Name": "Humana Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/humana.svg"
                 }
+                ,
+                {
+                    "symbol": "MCK",
+                    "flag": false,
+                    "Name": "McKesson Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mckesson.svg"
+                }
             ]
         },
         "Communication Services": {
@@ -1145,6 +1256,13 @@
                     "flag": false,
                     "Name": "Reddit, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/reddit.svg"
+                }
+                ,
+                {
+                    "symbol": "TRI",
+                    "flag": false,
+                    "Name": "Thomson Reuters Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/thomson-reuters.svg"
                 }
             ]
         },
