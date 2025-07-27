@@ -104,8 +104,11 @@ function renderCalendar(earningsData = {}) {
 
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item bmo';
-                    companyDiv.textContent = company.name;
                     companyDiv.title = `${company.symbol} - Before Hours`;
+                    companyDiv.innerHTML = `
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
+                        <span>${company.name}</span>
+                    `;
 
                     const marketDataDiv = document.createElement('div');
                     marketDataDiv.className = 'market-data';
@@ -147,8 +150,11 @@ function renderCalendar(earningsData = {}) {
 
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item amc';
-                    companyDiv.textContent = company.name;
                     companyDiv.title = `${company.symbol} - After Hours`;
+                    companyDiv.innerHTML = `
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
+                        <span>${company.name}</span>
+                    `;
 
                     const marketDataDiv = document.createElement('div');
                     marketDataDiv.className = 'market-data';
