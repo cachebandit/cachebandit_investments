@@ -1,9 +1,7 @@
 import { showChartPopup } from './chart.js';
 
 let currentDate = new Date();
-let monthlyEarningsData = {}; // Cache for the current month's data
-let currentMonth = -1;
-let currentYear = -1;
+let cachedMonthsData = {}; // Cache for multiple months of data, e.g., {'2024-6': data}
 
 function getRsiColorClass(rsi) {
     if (!rsi || rsi === 'N/A') return 'rsi-neutral';
@@ -216,16 +214,39 @@ if (calendarContainer) {
 
 // Function to update calendar with earnings data
 async function updateCalendar() {
-    const newMonth = currentDate.getMonth();
-    const newYear = currentDate.getFullYear();
+    // Calculate the start and end of the week to be displayed
+    const dayOfWeek = currentDate.getDay();
+    const startOfWeek = new Date(currentDate);
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    startOfWeek.setDate(currentDate.getDate() + diff);
 
-    // Fetch new data only if the month or year has changed
-    if (newMonth !== currentMonth || newYear !== currentYear) {
-        monthlyEarningsData = await fetchEarningsData(newMonth, newYear);
-        currentMonth = newMonth;
-        currentYear = newYear;
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 4);
+
+    const startMonth = startOfWeek.getMonth();
+    const startYear = startOfWeek.getFullYear();
+    const endMonth = endOfWeek.getMonth();
+    const endYear = endOfWeek.getFullYear();
+
+    const startMonthKey = `${startYear}-${startMonth}`;
+    const endMonthKey = `${endYear}-${endMonth}`;
+
+    // Fetch data for the start month if it's not already in our cache
+    if (!cachedMonthsData[startMonthKey]) {
+        cachedMonthsData[startMonthKey] = await fetchEarningsData(startMonth, startYear);
     }
-    renderCalendar(monthlyEarningsData);
+
+    let earningsData = { ...cachedMonthsData[startMonthKey] };
+
+    // If the week spans two different months, fetch for the second month (if not cached) and merge
+    if (startMonthKey !== endMonthKey) {
+        if (!cachedMonthsData[endMonthKey]) {
+            cachedMonthsData[endMonthKey] = await fetchEarningsData(endMonth, endYear);
+        }
+        earningsData = { ...earningsData, ...cachedMonthsData[endMonthKey] };
+    }
+
+    renderCalendar(earningsData);
 }
 
 // Initial calendar render

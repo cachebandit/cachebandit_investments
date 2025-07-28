@@ -1,3 +1,5 @@
+import { showChartPopup } from './chart.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     loadChartData();
 });
@@ -116,7 +118,7 @@ function renderChart(categorizedSeries, categories) {
             }
         },
         grid: {
-            bottom: '18%' // Increase bottom padding to make room for legend
+            bottom: '15%' // Adjust bottom padding for legend
         },
         legend: {
             data: categories,
@@ -189,16 +191,18 @@ function renderChart(categorizedSeries, categories) {
         }, 0);
     });
 
-    // Add a click listener to the chart's blank area to reset highlighting
-    myChart.getZr().on('click', function (event) {
-        // If the click is not on a data point and a series is highlighted, reset
-        if (!event.target && highlightedSeries) {
+    // Add a click listener to the chart
+    myChart.on('click', function (params) {
+        // If a data point (a stock) is clicked, show the chart popup
+        if (params.seriesName && params.data && params.data.symbol) {
+            showChartPopup(params.data.symbol);
+        } 
+        // If a blank area is clicked and a series is highlighted, reset the view
+        else if (params.seriesName === undefined && highlightedSeries) {
             highlightedSeries = null;
             const resetSeries = series.map(s => ({
                 name: s.name,
-                itemStyle: {
-                    opacity: 1
-                },
+                itemStyle: { opacity: 1 },
                 label: { show: false }
             }));
             myChart.setOption({ series: resetSeries });

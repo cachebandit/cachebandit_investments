@@ -938,12 +938,6 @@
                     "flag": false,
                     "Name": "Block, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/block.svg"
-                },
-                {
-                    "symbol": "PYPL",
-                    "flag": false,
-                    "Name": "PayPal Holdings, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/paypal.svg"
                 }
             ],
             "Brokerages and Digital Assets": [
