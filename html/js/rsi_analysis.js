@@ -1,3 +1,5 @@
+import { showChartPopup } from './chart.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     loadRsiData();
 });
@@ -58,6 +60,20 @@ async function loadRsiData() {
         renderList('exiting-oversold-list', exitingOversold);
         renderList('exiting-overbought-list', exitingOverbought);
 
+        // Add a single event listener to the grid container for chart popups
+        const gridContainer = document.querySelector('.rsi-grid-container');
+        if (gridContainer) {
+            gridContainer.addEventListener('click', function(event) {
+                const companyInfo = event.target.closest('.rsi-company-info');
+                if (companyInfo) {
+                    const rsiItem = companyInfo.closest('.rsi-item');
+                    if (rsiItem && rsiItem.dataset.symbol) {
+                        showChartPopup(rsiItem.dataset.symbol);
+                    }
+                }
+            });
+        }
+
     } catch (error) {
         console.error('Error loading RSI data:', error);
     }
@@ -87,7 +103,7 @@ function renderList(containerId, stocks) {
         else if (rsiValue <= 35) rsiClass = 'rsi-entering-oversold'; // Orange
 
         return `
-            <div class="rsi-item">
+            <div class="rsi-item" data-symbol="${stock.Symbol}">
                 <div class="rsi-company-info">
                     <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name} logo" onerror="this.style.display='none'"/>
                     <span class="company-name-text">${stock.Name}</span>

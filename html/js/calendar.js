@@ -1,3 +1,5 @@
+import { showChartPopup } from './chart.js';
+
 let currentDate = new Date();
 let monthlyEarningsData = {}; // Cache for the current month's data
 let currentMonth = -1;
@@ -105,6 +107,7 @@ function renderCalendar(earningsData = {}) {
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item bmo';
                     companyDiv.title = `${company.symbol} - Before Hours`;
+                    companyDiv.dataset.symbol = company.symbol;
                     companyDiv.innerHTML = `
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
                         <span>${company.name}</span>
@@ -151,6 +154,7 @@ function renderCalendar(earningsData = {}) {
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item amc';
                     companyDiv.title = `${company.symbol} - After Hours`;
+                    companyDiv.dataset.symbol = company.symbol;
                     companyDiv.innerHTML = `
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
                         <span>${company.name}</span>
@@ -199,6 +203,16 @@ document.getElementById('next-week').addEventListener('click', () => {
     currentDate.setDate(currentDate.getDate() + 7);
     updateCalendar();
 });
+
+const calendarContainer = document.getElementById('calendar-container');
+if (calendarContainer) {
+    calendarContainer.addEventListener('click', function(event) {
+        const earningsItem = event.target.closest('.earnings-item');
+        if (earningsItem && earningsItem.dataset.symbol) {
+            showChartPopup(earningsItem.dataset.symbol);
+        }
+    });
+}
 
 // Function to update calendar with earnings data
 async function updateCalendar() {

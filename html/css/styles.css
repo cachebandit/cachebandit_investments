@@ -189,7 +189,7 @@ td.close {
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
-    min-width: 110px; /* Adjust width for new button */
+    min-width: 140px; /* Set a consistent width for all nav buttons */
     text-align: center; /* Center text inside the button */
 }
 
@@ -319,12 +319,10 @@ td.close {
 }
 
 .tradingview-widget-container-tape {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
     width: 100%;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px; /* Add space below the ticker tape */
 }
 
 .tradingview-widget-container {
