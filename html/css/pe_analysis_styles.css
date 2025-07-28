@@ -1,0 +1,115 @@
+/* === Sleek Light Theme for P/E Analysis === */
+
+:root {
+    --bg-color: #f8f9fa;
+    --container-bg: #ffffff;
+    --hover-bg: #f1f3f5;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h1 {
+    color: var(--text-primary);
+    font-size: 28px;
+    margin: 0;
+    font-weight: 500;
+}
+
+h2 {
+    color: var(--text-primary);
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    min-width: 130px; /* Standard width for 4 buttons */
+    text-align: center;
+}
+
+.navigation a:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.navigation a.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+#peScatterChart {
+    width: 100%;
+    height: 75vh; /* Use viewport height for responsiveness */
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.pe-section {
+    margin-top: 40px; /* Add space between the chart and this section */
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#negative-pe-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    /* Create a multi-column list for better space utilization */
+    columns: 4;
+    -webkit-columns: 4;
+    -moz-columns: 4;
+}
+
+#negative-pe-list li {
+    padding: 4px 0;
+    font-size: 14px;
+}
