@@ -1,6 +1,17 @@
 import { showChartPopup } from './chart.js';
 
+let myChart;
+let chartData = {}; // Will hold the nested data: { category: { industry: [stocks] } }
+let currentView = 'categories'; // Can be 'categories' or 'industries'
+let selectedCategory = null;
+let highlightedSeries = null;
+
 document.addEventListener('DOMContentLoaded', function() {
+    const chartDom = document.getElementById('peScatterChart');
+    if (chartDom) {
+        myChart = echarts.init(chartDom);
+        setupEventListeners();
+    }
     loadChartData();
 });
 
@@ -18,17 +29,25 @@ async function loadChartData() {
 }
 
 function prepareChartData(categoryData) {
-    const categorizedSeries = {};
     const negativePeStocks = [];
-    // Get clean category names without the "category_" prefix and filter out "Owned"
-    const categories = Object.keys(categoryData)
-        .map(key => key.replace('category_', ''))
-        .filter(cat => cat !== "Owned");
     const processedSymbols = new Set();
 
-    // Initialize an array for each clean category name
-    categories.forEach(cat => {
-        categorizedSeries[cat] = [];
+    // Define the single source of truth for active categories
+    const activeCategories = [
+        'Information Technology',
+        'Industrials',
+        'Energy & Utilities',
+        'Financial Services',
+        'Healthcare',
+        'Communication Services',
+        'Real Estate',
+        'Consumer Staples',
+        'Consumer Discretionary'
+    ];
+
+    // Initialize the nested data structure
+    activeCategories.forEach(cat => {
+        chartData[cat] = {};
     });
 
     // Flatten all stocks into a single list, avoiding duplicates from the "Owned" category
@@ -45,61 +64,81 @@ function prepareChartData(categoryData) {
     allStocks.forEach(stock => {
         const marketCap = stock['Market Cap'];
         const forwardPE = stock['Forward PE'];
-        const category = stock.category; // This is the clean name, e.g., "Information Technology"
+        const category = stock.category;
+        const industry = stock.industry || 'Uncategorized';
 
-        // If stock has a valid, positive Forward P/E, add it to the chart data
-        if (marketCap !== 'N/A' && forwardPE !== null && forwardPE !== 'N/A' && forwardPE > 0) {
-            // Ensure the category exists before pushing data
-            if (categorizedSeries[category]) {
-                categorizedSeries[category].push({
+        // Process the stock only if its category is in our active list
+        if (activeCategories.includes(category) && marketCap !== 'N/A' && forwardPE !== null && forwardPE !== 'N/A' && forwardPE > 0) {
+            if (chartData[category]) {
+                if (!chartData[category][industry]) {
+                    chartData[category][industry] = [];
+                }
+                chartData[category][industry].push({
                     name: stock.Name,
                     value: [marketCap / 1000, forwardPE], // Market Cap in Billions
                     symbol: stock.Symbol
                 });
             }
         } else {
-            // Otherwise, add it to the list of stocks with negative or N/A P/E
             negativePeStocks.push(stock);
         }
     });
 
-    renderChart(categorizedSeries, categories); // Pass clean category names
+    renderChart(); // Render the initial category view
     renderNegativePeList(negativePeStocks);
 }
 
-function renderChart(categorizedSeries, categories) {
-    const chartDom = document.getElementById('peScatterChart');
-    if (!chartDom) return;
-    const myChart = echarts.init(chartDom);
-    let highlightedSeries = null;
+function renderChart() {
+    if (!myChart) return;
 
-    // Create a series for each category
-    const series = categories.map(category => ({
-        name: category,
-        type: 'scatter',
-        data: categorizedSeries[category],
-        symbolSize: 8,
-        label: {
-            show: false, // Initially hidden
-            formatter: (params) => params.data.symbol,
-            position: 'top',
-            fontSize: 10
-        },
-        emphasis: {
-            focus: 'series',
-            label: {
-                show: true,
-                formatter: (params) => params.data.symbol,
-                position: 'top'
-            }
-        }
-    }));
+    let series = [];
+    let legendData = [];
+    let chartTitle = 'Market Cap vs. Forward P/E Ratio';
+
+    if (currentView === 'categories') {
+        legendData = Object.keys(chartData);
+        series = legendData.map(category => {
+            // Combine all stocks from all industries within this category
+            const categoryStocks = Object.values(chartData[category]).flat();
+            return {
+                name: category,
+                type: 'scatter',
+                data: categoryStocks,
+                symbolSize: 8,
+                label: {
+                    show: false, // Initially hidden
+                    formatter: (params) => params.data.symbol,
+                    position: 'top',
+                    fontSize: 10
+                },
+                emphasis: {
+                    focus: 'series',
+                    label: {
+                        show: true,
+                        formatter: (params) => params.data.symbol,
+                        position: 'top'
+                    }
+                }
+            };
+        });
+    } else if (currentView === 'industries' && selectedCategory) {
+        chartTitle = `${selectedCategory} - Market Cap vs. Forward P/E`;
+        legendData = Object.keys(chartData[selectedCategory]);
+        series = legendData.map(industry => ({
+            name: industry,
+            type: 'scatter',
+            data: chartData[selectedCategory][industry],
+            symbolSize: 8,
+            label: { show: true, formatter: (p) => p.data.symbol, position: 'top', fontSize: 10 },
+            emphasis: { focus: 'series', label: { show: true, formatter: (p) => p.data.symbol, position: 'top' } }
+        }));
+    }
 
     const option = {
         title: {
-            text: 'Market Cap vs. Forward P/E Ratio',
+            text: chartTitle,
             left: 'center',
-            top: 20 // Adds 20px of padding from the top of the chart container
+            top: 20
         },
         tooltip: {
             trigger: 'item',
@@ -111,19 +150,18 @@ function renderChart(categorizedSeries, categories) {
                 } else {
                     marketCapFormatted = `$${marketCapInBillions.toFixed(2)}B`;
                 }
-
                 return `${params.data.name} (${params.data.symbol})<br/>` +
                        `Market Cap: ${marketCapFormatted}<br/>` +
                        `Forward P/E: ${params.data.value[1].toFixed(2)}`;
             }
         },
         grid: {
-            bottom: '15%' // Adjust bottom padding for legend
+            bottom: '15%'
         },
         legend: {
-            data: categories,
-            orient: 'horizontal', // Lay out the legend horizontally
-            bottom: 10,         // Position it at the bottom of the chart
+            data: legendData,
+            orient: 'horizontal',
+            bottom: 10,
             type: 'scroll'
         },
         xAxis: {
@@ -133,7 +171,7 @@ function renderChart(categorizedSeries, categories) {
             nameGap: 30,
             axisLabel: {
                 formatter: function (value) {
-                    if (value >= 1000) { // 1000B = 1T
+                    if (value >= 1000) {
                         return (value / 1000) + 'T';
                     }
                     return value + 'B';
@@ -149,63 +187,88 @@ function renderChart(categorizedSeries, categories) {
         series: series
     };
 
-    myChart.setOption(option);
+    myChart.setOption(option, true); // `true` clears the previous chart state
+}
 
-    // Add event listener to handle legend clicks for persistent highlighting
+function setupEventListeners() {
+    const backButton = document.getElementById('back-button');
+    if (backButton) {
+        backButton.addEventListener('click', () => {
+            currentView = 'categories';
+            selectedCategory = null;
+            highlightedSeries = null;
+            renderChart();
+            backButton.style.display = 'none';
+        });
+    }
+
+    // This handles clicks on data points to open the TradingView chart
+    myChart.on('click', function (params) {
+        // If a data point (a stock) is clicked, always show the chart popup
+        if (params.componentType === 'series' && params.data && params.data.symbol) {
+            showChartPopup(params.data.symbol);
+        }
+        // If a blank area is clicked and a series is highlighted, reset the highlighting
+        else if (params.seriesName === undefined && highlightedSeries) {
+             highlightedSeries = null;
+             const seriesOption = myChart.getOption().series;
+             const resetSeries = seriesOption.map(s => ({
+                 name: s.name,
+                 itemStyle: { opacity: 1 },
+                 label: { show: false }
+             }));
+             myChart.setOption({ series: resetSeries });
+        }
+    });
+
+    // This handles clicks on the legend for drilling down and highlighting
     myChart.on('legendselectchanged', function (params) {
         const clickedSeriesName = params.name;
-        const allSeriesNames = categories;
+        const allSeriesNames = myChart.getOption().legend[0].data;
 
         // Immediately re-select all legend items to prevent them from being toggled off
         allSeriesNames.forEach(name => {
             myChart.dispatchAction({ type: 'legendSelect', name: name });
         });
 
-        // Use a zero-delay timeout to ensure this runs after the event queue is cleared
-        setTimeout(() => {
-            // If the user clicks the already highlighted series, reset everything
-            if (highlightedSeries === clickedSeriesName) {
-                highlightedSeries = null;
-                // Create a configuration to reset the opacity of all series
-                const resetSeries = series.map(s => ({
-                    name: s.name,
-                    itemStyle: { opacity: 1 },
-                    label: { show: false }
-                }));
-                myChart.setOption({ series: resetSeries });
-            } else {
-                // Otherwise, highlight the new series and downplay others
-                highlightedSeries = clickedSeriesName;
-                // Create a configuration that sets the opacity for each series
-                const updatedSeries = series.map(s => ({
-                    name: s.name,
-                    itemStyle: {
-                        opacity: s.name === highlightedSeries ? 1 : 0.2
-                    },
-                    label: {
-                        show: s.name === highlightedSeries
-                    }
-                }));
-                myChart.setOption({ series: updatedSeries });
-            }
-        }, 0);
-    });
-
-    // Add a click listener to the chart
-    myChart.on('click', function (params) {
-        // If a data point (a stock) is clicked, show the chart popup
-        if (params.seriesName && params.data && params.data.symbol) {
-            showChartPopup(params.data.symbol);
+        // If in category view, a legend click drills down
+        if (currentView === 'categories') {
+            selectedCategory = clickedSeriesName;
+            currentView = 'industries';
+            highlightedSeries = null; // Reset highlight on drilldown
+            renderChart();
+            document.getElementById('back-button').style.display = 'inline-block';
         } 
-        // If a blank area is clicked and a series is highlighted, reset the view
-        else if (params.seriesName === undefined && highlightedSeries) {
-            highlightedSeries = null;
-            const resetSeries = series.map(s => ({
-                name: s.name,
-                itemStyle: { opacity: 1 },
-                label: { show: false }
-            }));
-            myChart.setOption({ series: resetSeries });
+        // If in industry view, a legend click highlights the industry
+        else {
+            // Use a zero-delay timeout to ensure this runs after the event queue is cleared
+            setTimeout(() => {
+                // If the user clicks the already highlighted series, reset everything
+                if (highlightedSeries === clickedSeriesName) {
+                    highlightedSeries = null;
+                    // Create a configuration to reset the opacity and hide labels for all series
+                    const resetSeries = myChart.getOption().series.map(s => ({
+                        name: s.name,
+                        itemStyle: { opacity: 1 },
+                    label: { show: true }
+                    }));
+                    myChart.setOption({ series: resetSeries });
+                } else {
+                    // Otherwise, highlight the new series and downplay others
+                    highlightedSeries = clickedSeriesName;
+                    // Create a configuration that sets the opacity and label visibility for each series
+                    const updatedSeries = myChart.getOption().series.map(s => ({
+                        name: s.name,
+                        itemStyle: {
+                            opacity: s.name === highlightedSeries ? 1 : 0.2
+                        },
+                        label: {
+                            show: s.name === highlightedSeries
+                        }
+                    }));
+                    myChart.setOption({ series: updatedSeries });
+                }
+            }, 0);
         }
     });
 
