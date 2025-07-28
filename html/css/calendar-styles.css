@@ -62,7 +62,6 @@ h1 {
     font-size: 14px; /* Match watchlist style */
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
-    min-width: 120px; /* Set a minimum width for consistency */
     text-align: center; /* Center text inside the button */
 }
 

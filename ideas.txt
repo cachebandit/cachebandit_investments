@@ -2,6 +2,6 @@
 - have the same temporary holder for NA Values for every column
 - add tracking table for Stock in BUY/SELL Range
 - build out Chart Analysis page
-- add tab button that can link to different pages and pull popups
 - add individaul category refresh
 - make phone accessable
+- sort earnings calendar by market cap

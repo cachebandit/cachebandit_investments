@@ -28,6 +28,10 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         elif parsed_path.path == '/api/earnings':
             self._handle_earnings_request(query_params)
 
+        # New endpoint to serve the entire cache file for RSI table
+        elif parsed_path.path == '/api/all_stock_data':
+            self._handle_all_stock_data()
+
         # Serve static files
         elif parsed_path.path.startswith('/html/'):
             self._serve_static_file(parsed_path.path)
@@ -107,6 +111,24 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps({"success": success}).encode())
+
+    def _handle_all_stock_data(self):
+        """Serve the entire cached stock data file."""
+        cache_path = os.path.join('cache', 'stock_data.json')
+        try:
+            with open(cache_path, 'rb') as f:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(f.read())
+        except FileNotFoundError:
+            self.send_response(404)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            error_message = {'error': 'Cache file not found. Please refresh data on the Watchlist page first.'}
+            self.wfile.write(json.dumps(error_message).encode())
+        except Exception as e:
+            self.send_error(500, str(e))
 
     def _handle_earnings_request(self, query_params):
         """Handle earnings calendar data requests"""

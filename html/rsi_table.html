@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSI Analysis Table</title>
+    <link rel="stylesheet" href="css/rsi_table_styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="header-left">
+                <h1>RSI Analysis</h1>
+                <nav class="navigation">
+                    <a href="watchlist.html">Watchlist</a>
+                    <a href="earnings_calendar.html">Earnings Calendar</a>
+                    <a href="rsi_table.html" class="active">RSI Table</a>
+                </nav>
+            </div>
+        </div>
+        <div class="rsi-grid-container">
+            <!-- Column 1: Oversold -->
+            <div class="rsi-column">
+                <div class="rsi-box">
+                    <h2>Oversold (≤ 30)</h2>
+                    <div id="oversold-list" class="rsi-list"></div>
+                </div>
+            </div>
+
+            <!-- Column 2: Near Oversold -->
+            <div class="rsi-column">
+                <div class="rsi-box">
+                    <h2>Entering Oversold (30-40)</h2>
+                    <div id="entering-oversold-list" class="rsi-list"></div>
+                </div>
+                <div class="rsi-box">
+                    <h2>Exiting Oversold (30-40)</h2>
+                    <div id="exiting-oversold-list" class="rsi-list"></div>
+                </div>
+            </div>
+
+            <!-- Column 3: Near Overbought -->
+            <div class="rsi-column">
+                <div class="rsi-box">
+                    <h2>Entering Overbought (60-70)</h2>
+                    <div id="entering-overbought-list" class="rsi-list"></div>
+                </div>
+                <div class="rsi-box">
+                    <h2>Exiting Overbought (60-70)</h2>
+                    <div id="exiting-overbought-list" class="rsi-list"></div>
+                </div>
+            </div>
+
+            <!-- Column 4: Overbought -->
+            <div class="rsi-column">
+                <div class="rsi-box">
+                    <h2>Overbought (≥ 70)</h2>
+                    <div id="overbought-list" class="rsi-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="js/rsi_table.js"></script>
+</body>
+</html>

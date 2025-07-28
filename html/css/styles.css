@@ -189,7 +189,7 @@ td.close {
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
-    min-width: 120px; /* Set a minimum width for consistency */
+    min-width: 110px; /* Adjust width for new button */
     text-align: center; /* Center text inside the button */
 }
 

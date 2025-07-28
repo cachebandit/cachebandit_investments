@@ -1,0 +1,197 @@
+/* === Sleek Light Theme for RSI Table === */
+
+:root {
+    --bg-color: #f8f9fa;
+    --container-bg: #ffffff;
+    --hover-bg: #f1f3f5;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+    --price-up-color: #28a745; /* Green */
+    --price-down-color: #dc3545; /* Red */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h1 {
+    color: var(--text-primary);
+    font-size: 28px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    min-width: 110px;
+    text-align: center;
+}
+
+.navigation a:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.navigation a.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.rsi-grid-container {
+    display: grid;
+    /* Create a responsive grid that wraps columns if they can't fit.
+       Each column will be at least 300px wide. */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    align-items: start; /* This allows columns to have their own natural height */
+}
+
+.rsi-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* This creates the space between boxes in the same column */
+}
+
+.rsi-box {
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.rsi-box h2 {
+    font-size: 18px;
+    margin-top: 0;
+    color: var(--text-secondary);
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0;
+}
+
+.rsi-list {
+    display: flex;
+    flex-direction: column;
+    padding-top: 15px;
+    gap: 10px;
+}
+
+.rsi-item {
+    /* Item is no longer a card, just a list entry */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.rsi-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.rsi-company-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.rsi-logo {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.company-name-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rsi-market-data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.rsi-market-data span {
+    flex: 1;
+    text-align: center;
+}
+
+.rsi-market-data span:first-child {
+    text-align: left;
+}
+
+.rsi-market-data span:last-child {
+    text-align: right;
+}
+
+.price-up {
+    color: var(--price-up-color);
+}
+
+.price-down {
+    color: var(--price-down-color);
+}
+
+.rsi-deep-oversold {
+    color: var(--price-down-color); /* Red */
+    font-weight: bold;
+}
+
+.rsi-entering-oversold {
+    color: #ff9800; /* Orange */
+}
+
+.rsi-entering-overbought {
+    color: #e6c300; /* Yellow */
+}
+
+.rsi-deep-overbought {
+    color: var(--price-up-color); /* Green */
+    font-weight: bold;
+}
