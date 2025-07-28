@@ -78,11 +78,9 @@ h1 {
 
 .rsi-grid-container {
     display: grid;
-    /* Create a responsive grid that wraps columns if they can't fit.
-       Each column will be at least 300px wide. */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    align-items: start; /* This allows columns to have their own natural height */
+    gap: 15px;
+    align-items: start; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .rsi-column {
@@ -95,7 +93,7 @@ h1 {
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 20px;
+    padding: 15px; /* Reduced padding to make boxes more compact */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -151,7 +149,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px; /* Slightly smaller font to help with spacing */
     color: var(--text-secondary);
     padding-top: 10px;
     border-top: 1px solid var(--border-color);
@@ -160,6 +158,7 @@ h1 {
 .rsi-market-data span {
     flex: 1;
     text-align: center;
+    white-space: nowrap; /* Prevent text from wrapping to a new line */
 }
 
 .rsi-market-data span:first-child {

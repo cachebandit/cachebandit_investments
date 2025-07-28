@@ -251,25 +251,10 @@ h1 {
     border-color: var(--price-up-color); /* Green border to highlight */
 }
 
-.calendar-day.has-earnings {
-}
-
-.has-earnings {
-}
-
 .empty {
     background-color: #f5f5f5;
 }
 
 .other-month {
     opacity: 0.5;
-}
-
-.tradingview-widget-container-tape {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    width: 100%;
-    background-color: var(--container-bg);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

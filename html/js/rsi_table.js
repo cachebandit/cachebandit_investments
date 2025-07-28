@@ -36,20 +36,19 @@ async function loadRsiData() {
 
         const stocksWithYRsi = stocksWithRsi.filter(s => s.yRSI !== null && s.yRSI !== 'N/A' && !isNaN(parseFloat(s.yRSI)));
 
+        // Was not oversold yesterday, now in the 30-40 band
         const enteringOversold = stocksWithYRsi
-            .filter(s => s.rsi > 30 && s.rsi <= 40 && s.rsi < s.yRSI)
+            .filter(s => s.yRSI > 30 && s.rsi > 30 && s.rsi <= 40)
             .sort(sortByMarketCap);
 
+        // Was oversold yesterday, now in the 30-40 band
         const exitingOversold = stocksWithYRsi
-            .filter(s => s.rsi > 30 && s.rsi <= 40 && s.rsi > s.yRSI)
+            .filter(s => s.yRSI <= 30 && s.rsi > 30 && s.rsi <= 40)
             .sort(sortByMarketCap);
 
-        const enteringOverbought = stocksWithYRsi
-            .filter(s => s.rsi >= 60 && s.rsi < 70 && s.rsi > s.yRSI)
-            .sort(sortByMarketCap);
-
+        // Was overbought yesterday, now in the 60-70 band
         const exitingOverbought = stocksWithYRsi
-            .filter(s => s.rsi >= 60 && s.rsi < 70 && s.rsi < s.yRSI)
+            .filter(s => s.yRSI >= 70 && s.rsi < 70 && s.rsi >= 60)
             .sort(sortByMarketCap);
 
         // --- Render all tables ---
@@ -57,7 +56,6 @@ async function loadRsiData() {
         renderList('oversold-list', oversold);
         renderList('entering-oversold-list', enteringOversold);
         renderList('exiting-oversold-list', exitingOversold);
-        renderList('entering-overbought-list', enteringOverbought);
         renderList('exiting-overbought-list', exitingOverbought);
 
     } catch (error) {
