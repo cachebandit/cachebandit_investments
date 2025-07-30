@@ -71,6 +71,8 @@ function showChartPopup(symbol) {
         "style": "1",
         "locale": "en",
         "range": "12M",
+        "enable_drawing": true,
+        "hide_side_toolbar": false,
         "allow_symbol_change": true,
         "calendar": false,
         "studies": [

@@ -18,7 +18,7 @@ async function loadRsiData() {
         });
 
         const stocksWithRsi = allStocks.filter(stock => 
-            stock.rsi !== null && stock.rsi !== 'N/A' && !isNaN(parseFloat(stock.rsi))
+            stock.RSI !== null && stock.RSI !== 'N/A' && !isNaN(parseFloat(stock.RSI))
         );
 
         const sortByMarketCap = (a, b) => {
@@ -29,28 +29,28 @@ async function loadRsiData() {
 
         // --- Categorize stocks based on RSI and yRSI ---
         const oversold = stocksWithRsi
-            .filter(s => parseFloat(s.rsi) <= 30)
+            .filter(s => parseFloat(s.RSI) <= 30)
             .sort(sortByMarketCap);
 
         const overbought = stocksWithRsi
-            .filter(s => parseFloat(s.rsi) >= 70)
+            .filter(s => parseFloat(s.RSI) >= 70)
             .sort(sortByMarketCap);
 
         const stocksWithYRsi = stocksWithRsi.filter(s => s.yRSI !== null && s.yRSI !== 'N/A' && !isNaN(parseFloat(s.yRSI)));
 
         // Was not oversold yesterday, now in the 30-40 band
         const enteringOversold = stocksWithYRsi
-            .filter(s => s.yRSI > 30 && s.rsi > 30 && s.rsi <= 40)
+            .filter(s => s.yRSI > 30 && s.RSI > 30 && s.RSI <= 40)
             .sort(sortByMarketCap);
 
         // Was oversold yesterday, now in the 30-40 band
         const exitingOversold = stocksWithYRsi
-            .filter(s => s.yRSI <= 30 && s.rsi > 30 && s.rsi <= 40)
+            .filter(s => s.yRSI <= 30 && s.RSI > 30 && s.RSI <= 40)
             .sort(sortByMarketCap);
 
         // Was overbought yesterday, now in the 60-70 band
         const exitingOverbought = stocksWithYRsi
-            .filter(s => s.yRSI >= 70 && s.rsi < 70 && s.rsi >= 60)
+            .filter(s => s.yRSI >= 70 && s.RSI < 70 && s.RSI >= 60)
             .sort(sortByMarketCap);
 
         // --- Render all tables ---
@@ -89,7 +89,7 @@ function renderList(containerId, stocks) {
     }
 
     const itemsHtml = stocks.map(stock => {
-        const rsi = parseFloat(stock.rsi).toFixed(2);
+        const rsi = parseFloat(stock.RSI).toFixed(2);
         const close = stock.Close ? `$${parseFloat(stock.Close).toFixed(2)}` : 'N/A';
         const priceChange = stock['Price Change'] ? stock['Price Change'].toFixed(2) : 'N/A';
         const percentChange = stock['Percent Change'] ? `${parseFloat(stock['Percent Change']).toFixed(2)}%` : 'N/A';

@@ -59,15 +59,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 logging.info(f"Fetching fresh data for category: {category}")
                 
                 # Fetch and return stock data for the specified category
-                category_data = fetch_category_data(category)
-                symbols_list = [stock['Symbol'] for stock in category_data]
-                detailed_data = fetch_detailed_info(symbols_list)
-
-                # Combine category data with detailed data
-                for stock in category_data:
-                    symbol = stock['Symbol']
-                    if symbol in detailed_data:
-                        stock.update(detailed_data[symbol])
+                category_data = fetch_category_data(category) # This function now does everything
 
                 # Sort the "Owned" category alphabetically by stock symbol
                 if category == "Owned":

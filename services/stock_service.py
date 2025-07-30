@@ -15,34 +15,31 @@ def load_watchlist_data():
             categories = data.get("Categories", {})
 
             owned_stocks = []
-            filtered_categories = {}
+            # This will hold the final structure: { "CategoryName": [stocks] }
+            api_categories = {}
 
             # Process each category and its industries
-            for category, industry in categories.items():
-                filtered_stocks = []
-                for industry, stocks in industry.items():
+            for category_name, industries in categories.items():
+                non_owned_stocks_in_category = []
+                for industry_name, stocks in industries.items():
                     for stock in stocks:
-                        if stock.get("flag", False):  # Check if flag is true
-                            owned_stocks.append({
-                                **stock,  # Include all stock data
-                                'category': category,  # Preserve the original category
-                                'industry': industry,  # Add the industry
-                                'stockUrl': stock.get("stockUrl", None)
-                            })  # Add to owned category
+                        # Add context to each stock object
+                        stock_with_context = {
+                            **stock,
+                            'category': category_name,
+                            'industry': industry_name
+                        }
+                        if stock.get("flag", False):
+                            owned_stocks.append(stock_with_context)
                         else:
-                            filtered_stocks.append({
-                                **stock,
-                                'category': category,
-                                'industry': industry,
-                                'stockUrl': stock.get("stockUrl", None)
-                            })  # Keep in original category if not owned
-
-                # Store filtered stocks for each category
-                filtered_categories[category] = filtered_stocks
+                            non_owned_stocks_in_category.append(stock_with_context)
+                
+                if non_owned_stocks_in_category:
+                    api_categories[category_name] = non_owned_stocks_in_category
 
             # Add the "Owned" category to the filtered categories
-            filtered_categories["Owned"] = owned_stocks
-            return filtered_categories
+            api_categories["Owned"] = owned_stocks
+            return api_categories
 
     except Exception as e:
         logging.error(f"Error loading watchlist data: {e}")
@@ -52,129 +49,107 @@ def load_watchlist_data():
 watchlist_data = load_watchlist_data()
 
 def fetch_category_data(category):
-    """Fetch data for a specific category from the watchlist"""
+    """Fetch data for a specific category from the watchlist using batch requests."""
     # Retrieve the category's stocks from the loaded JSON data
     category_data = watchlist_data.get(category, [])
+    if not category_data:
+        return []
+
+    symbols = [stock_info["symbol"] for stock_info in category_data]
+    if not symbols:
+        return []
+    
+    # Batch fetch detailed info (prices, RSI)
+    detailed_data = fetch_detailed_info(symbols)
+
+    # Batch fetch company info
+    tickers = yf.Tickers(' '.join(symbols))
     result_data = []
 
     for stock_info in category_data:
         symbol = stock_info["symbol"]
-        flag = stock_info.get("flag", False)  # Get the flag status from JSON
-        stockUrl = stock_info.get("stockUrl", None)  # Get the alternative name, if available
 
-        # Retrieve data from yfinance for each symbol
+        # Get market data first, which should be reliable
+        market_data = detailed_data.get(symbol, {})
+
         try:
-            ticker = yf.Ticker(symbol)
-            info = ticker.info
-            
-            # Get market data along with other data
-            market_data = fetch_detailed_info([symbol]).get(symbol, {})
-            
-            # Get earnings timestamp
-            earnings_timestamp = info.get('earningsTimestamp')
-            
-            # Determine earnings timing
-            earningsTiming = 'TBA'
-            earningsDate = None
-            
-            if earnings_timestamp:
-                date_obj = datetime.fromtimestamp(earnings_timestamp)
-                earningsDate = date_obj.strftime('%m-%d-%Y')
-                earningsTiming = 'BMO' if date_obj.hour < 12 else 'AMC'
-            
-            # Add to result data
-            result_data.append({
-                'Symbol': symbol,
-                'Name': info.get('longName', 'Unknown'),
-                'Market Cap': round(info.get('marketCap', 0) / 1_000_000, 2) if info.get('marketCap') else 'N/A',
-                'Trailing PE': info.get('trailingPE', None),
-                'Forward PE': info.get('forwardPE', None),
-                'EV/EBITDA': info.get('enterpriseToEbitda', None),
-                'flag': flag,
-                'category': stock_info.get('category', category),
-                'industry': stock_info.get('industry', None),
-                'stock_description': info.get('longBusinessSummary'),
-                'fiftyTwoWeekHigh': info.get('fiftyTwoWeekHigh', None),
-                'fiftyTwoWeekLow': info.get('fiftyTwoWeekLow', None),
-                'close': market_data.get('Close'),
-                'priceChange': market_data.get('Price Change'),
-                'percentChange': market_data.get('Percent Change'),
-                'rsi': market_data.get('RSI'),
-                'earningsDate': earningsDate,
-                'earningsTiming': earningsTiming,
-                'stockUrl': stockUrl,
-                'exchangeName': info.get('exchange')
-            })
-
+            # Then, try to get the company info, which can sometimes fail
+            info = tickers.tickers[symbol].info
         except Exception as e:
-            logging.error(f"Error fetching data for {symbol}: {e}")
-            result_data.append({
-                'Symbol': symbol,
-                'Name': 'Unknown',
-                'Market Cap': 'N/A',
-                'flag': flag,
-                'Trailing PE': None,
-                'Forward PE': None,
-                'EV/EBITDA': None,
-                'category': None,
-                'industry': None,
-                'stock_description': None,
-                'fiftyTwoWeekHigh': None,
-                'fiftyTwoWeekLow': None,
-                'earningsDate': None,
-                'exchangeName': None,
-                'stockUrl': stockUrl
-            })
+            logging.warning(f"Could not fetch .info for {symbol}: {e}. Using fallback.")
+            info = {} # Use an empty dict if info fails, but we still have market_data
+
+        # Get earnings timestamp
+        earnings_timestamp = info.get('earningsTimestamp')
+        earningsTiming = 'TBA'
+        earningsDate = None
+        if earnings_timestamp:
+            date_obj = datetime.fromtimestamp(earnings_timestamp)
+            earningsDate = date_obj.strftime('%m-%d-%Y')
+            earningsTiming = 'BMO' if date_obj.hour < 12 else 'AMC'
+        
+        # Assemble the final stock object, ensuring market_data is always included
+        final_stock = {
+            'Symbol': symbol,
+            'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
+            'Market Cap': round(info.get('marketCap', 0) / 1_000_000, 2) if info.get('marketCap') else 'N/A',
+            'Trailing PE': info.get('trailingPE', None),
+            'Forward PE': info.get('forwardPE', None),
+            'EV/EBITDA': info.get('enterpriseToEbitda', None),
+            'flag': stock_info.get("flag", False),
+            'category': stock_info.get('category', category),
+            'industry': stock_info.get('industry', None),
+            'stock_description': info.get('longBusinessSummary'),
+            'fiftyTwoWeekHigh': info.get('fiftyTwoWeekHigh', None),
+            'fiftyTwoWeekLow': info.get('fiftyTwoWeekLow', None),
+            'earningsDate': earningsDate,
+            'earningsTiming': earningsTiming,
+            'stockUrl': stock_info.get("stockUrl", None),
+            'exchangeName': info.get('exchange'),
+            # Unpack the detailed data dictionary
+            **market_data 
+        }
+        result_data.append(final_stock)
 
     return result_data
 
 def fetch_detailed_info(symbols):
-    """Fetch detailed info including RSI and price changes"""
+    """Fetch detailed info including RSI and price changes for a list of symbols in a batch."""
+    if not symbols:
+        return {}
+
     detailed_data = {}
-    
-    for stock in symbols:
-        symbol_data = yf.Ticker(stock)
-        
-        try:
-            hist_data = symbol_data.history(period="1y", interval="1d")
-            hist_data_yesterday = hist_data.iloc[:-1]
-            if not hist_data.empty:
-                latest_data = hist_data.iloc[-1]
-                previous_close = hist_data.iloc[-2]['Close'] if len(hist_data) > 1 else None
-                open_price = latest_data['Open']
-                close_price = latest_data['Close']
-                high_price = latest_data['High']
-                low_price = latest_data['Low']
-                
-                if previous_close is not None:
-                    price_change = close_price - previous_close
-                    percent_change = (price_change / previous_close) * 100 if previous_close != 0 else 0
-                else:
-                    price_change = percent_change = None
-            else:
-                open_price = close_price = high_price = low_price = price_change = percent_change = None
-        except Exception as e:
-            logging.error(f"Error fetching historical data for {stock}: {e}")
-            open_price = close_price = high_price = low_price = price_change = percent_change = None
+    try:
+        # Batch download historical data. `group_by='ticker'` is convenient.
+        hist_data = yf.download(symbols, period="1y", interval="1d", progress=False, group_by='ticker')
 
-        try:
-            rsi = calculate_rsi(hist_data)
-            yesterday_rsi = calculate_rsi(hist_data_yesterday)
-        except Exception as e:
-            logging.error(f"Error calculating RSI for {stock}: {e}")
-            rsi = 'N/A'
-            yesterday_rsi = 'N/A'
+        for symbol in symbols:
+            # Access the DataFrame for the specific symbol
+            symbol_hist = hist_data.get(symbol)
+            
+            # Check for valid data
+            if symbol_hist is None or symbol_hist.empty or symbol_hist['Close'].isnull().all():
+                logging.warning(f"No valid historical data for {symbol}, skipping detailed info.")
+                continue
 
-        detailed_data[stock] = {
-            'Open': open_price,
-            'Close': close_price,
-            'High': high_price,
-            'Low': low_price,
-            'Price Change': price_change,
-            'Percent Change': percent_change,
-            'RSI': rsi,
-            'yRSI': yesterday_rsi
-        }
+            latest_data = symbol_hist.iloc[-1]
+            previous_close = symbol_hist.iloc[-2]['Close'] if len(symbol_hist) > 1 else None
+
+            price_change = (latest_data['Close'] - previous_close) if previous_close is not None else None
+            percent_change = (price_change / previous_close * 100) if price_change is not None and previous_close != 0 else None
+            
+            detailed_data[symbol] = {
+                'Open': latest_data['Open'],
+                'Close': latest_data['Close'],
+                'High': latest_data['High'],
+                'Low': latest_data['Low'],
+                'Price Change': price_change,
+                'Percent Change': percent_change,
+                'RSI': calculate_rsi(symbol_hist),
+                'yRSI': calculate_rsi(symbol_hist.iloc[:-1]) # RSI of the day before
+            }
+    except Exception as e:
+        logging.error(f"Error in batch fetch_detailed_info for symbols {symbols}: {e}")
 
     return detailed_data
 
@@ -200,27 +175,79 @@ def calculate_rsi(data, window=14):
         logging.error(f"Error in RSI calculation: {e}")
         return 'N/A'
 
+def _sort_by_symbol(stock_list):
+    """Sorts a list of stocks alphabetically by symbol."""
+    stock_list.sort(key=lambda x: x.get('Symbol', '').strip().lower())
+
+def _sort_by_market_cap(stock_list):
+    """Sorts a list of stocks by market cap in descending order."""
+    stock_list.sort(key=lambda x: (float(x.get('Market Cap', 0)) if x.get('Market Cap') != 'N/A' else 0), reverse=True)
+
 def update_stock_flag(symbol, new_flag):
-    """Update the flag status for a stock in the watchlist"""
+    """Update the flag in list_watchlist.json and intelligently update the in-memory cache."""
     try:
         with open('list_watchlist.json', 'r') as f:
             data = json.load(f)
-            
-        # Update the flag for the matching symbol
-        for category in data['Categories'].values():
-            for subcategory in category.values():
-                for stock in subcategory:
+
+        original_category = None
+        stock_found = False
+        # Find the stock, get its original category, and update its flag
+        for category_name, industries in data.get('Categories', {}).items():
+            for industry_name, stocks in industries.items():
+                for stock in stocks:
                     if stock.get('symbol') == symbol:
+                        original_category = category_name
                         stock['flag'] = new_flag
+                        stock_found = True
                         break
+                if stock_found: break
+            if stock_found: break
         
+        if not stock_found:
+            logging.warning(f"Could not find symbol {symbol} to update flag in list_watchlist.json.")
+            return False
+
         with open('list_watchlist.json', 'w') as f:
             json.dump(data, f, indent=4)
+
+        # --- Now, update the live cache without re-fetching from yfinance ---
+        source_cache_key = f"category_{original_category}"
+        owned_cache_key = "category_Owned"
+        stock_to_move = None
+
+        # Determine source and destination lists in the cache
+        source_list_key = owned_cache_key if not new_flag else source_cache_key
+        dest_list_key = owned_cache_key if new_flag else source_cache_key
+
+        source_list = cache.get(source_list_key)
+        if source_list:
+            for i, stock_data in enumerate(source_list):
+                if stock_data['Symbol'] == symbol:
+                    stock_to_move = source_list.pop(i)
+                    break
+        
+        if stock_to_move:
+            stock_to_move['flag'] = new_flag
+            dest_list = cache.get(dest_list_key)
+            if dest_list is None:
+                dest_list = []
+                cache.data[dest_list_key] = dest_list # Add new list to cache data directly
             
-        # Reload the watchlist data after update
+            dest_list.append(stock_to_move)
+
+            # Sort the destination list to place the new item correctly
+            if dest_list_key == owned_cache_key:
+                _sort_by_symbol(dest_list)
+            else:
+                _sort_by_market_cap(dest_list)
+
+            cache.save() # Save the modified cache to disk
+            logging.info(f"Moved {symbol} in cache and updated flag.")
+
+        # Finally, reload the watchlist structure for consistency
         global watchlist_data
         watchlist_data = load_watchlist_data()
-        
+
         return True
     except Exception as e:
         logging.error(f"Error updating flag for {symbol}: {e}")
@@ -257,10 +284,10 @@ def fetch_earnings_data(month, year):
                             'name': stock['Name'],
                             'earningsTiming': stock.get('earningsTiming', 'TBA'),
                             'stockUrl': stock.get('stockUrl', ''),
-                            'close': stock.get('close'),
-                            'priceChange': stock.get('priceChange'),
-                            'percentChange': stock.get('percentChange'),
-                            'rsi': stock.get('rsi')
+                            'close': stock.get('Close'),
+                            'priceChange': stock.get('Price Change'),
+                            'percentChange': stock.get('Percent Change'),
+                            'rsi': stock.get('RSI')
                         })
                         
                 except (ValueError, TypeError) as e:

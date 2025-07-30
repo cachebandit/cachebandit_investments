@@ -63,8 +63,7 @@
                     "flag": false,
                     "Name": "Palantir Technologies Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/palantir.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "DDOG",
                     "flag": false,
@@ -472,8 +471,7 @@
                     "flag": false,
                     "Name": "Constellation Energy Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/constellation-energy.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "VST",
                     "flag": false,
@@ -697,8 +695,7 @@
                     "flag": false,
                     "Name": "Alibaba Group Holding Limited",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/alibaba.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "CHWY",
                     "flag": false,
@@ -990,8 +987,7 @@
                     "flag": false,
                     "Name": "Morgan Stanley",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/morgan-stanley.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "APO",
                     "flag": false,
@@ -1163,8 +1159,7 @@
                     "flag": true,
                     "Name": "Humana Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/humana.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "MCK",
                     "flag": false,
@@ -1250,8 +1245,7 @@
                     "flag": false,
                     "Name": "Reddit, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/reddit.svg"
-                }
-                ,
+                },
                 {
                     "symbol": "TRI",
                     "flag": false,
