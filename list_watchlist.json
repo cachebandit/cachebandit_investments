@@ -36,13 +36,13 @@
                 },
                 {
                     "symbol": "MDB",
-                    "flag": true,
+                    "flag": false,
                     "Name": "MongoDB, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/mongodb.svg"
                 },
                 {
                     "symbol": "ADBE",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Adobe Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/adobe.svg"
                 },
@@ -609,6 +609,12 @@
                     "flag": false,
                     "Name": "Colgate-Palmolive Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/colgate-palmolive.svg"
+                },
+                {
+                    "symbol": "KVUE",
+                    "flag": false,
+                    "Name": "Kenvue Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kenvue.svg"
                 }
             ]
         },
@@ -1062,7 +1068,7 @@
                 },
                 {
                     "symbol": "LLY",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Eli Lilly and Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/eli-lilly.svg"
                 },
@@ -1135,12 +1141,6 @@
                     "flag": true,
                     "Name": "UnitedHealth Group Incorporated",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/unitedhealth.svg"
-                },
-                {
-                    "symbol": "WBA",
-                    "flag": true,
-                    "Name": "Walgreens Boots Alliance, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/walgreens-boots-alliance.svg"
                 },
                 {
                     "symbol": "CVS",

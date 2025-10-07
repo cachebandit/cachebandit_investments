@@ -2,10 +2,19 @@ import yfinance as yf
 import json
 import logging
 from datetime import datetime
+import math
 from models.stock_cache import StockCache
+import pandas as pd
 
 # Initialize cache
 cache = StockCache()
+
+def _clean_value(value):
+    """Converts NaN to None, otherwise returns value."""
+    # Check for NaN, which can be a float. math.isnan() will fail on non-floats.
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    return value
 
 def load_watchlist_data():
     """Load watchlist data from JSON file and create the 'Owned' category"""
@@ -92,16 +101,16 @@ def fetch_category_data(category):
         final_stock = {
             'Symbol': symbol,
             'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
-            'Market Cap': round(info.get('marketCap', 0) / 1_000_000, 2) if info.get('marketCap') else 'N/A',
-            'Trailing PE': info.get('trailingPE', None),
-            'Forward PE': info.get('forwardPE', None),
-            'EV/EBITDA': info.get('enterpriseToEbitda', None),
+            'Market Cap': _clean_value(round(info.get('marketCap', 0) / 1_000_000, 2)) if info.get('marketCap') else 'N/A',
+            'Trailing PE': _clean_value(info.get('trailingPE')),
+            'Forward PE': _clean_value(info.get('forwardPE')),
+            'EV/EBITDA': _clean_value(info.get('enterpriseToEbitda')),
             'flag': stock_info.get("flag", False),
             'category': stock_info.get('category', category),
             'industry': stock_info.get('industry', None),
             'stock_description': info.get('longBusinessSummary'),
-            'fiftyTwoWeekHigh': info.get('fiftyTwoWeekHigh', None),
-            'fiftyTwoWeekLow': info.get('fiftyTwoWeekLow', None),
+            'fiftyTwoWeekHigh': _clean_value(info.get('fiftyTwoWeekHigh')),
+            'fiftyTwoWeekLow': _clean_value(info.get('fiftyTwoWeekLow')),
             'earningsDate': earningsDate,
             'earningsTiming': earningsTiming,
             'stockUrl': stock_info.get("stockUrl", None),
@@ -139,12 +148,12 @@ def fetch_detailed_info(symbols):
             percent_change = (price_change / previous_close * 100) if price_change is not None and previous_close != 0 else None
             
             detailed_data[symbol] = {
-                'Open': latest_data['Open'],
-                'Close': latest_data['Close'],
-                'High': latest_data['High'],
-                'Low': latest_data['Low'],
-                'Price Change': price_change,
-                'Percent Change': percent_change,
+                'Open': _clean_value(latest_data['Open']),
+                'Close': _clean_value(latest_data['Close']),
+                'High': _clean_value(latest_data['High']),
+                'Low': _clean_value(latest_data['Low']),
+                'Price Change': _clean_value(price_change),
+                'Percent Change': _clean_value(percent_change),
                 'RSI': calculate_rsi(symbol_hist),
                 'yRSI': calculate_rsi(symbol_hist.iloc[:-1]) # RSI of the day before
             }
@@ -154,23 +163,40 @@ def fetch_detailed_info(symbols):
     return detailed_data
 
 def calculate_rsi(data, window=14):
-    """Calculate the Relative Strength Index (RSI)"""
+    """
+    Calculate the Relative Strength Index (RSI) to match TradingView's calculation.
+    TradingView's RSI uses a specific variant of EMA (Wilder's Smoothing) which
+    is seeded with a Simple Moving Average (SMA).
+    """
     try:
-        if data.empty:
+        # We need at least `window` periods of changes, which means `window + 1` data points.
+        if data.empty or len(data) < window + 1:
             return 'N/A'
-        
+
         delta = data['Close'].diff(1)
-        gain = delta.where(delta > 0, 0)
-        loss = -delta.where(delta < 0, 0)
+        
+        # Separate gains and losses, drop the first NaN value from diff()
+        gain = delta.where(delta > 0, 0.0).iloc[1:]
+        loss = -delta.where(delta < 0, 0.0).iloc[1:]
 
-        # Use Wilder's exponential moving average method
-        avg_gain = gain.ewm(com=window-1, min_periods=window).mean()
-        avg_loss = loss.ewm(com=window-1, min_periods=window).mean()
+        # Calculate initial average gain and loss using SMA for the first `window` periods.
+        avg_gain = gain.iloc[:window].mean()
+        avg_loss = loss.iloc[:window].mean()
 
-        rs = avg_gain / avg_loss
-        rsi = 100 - (100 / (1 + rs))
+        # Apply Wilder's smoothing for the rest of the periods.
+        for i in range(window, len(gain)):
+            avg_gain = (avg_gain * (window - 1) + gain.iloc[i]) / window
+            avg_loss = (avg_loss * (window - 1) + loss.iloc[i]) / window
+        
+        if avg_loss == 0:
+            rsi = 100.0 if avg_gain > 0 else float('nan')
+        else:
+            rs = avg_gain / avg_loss
+            rsi = 100.0 - (100.0 / (1.0 + rs))
 
-        return rsi.iloc[-1] if not rsi.empty else 'N/A'
+        if math.isnan(rsi) or math.isinf(rsi):
+            return 'N/A'
+        return rsi
     except Exception as e:
         logging.error(f"Error in RSI calculation: {e}")
         return 'N/A'
