@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P/E Analysis</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/pe_analysis_styles.css">
 </head>
@@ -12,6 +13,9 @@
     <div class="container">
         <div class="header-container">
             <div class="header-left">
+                <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
+            </div>
+            <div class="header-center">
                 <h1>P/E Analysis</h1>
                 <nav class="navigation">
                     <a href="watchlist.html">Watchlist</a>
@@ -21,8 +25,10 @@
                     <a href="pe_analysis.html" class="active">P/E Analysis</a>
                 </nav>
             </div>
-            <div class="chart-controls">
-                <button id="back-button" style="display: none;">← Back to Categories</button>
+            <div class="header-controls">
+                <div class="chart-controls">
+                    <button id="back-button" style="display: none;">← Back to Categories</button>
+                </div>
             </div>
         </div>
         <div id="peScatterChart"></div>

@@ -32,16 +32,33 @@ body {
 
 .header-container {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start; /* Align items to the top */
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
+    position: relative; /* Needed for absolute positioning of the center content */
+}
+
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adds space between the logo and the title */
+    /* This container will now only hold the logo */
+}
+
+.header-logo {
+    height: 75px; /* Restore correct logo size */
+}
+
+.header-center {
+    flex-grow: 1; /* Allow the center to take up available space */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
-    color: var(--text-primary);
-    font-size: 28px;
     margin: 0;
     font-weight: 500;
 }
@@ -175,6 +192,11 @@ td.close {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    /* Give the container enough width to prevent wrapping */
+    min-width: 220px;
+    /* The following properties are also important for alignment */
+    flex-basis: 220px;
+    flex-shrink: 0;
 }
 
 .navigation {
@@ -221,6 +243,8 @@ td.close {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    /* Set a fixed width to prevent size changes during loading */
+    width: 130px;
 }
 
 .refresh-button:hover {
@@ -340,6 +364,7 @@ td.close {
     color: var(--text-secondary);
     text-align: right;
     margin-top: 8px;
+    white-space: nowrap; /* Prevent the timestamp from wrapping */
 }
 
 /* New styles for the search bar */

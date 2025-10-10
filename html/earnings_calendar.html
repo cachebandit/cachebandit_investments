@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Earnings Calendar</title>
+    <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/calendar-styles.css">
 </head>
@@ -12,6 +13,9 @@
     <div class="container">
         <div class="header-container">
             <div class="header-left">
+                <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
+            </div>
+            <div class="header-center">
                 <h1>Earnings Calendar</h1>
                 <nav class="navigation">
                     <a href="watchlist.html">Watchlist</a>
@@ -21,6 +25,8 @@
                     <a href="pe_analysis.html">P/E Analysis</a>
                 </nav>
             </div>
+            <!-- This empty div balances the logo on the left -->
+            <div class="header-controls"></div>
         </div>
 
         <div class="calendar-controls">
