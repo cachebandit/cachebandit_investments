@@ -9,6 +9,8 @@
     --border-color: #dee2e6;
     --accent-color: #007bff;
     --accent-hover: #0056b3;
+    --price-up-color: #4CAF50; /* Green for positive */
+    --price-down-color: #f44336; /* Red for negative */
 }
 
 body {

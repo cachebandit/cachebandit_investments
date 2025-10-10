@@ -53,6 +53,7 @@ function prepareChartData(categoryData) {
     // Flatten all stocks into a single list, avoiding duplicates from the "Owned" category
     let allStocks = [];
     Object.values(categoryData).forEach(stocks => {
+        // The 'stocks' variable is the array of stock objects for a category
         stocks.forEach(stock => {
             if (!processedSymbols.has(stock.Symbol)) {
                 allStocks.push(stock);
@@ -62,20 +63,20 @@ function prepareChartData(categoryData) {
     });
 
     allStocks.forEach(stock => {
-        const marketCap = stock['Market Cap'];
+        const marketCap = stock['Market Cap'] ? parseFloat(stock['Market Cap']) : null;
         const forwardPE = stock['Forward PE'];
-        const category = stock.category;
+        const category = stock.category || 'Uncategorized';
         const industry = stock.industry || 'Uncategorized';
 
         // Process the stock only if its category is in our active list
-        if (activeCategories.includes(category) && marketCap !== 'N/A' && forwardPE !== null && forwardPE !== 'N/A' && forwardPE > 0) {
+        if (activeCategories.includes(category) && marketCap && forwardPE !== null && forwardPE !== 'N/A' && forwardPE > 0) {
             if (chartData[category]) {
                 if (!chartData[category][industry]) {
                     chartData[category][industry] = [];
                 }
                 chartData[category][industry].push({
                     name: stock.Name,
-                    value: [marketCap / 1000, forwardPE], // Market Cap in Billions
+                    value: [marketCap, forwardPE], // Market Cap in Millions
                     symbol: stock.Symbol
                 });
             }
@@ -143,12 +144,12 @@ function renderChart() {
         tooltip: {
             trigger: 'item',
             formatter: function (params) {
-                const marketCapInBillions = params.data.value[0];
+                const marketCapInMillions = params.data.value[0];
                 let marketCapFormatted;
-                if (marketCapInBillions >= 1000) {
-                    marketCapFormatted = `$${(marketCapInBillions / 1000).toFixed(2)}T`;
+                if (marketCapInMillions >= 1000) {
+                    marketCapFormatted = `$${(marketCapInMillions / 1000).toFixed(2)}B`;
                 } else {
-                    marketCapFormatted = `$${marketCapInBillions.toFixed(2)}B`;
+                    marketCapFormatted = `$${marketCapInMillions.toFixed(2)}M`;
                 }
                 return `${params.data.name} (${params.data.symbol})<br/>` +
                        `Market Cap: ${marketCapFormatted}<br/>` +
@@ -156,7 +157,7 @@ function renderChart() {
             }
         },
         grid: {
-            bottom: '15%'
+            bottom: '20%'
         },
         legend: {
             data: legendData,
@@ -166,15 +167,15 @@ function renderChart() {
         },
         xAxis: {
             type: 'log',
-            name: 'Market Cap (Billions)',
+            name: 'Market Cap',
             nameLocation: 'middle',
             nameGap: 30,
             axisLabel: {
                 formatter: function (value) {
-                    if (value >= 1000) {
-                        return (value / 1000) + 'T';
+                    if (value >= 1000) { // Now in millions, so 1000M = 1B
+                        return (value / 1000) + 'B';
                     }
-                    return value + 'B';
+                    return value + 'M';
                 }
             }
         },

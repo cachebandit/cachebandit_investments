@@ -1,81 +1,5 @@
 /* === Sleek Light Theme for Calendar === */
 
-:root {
-    --bg-color: #f8f9fa;
-    --container-bg: #ffffff;
-    --hover-bg: #f1f3f5;
-    --text-primary: #212529;
-    --text-secondary: #6c757d;
-    --border-color: #dee2e6;
-    --accent-color: #007bff;
-    --accent-hover: #0056b3;
-    --price-up-color: #28a745; /* Green */
-    --price-down-color: #dc3545; /* Red */
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 100%;
-    margin: 20px auto;
-    padding: 20px;
-}
-
-h1 {
-    color: var(--text-primary);
-    font-size: 28px;
-    margin: 0;
-    font-weight: 500;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Align items to the top */
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.header-left {
-    display: flex;
-    flex-direction: column;
-}
-
-.navigation {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px; /* Space between title and nav */
-}
-
-.navigation a {
-    text-decoration: none;
-    color: var(--text-secondary);
-    padding: 8px 16px; /* Match watchlist style */
-    border-radius: 6px;
-    font-size: 14px; /* Match watchlist style */
-    font-weight: 500;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    min-width: 130px; /* Adjusted for 4 buttons */
-    text-align: center; /* Center text inside the button */
-}
-
-.navigation a:hover {
-    background-color: var(--hover-bg);
-    color: var(--text-primary);
-}
-
-.navigation a.active {
-    background-color: var(--accent-color);
-    color: white;
-}
-
 .calendar-controls {
     display: flex;
     justify-content: center; /* Center the controls */
@@ -214,6 +138,8 @@ h1 {
 }
 
 .market-data {
+    display: flex;
+    justify-content: space-between;
     font-size: 0.75em;
     padding: 2px 4px 2px 7px; /* Added left padding to align with company name */
     margin-top: 1px;

@@ -612,7 +612,7 @@
                 },
                 {
                     "symbol": "KVUE",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Kenvue Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/kenvue.svg"
                 }
@@ -1210,7 +1210,7 @@
                 },
                 {
                     "symbol": "VZ",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Verizon Communications Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/verizon.svg"
                 },
@@ -1230,7 +1230,7 @@
             "Media": [
                 {
                     "symbol": "META",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Meta Platforms, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/meta-platforms.svg"
                 },
