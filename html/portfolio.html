@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Portfolio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-container">
+            <div class="header-left">
+                <h1>Stock Portfolio</h1>
+                <nav class="navigation">
+                    <a href="watchlist.html">Watchlist</a>
+                    <a href="portfolio.html" class="active">Portfolio</a>
+                    <a href="earnings_calendar.html">Earnings Calendar</a>
+                    <a href="rsi_analysis.html">RSI Analysis</a>
+                    <a href="pe_analysis.html">P/E Analysis</a>
+                </nav>
+            </div>
+        </div>
+        <div class="content-container">
+            <!-- Table Container -->
+            <div class="table-container">
+                <div id="stock-table-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script to Load TradingView Widgets -->
+    <script type="module">
+        import { loadTickerTape, loadMarketTrendsWidget } from './js/widgets.js';
+
+        // Load the market trends widget
+        loadMarketTrendsWidget();
+    </script>
+
+    <script type="module" src="js/portfolio.js"></script>
+
+</body>
+</html>
