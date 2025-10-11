@@ -71,8 +71,8 @@
 
     <!-- Script to Load TradingView Widgets -->
     <script type="module">
-        import { loadTickerTape, loadMarketTrendsWidget } from 'js/widgets.js';
-        import { getCategoryData } from 'js/dataSource.js';
+        import { loadTickerTape, loadMarketTrendsWidget } from './js/widgets.js';
+        import { getCategoryData } from './js/dataSource.js';
 
         // Fetch owned stocks and update the ticker tape widget
         getCategoryData('Owned')
@@ -108,10 +108,10 @@
         loadMarketTrendsWidget();
     </script>
 
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/chart.js"></script>
-    <script type="module" src="js/popup.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="./js/utils.js"></script>
+    <script type="module" src="./js/chart.js"></script>
+    <script type="module" src="./js/popup.js"></script>
+    <script type="module" src="./js/main.js"></script>
 
 </body>
 </html>

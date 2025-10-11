@@ -14,26 +14,18 @@ CATEGORIES: Dict[str, List[str]] = {
     # add the rest of your categories here
 }
 
-SITE = Path("site"); DATA = SITE / "data"
-SITE.mkdir(parents=True, exist_ok=True); DATA.mkdir(parents=True, exist_ok=True)
+SITE_ROOT = Path("site")
+HTML_DIR = SITE_ROOT / "html"
+DATA_DIR = HTML_DIR / "data"
 
-HTML_FILES = [
-    "watchlist.html","portfolio.html","earnings_calendar.html",
-    "rsi_analysis.html","pe_analysis.html","chart_analysis.html","index.html",
-]
+HTML_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-def copy_tree(rel):
-    d = Path(rel)
-    if not d.exists(): return
-    for p in d.rglob("*"):
-        if p.is_file():
-            # Strip the 'html/' prefix from the path to place assets correctly
-            if str(p).startswith('html/'):
-                dest = SITE / p.relative_to("html")
-            else:
-                dest = SITE / p.relative_to(".")
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(p.read_bytes())
+def copy_assets():
+    """Copies all contents of the local 'html' directory to the build 'site/html' directory."""
+    source_dir = Path("html")
+    if not source_dir.is_dir(): return
+    subprocess.run(["cp", "-r", f"{source_dir}/.", str(HTML_DIR)])
 
 def chunked(lst, n): 
     for i in range(0, len(lst), n): 
@@ -123,26 +115,16 @@ def build_category(category: str, tickers: List[str]):
         "items": items,
     }
 
-# Copy HTML (root or html/)
-for name in HTML_FILES:
-    src = Path("html")/name if Path("html", name).exists() else Path(name)
-    if src.exists(): (SITE/src.name).write_bytes(src.read_bytes())
+# --- Build Process ---
+# 1. Copy all assets from local 'html' folder to the 'site/html' folder
+copy_assets()
 
-# Copy asset directories
-for folder in ["html/js", "html/css", "html/img", "html/widgets"]:
-    copy_tree(folder)
-
-# Copy individual asset files to the root of the site
-for asset_file in ["html/cachebandit_logo.png", "html/info.png"]:
-    src = Path(asset_file)
-    if src.exists(): (SITE/src.name).write_bytes(src.read_bytes())
-
-# Emit JSON per category
+# 2. Fetch data and create the JSON files inside 'site/html/data/'
 for cat, syms in CATEGORIES.items():
     payload = build_category(cat, syms)
-    (DATA/f"{cat}.json").write_text(json.dumps(payload, indent=2))
+    (DATA_DIR / f"{cat}.json").write_text(json.dumps(payload, indent=2))
 
-# Fallback index
-idx = SITE / "index.html"
+# 3. Create a root index.html to redirect to the correct start page
+idx = SITE_ROOT / "index.html"
 if not idx.exists():
-    idx.write_text('<meta http-equiv="refresh" content="0; url=watchlist.html" />')
+    idx.write_text('<meta http-equiv="refresh" content="0; url=html/watchlist.html" />')
