@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Watchlist Report</title>
-    <link rel="preload" href="/cachebandit_logo.png" as="image">
+    <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
@@ -18,7 +18,7 @@
     <div class="container">
         <div class="header-container">
             <div class="header-left">
-                <img src="/cachebandit_logo.png" alt="Logo" class="header-logo">
+                <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
             </div>
             <div class="header-center">
                 <h1>Stock Watchlist Report</h1>
@@ -71,8 +71,8 @@
 
     <!-- Script to Load TradingView Widgets -->
     <script type="module">
-        import { loadTickerTape, loadMarketTrendsWidget } from '/js/widgets.js';
-        import { getCategoryData } from '/js/dataSource.js';
+        import { loadTickerTape, loadMarketTrendsWidget } from 'js/widgets.js';
+        import { getCategoryData } from 'js/dataSource.js';
 
         // Fetch owned stocks and update the ticker tape widget
         getCategoryData('Owned')
@@ -108,10 +108,10 @@
         loadMarketTrendsWidget();
     </script>
 
-    <script type="module" src="/js/utils.js"></script>
-    <script type="module" src="/js/chart.js"></script>
-    <script type="module" src="/js/popup.js"></script>
-    <script type="module" src="/js/main.js"></script>
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/chart.js"></script>
+    <script type="module" src="js/popup.js"></script>
+    <script type="module" src="js/main.js"></script>
 
 </body>
 </html>
