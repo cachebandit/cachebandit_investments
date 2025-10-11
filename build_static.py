@@ -27,7 +27,11 @@ def copy_tree(rel):
     if not d.exists(): return
     for p in d.rglob("*"):
         if p.is_file():
-            dest = SITE / p.relative_to(".")
+            # Strip the 'html/' prefix from the path to place assets correctly
+            if str(p).startswith('html/'):
+                dest = SITE / p.relative_to("html")
+            else:
+                dest = SITE / p.relative_to(".")
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(p.read_bytes())
 
@@ -125,7 +129,7 @@ for name in HTML_FILES:
     if src.exists(): (SITE/src.name).write_bytes(src.read_bytes())
 
 # Copy assets your pages reference
-for folder in ["html/js", "html/css", "html/img", "widgets"]:
+for folder in ["html/js", "html/css", "img", "widgets", "html/cachebandit_logo.png", "html/info.png"]:
     copy_tree(folder)
 
 # Emit JSON per category
