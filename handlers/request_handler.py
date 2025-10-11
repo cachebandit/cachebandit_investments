@@ -115,24 +115,6 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             except Exception:
                 response_data['expected_count'] = 0
 
-            # If we expected symbols but have no data, treat as rate-limit/upstream issue and return 429
-            rate_limit_detected = False
-            try:
-                if response_data['expected_count'] > 0 and (not response_data['data'] or len(response_data['data']) == 0):
-                    rate_limit_detected = True
-            except Exception:
-                rate_limit_detected = False
-
-            if rate_limit_detected:
-                logging.warning(f"Returning 429 for category {category} — expected {response_data.get('expected_count')} symbols but got none.")
-                self.send_response(429)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                response_data['error'] = 'rate_limit'
-                response_data['message'] = f"No data returned for category {category} — possible rate limit or upstream failure."
-                self.wfile.write(json.dumps(response_data).encode())
-                return
-
             # Normal successful response
             self.send_response(200)
             self.send_header('Content-type', 'application/json')

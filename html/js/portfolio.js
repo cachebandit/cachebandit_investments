@@ -55,9 +55,6 @@ async function fetchPortfolioData() {
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.style.display = 'inline-block';
 
-    // Clear only the existing stock data sections, not the entire container
-    document.querySelectorAll('.section').forEach(section => section.remove());
-
     const category = 'Owned';
 
     try {
@@ -91,6 +88,9 @@ function renderPortfolio(data) {
         container.appendChild(noDataMessage);
         return;
     }
+
+    // Clear the container now that we have data to render
+    document.querySelectorAll('.section').forEach(section => section.remove());
 
     const section = document.createElement('div');
     section.className = 'section';

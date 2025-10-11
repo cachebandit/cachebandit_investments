@@ -66,9 +66,6 @@ async function fetchWatchlistData() {
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.style.display = 'inline-block';
 
-    // Clear only the existing stock data sections, not the entire container
-    document.querySelectorAll('.section').forEach(section => section.remove());
-
     const categories = [
         'Owned',
         'Information Technology',
@@ -84,12 +81,11 @@ async function fetchWatchlistData() {
 
     try {
         let lastUpdated = '';
+        const isRefreshing = document.getElementById('refresh-button').getAttribute('data-refreshing') === 'true';
         
-        for (let category of categories) {
+        for (const [index, category] of categories.entries()) {
             // Determine if we should refresh the cache
-            const refreshParam = document.getElementById('refresh-button').getAttribute('data-refreshing') === 'true' ? 'true' : 'false';
-            
-            const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${refreshParam}`;
+            const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${isRefreshing}&first=${index === 0}&last=${index === categories.length - 1}`;
             const response = await fetch(url);
 
             // Detect custom server header that flags a rate-limit/upstream failure even when status is 200
@@ -131,6 +127,12 @@ async function fetchWatchlistData() {
             // Extract the data and last_updated timestamp
             const data = responseData.data;
             lastUpdated = responseData.last_updated;
+
+            // On the first successful data fetch (either initial load or refresh),
+            // clear the old content before rendering the new data.
+            if (index === 0) {
+                document.querySelectorAll('.section').forEach(section => section.remove());
+            }
             
             // Render the category data
             renderCategory(category, data);

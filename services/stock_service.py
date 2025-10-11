@@ -76,10 +76,6 @@ def fetch_category_data(category):
     # Batch fetch detailed info (prices, RSI)
     detailed_data = fetch_detailed_info(symbols)
 
-    # If we got no detailed data for any symbol, treat as rate-limit/upstream failure
-    if not detailed_data or all(symbol not in detailed_data or not detailed_data.get(symbol) for symbol in symbols):
-        raise RateLimitError(f"No historical market data returned for symbols {symbols} — possible rate limit (429)")
-
     # Batch fetch company info
     try:
         tickers = yf.Tickers(' '.join(symbols))
@@ -153,19 +149,6 @@ def fetch_detailed_info(symbols):
     try:
         # Batch download historical data. `group_by='ticker'` is convenient.
         hist_data = yf.download(symbols, period="1y", interval="1d", progress=False, group_by='ticker')
-
-        # If the download returned no usable data for all symbols, raise RateLimitError
-        all_empty = True
-        for symbol in symbols:
-            try:
-                symbol_hist = hist_data.get(symbol)
-            except Exception:
-                symbol_hist = None
-            if symbol_hist is not None and not getattr(symbol_hist, 'empty', False):
-                all_empty = False
-                break
-        if all_empty:
-            raise RateLimitError(f"yfinance returned no historical data for symbols {symbols} — possible rate limit (429)")
 
         for symbol in symbols:
             # Access the DataFrame for the specific symbol
