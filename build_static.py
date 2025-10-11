@@ -7,13 +7,29 @@ from typing import Dict, List
 import yfinance as yf
 import pandas as pd
 
-# ---- Configure your categories (match what your UI uses) ----
-CATEGORIES: Dict[str, List[str]] = {
-    "Owned": ["AAPL","MSFT","GOOGL"],
-    "IT": ["NVDA","AMD","AVGO","CRM"],
-    "Industrials": ["CAT","UNP","GE","ETN"],
-    # add the rest of your categories here
-}
+def load_categories_from_json(filepath: str = 'list_watchlist.json') -> Dict[str, List[str]]:
+    """Loads stock symbols from the JSON file and organizes them by category and flag."""
+    categories: Dict[str, List[str]] = {"Owned": []}
+    try:
+        with open(filepath, 'r') as f:
+            data = json.load(f).get("Categories", {})
+        
+        for category_name, industries in data.items():
+            # Ensure the category exists in the output dictionary
+            if category_name not in categories:
+                categories[category_name] = []
+            
+            for industry_name, stocks in industries.items():
+                for stock in stocks:
+                    symbol = stock.get("symbol")
+                    if not symbol: continue
+                    
+                    if stock.get("flag", False):
+                        categories["Owned"].append(symbol)
+                    categories[category_name].append(symbol)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Warning: Could not load {filepath}. Using empty categories. Error: {e}")
+    return categories
 
 SITE_ROOT = Path("site")
 HTML_DIR = SITE_ROOT / "html"
@@ -119,6 +135,9 @@ def build_category(category: str, tickers: List[str]):
 # --- Build Process ---
 # 1. Copy all assets from local 'html' folder to the 'site/html' folder
 copy_assets()
+
+# 2. Load categories dynamically from the JSON file
+CATEGORIES = load_categories_from_json()
 
 # 2. Fetch data and create the JSON files inside 'site/html/data/'
 for cat, syms in CATEGORIES.items():
