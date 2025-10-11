@@ -6,6 +6,11 @@ import math
 from models.stock_cache import StockCache
 import pandas as pd
 
+# Custom exception to signal yfinance/API rate limit errors
+class RateLimitError(Exception):
+    """Raised when yfinance (or the upstream API) returns a 429 / rate limit error."""
+    pass
+
 # Initialize cache
 cache = StockCache()
 
@@ -71,8 +76,21 @@ def fetch_category_data(category):
     # Batch fetch detailed info (prices, RSI)
     detailed_data = fetch_detailed_info(symbols)
 
+    # If we got no detailed data for any symbol, treat as rate-limit/upstream failure
+    if not detailed_data or all(symbol not in detailed_data or not detailed_data.get(symbol) for symbol in symbols):
+        raise RateLimitError(f"No historical market data returned for symbols {symbols} — possible rate limit (429)")
+
     # Batch fetch company info
-    tickers = yf.Tickers(' '.join(symbols))
+    try:
+        tickers = yf.Tickers(' '.join(symbols))
+    except Exception as e:
+        # Detect rate limit from yfinance/requests and raise a specific error so caller can respond
+        msg = str(e)
+        if '429' in msg or 'Too Many Requests' in msg or 'rate limit' in msg.lower():
+            raise RateLimitError(msg)
+        logging.error(f"Error creating yf.Tickers for symbols {symbols}: {e}")
+        tickers = None
+
     result_data = []
 
     for stock_info in category_data:
@@ -85,6 +103,10 @@ def fetch_category_data(category):
             # Then, try to get the company info, which can sometimes fail
             info = tickers.tickers[symbol].info
         except Exception as e:
+            # If this error is a rate-limit, propagate a RateLimitError so the handler returns 429
+            msg = str(e)
+            if '429' in msg or 'Too Many Requests' in msg or 'rate limit' in msg.lower():
+                raise RateLimitError(msg)
             logging.warning(f"Could not fetch .info for {symbol}: {e}. Using fallback.")
             info = {} # Use an empty dict if info fails, but we still have market_data
 
@@ -132,6 +154,19 @@ def fetch_detailed_info(symbols):
         # Batch download historical data. `group_by='ticker'` is convenient.
         hist_data = yf.download(symbols, period="1y", interval="1d", progress=False, group_by='ticker')
 
+        # If the download returned no usable data for all symbols, raise RateLimitError
+        all_empty = True
+        for symbol in symbols:
+            try:
+                symbol_hist = hist_data.get(symbol)
+            except Exception:
+                symbol_hist = None
+            if symbol_hist is not None and not getattr(symbol_hist, 'empty', False):
+                all_empty = False
+                break
+        if all_empty:
+            raise RateLimitError(f"yfinance returned no historical data for symbols {symbols} — possible rate limit (429)")
+
         for symbol in symbols:
             # Access the DataFrame for the specific symbol
             symbol_hist = hist_data.get(symbol)
@@ -158,6 +193,10 @@ def fetch_detailed_info(symbols):
                 'yRSI': calculate_rsi(symbol_hist.iloc[:-1]) # RSI of the day before
             }
     except Exception as e:
+        # If yfinance or the upstream HTTP client responds with a rate-limit 429, bubble up a RateLimitError
+        msg = str(e)
+        if '429' in msg or 'Too Many Requests' in msg or 'rate limit' in msg.lower():
+            raise RateLimitError(msg)
         logging.error(f"Error in batch fetch_detailed_info for symbols {symbols}: {e}")
 
     return detailed_data

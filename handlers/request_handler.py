@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 
 from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
-from services.stock_service import fetch_category_data, fetch_detailed_info, cache, update_stock_flag, fetch_earnings_data
+from services.stock_service import fetch_category_data, fetch_detailed_info, cache, update_stock_flag, fetch_earnings_data, RateLimitError, watchlist_data
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):
     """HTTP request handler for stock chart and data requests"""
@@ -59,7 +59,29 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 logging.info(f"Fetching fresh data for category: {category}")
                 
                 # Fetch and return stock data for the specified category
-                category_data = fetch_category_data(category) # This function now does everything
+                try:
+                    category_data = fetch_category_data(category) # This function may raise RateLimitError
+                except RateLimitError as e:
+                    logging.warning(f"Rate limit detected while fetching category {category}: {e}")
+                    # Return HTTP 429 so clients can react appropriately
+                    self.send_response(429)
+                    self.send_header('Content-type', 'application/json')
+                    self.end_headers()
+                    resp = {
+                        'data': [],
+                        'last_updated': cache.last_updated,
+                        'error': 'rate_limit',
+                        'message': str(e)
+                    }
+                    self.wfile.write(json.dumps(resp).encode())
+                    return
+                except Exception as e:
+                    logging.error(f"Error fetching category {category}: {e}")
+                    self.send_response(500)
+                    self.send_header('Content-type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'error': str(e)}).encode())
+                    return
 
                 # Sort the "Owned" category alphabetically by stock symbol
                 if category == "Owned":
@@ -87,7 +109,31 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 'data': category_data,
                 'last_updated': cache.last_updated
             }
+            # Include how many symbols the static watchlist expects for this category
+            try:
+                response_data['expected_count'] = len(watchlist_data.get(category, []))
+            except Exception:
+                response_data['expected_count'] = 0
 
+            # If we expected symbols but have no data, treat as rate-limit/upstream issue and return 429
+            rate_limit_detected = False
+            try:
+                if response_data['expected_count'] > 0 and (not response_data['data'] or len(response_data['data']) == 0):
+                    rate_limit_detected = True
+            except Exception:
+                rate_limit_detected = False
+
+            if rate_limit_detected:
+                logging.warning(f"Returning 429 for category {category} — expected {response_data.get('expected_count')} symbols but got none.")
+                self.send_response(429)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response_data['error'] = 'rate_limit'
+                response_data['message'] = f"No data returned for category {category} — possible rate limit or upstream failure."
+                self.wfile.write(json.dumps(response_data).encode())
+                return
+
+            # Normal successful response
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()

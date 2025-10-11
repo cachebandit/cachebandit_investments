@@ -91,9 +91,43 @@ async function fetchWatchlistData() {
             
             const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${refreshParam}`;
             const response = await fetch(url);
+
+            // Detect custom server header that flags a rate-limit/upstream failure even when status is 200
+            const rlHeader = response.headers.get && response.headers.get('X-RateLimit-Detected');
+            if (rlHeader === '1') {
+                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
+                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+
+            // If server explicitly returned 429, show banner and abort
+            if (response.status === 429) {
+                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
+                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+
             if (!response.ok) throw new Error('Network response was not ok.');
             const responseData = await response.json();
-            
+
+            // Server may include an error field
+            if (responseData && responseData.error === 'rate_limit') {
+                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
+                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+
+            // If server expected symbols but returned empty data, treat as rate limit
+            if (responseData && responseData.expected_count && responseData.expected_count > 0 && (!responseData.data || responseData.data.length === 0)) {
+                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
+                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+
             // Extract the data and last_updated timestamp
             const data = responseData.data;
             lastUpdated = responseData.last_updated;
@@ -113,6 +147,76 @@ async function fetchWatchlistData() {
         console.error('Error fetching watchlist data:', error);
     } finally {
         if (spinner) spinner.style.display = 'none';
+    }
+}
+
+// Helper to show a dismissible rate-limit banner. `seconds` controls auto-dismiss timeout.
+function showRateLimitBanner(message, seconds = 10, showRetry = true) {
+    // Avoid duplicates
+    if (document.getElementById('rate-limit-overlay')) return;
+
+    // Ensure refresh flag and spinner are cleared
+    const refreshBtn = document.getElementById('refresh-button');
+    if (refreshBtn) refreshBtn.setAttribute('data-refreshing', 'false');
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) spinner.style.display = 'none';
+
+    const overlay = document.createElement('div');
+    overlay.id = 'rate-limit-overlay';
+    overlay.className = 'rate-limit-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'rate-limit-modal';
+
+    const content = document.createElement('div');
+    content.className = 'message';
+    content.textContent = message || 'Rate Limit Hit - Try Again Later';
+
+    const sub = document.createElement('div');
+    sub.className = 'subtext';
+    sub.textContent = 'Try again in a few seconds.';
+    content.appendChild(sub);
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.alignItems = 'center';
+    controls.style.gap = '8px';
+
+    if (showRetry) {
+        const retry = document.createElement('button');
+        retry.className = 'cta';
+        retry.textContent = 'Retry';
+        retry.addEventListener('click', () => {
+            // close and trigger a fresh fetch
+            const ov = document.getElementById('rate-limit-overlay');
+            if (ov) ov.remove();
+            // set refreshing flag and call fetch
+            if (refreshBtn) refreshBtn.setAttribute('data-refreshing', 'true');
+            fetchWatchlistData();
+        });
+        controls.appendChild(retry);
+    }
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-btn';
+    closeBtn.setAttribute('aria-label', 'Dismiss');
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', () => {
+        const ov = document.getElementById('rate-limit-overlay');
+        if (ov) ov.remove();
+    });
+    controls.appendChild(closeBtn);
+
+    modal.appendChild(content);
+    modal.appendChild(controls);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    if (seconds && seconds > 0) {
+        setTimeout(() => {
+            const ov = document.getElementById('rate-limit-overlay');
+            if (ov) ov.remove();
+        }, seconds * 1000);
     }
 }
 
