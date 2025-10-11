@@ -3,6 +3,9 @@ name: Build & Deploy site to GitHub Pages
 on:
   push:
     branches: [ main, master ]
+  # Allows you to run this workflow manually from the Actions tab on any branch
+  workflow_dispatch:
+
   # NOTE: keep schedule commented out until your 429 issue is calm.
   # schedule:
   #   - cron: "*/10 13-20 * * 1-5"  # every 10m during US market hours (UTC)
