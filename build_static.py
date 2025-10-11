@@ -128,9 +128,14 @@ for name in HTML_FILES:
     src = Path("html")/name if Path("html", name).exists() else Path(name)
     if src.exists(): (SITE/src.name).write_bytes(src.read_bytes())
 
-# Copy assets your pages reference
-for folder in ["html/js", "html/css", "img", "widgets", "html/cachebandit_logo.png", "html/info.png"]:
+# Copy asset directories
+for folder in ["html/js", "html/css", "html/img", "html/widgets"]:
     copy_tree(folder)
+
+# Copy individual asset files to the root of the site
+for asset_file in ["html/cachebandit_logo.png", "html/info.png"]:
+    src = Path(asset_file)
+    if src.exists(): (SITE/src.name).write_bytes(src.read_bytes())
 
 # Emit JSON per category
 for cat, syms in CATEGORIES.items():
