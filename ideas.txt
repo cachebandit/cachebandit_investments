@@ -2,4 +2,3 @@
 - have the same temporary holder for NA Values for every column
 - add individaul category refresh
 - make phone accessable
-- change loading function to be independent
