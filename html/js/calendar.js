@@ -1,4 +1,5 @@
 import { showChartPopup } from './chart.js';
+import { getCategoryData } from './dataSource.js';
 
 let currentDate = new Date();
 let cachedMonthsData = {}; // Cache for multiple months of data, e.g., {'2024-6': data}
@@ -14,10 +15,41 @@ function getRsiColorClass(rsi) {
 }
 
 async function fetchEarningsData(month, year) {
+    const cacheKey = `${year}-${month}`;
+    if (cachedMonthsData[cacheKey]) {
+        return cachedMonthsData[cacheKey];
+    }
+
     try {
-        const response = await fetch(`/api/earnings?month=${month + 1}&year=${year}`);
-        if (!response.ok) throw new Error('Failed to fetch earnings data');
-        return await response.json();
+        const categoriesToFetch = [
+            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
+
+        const earningsData = {};
+        const processedSymbols = new Set();
+
+        results.forEach(responseData => {
+            const items = responseData.items || responseData.data || [];
+            items.forEach(stock => {
+                const symbol = stock.Symbol || stock.symbol;
+                if (processedSymbols.has(symbol)) return;
+                processedSymbols.add(symbol);
+
+                const earningsDate = stock.earningsDate;
+                if (earningsDate) {
+                    if (!earningsData[earningsDate]) earningsData[earningsDate] = [];
+                    earningsData[earningsDate].push(stock);
+                }
+            });
+        });
+
+        cachedMonthsData[cacheKey] = earningsData;
+        return earningsData;
     } catch (error) {
         console.error('Error fetching earnings data:', error);
         return {};

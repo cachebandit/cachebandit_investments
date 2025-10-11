@@ -72,15 +72,16 @@
     <!-- Script to Load TradingView Widgets -->
     <script type="module">
         import { loadTickerTape, loadMarketTrendsWidget } from './js/widgets.js';
+        import { getCategoryData } from './js/dataSource.js';
 
         // Fetch owned stocks and update the ticker tape widget
-        fetch('/saved_stock_info?category=Owned')
-            .then(response => response.json())
-            .then(data => {
-                const ownedStocks = data.data || []; // Ensure we have an array
+        getCategoryData('Owned')
+            .then(responseData => {
+                const ownedStocks = responseData.items || responseData.data || []; // Ensure we have an array
                 if (ownedStocks.length > 0) {
                     const symbols = ownedStocks.map(stock => {
-                        const exchange = stock.exchangeName || '';
+                        const symbol = stock.Symbol || stock.symbol;
+                        const exchange = stock.exchangeName || stock.exchange || '';
                         // Map yfinance exchange codes to TradingView exchange prefixes
                         const exchangeMap = {
                             'NMS': 'NASDAQ',
@@ -91,8 +92,8 @@
                         };
                         const proExchange = exchangeMap[exchange] || exchange;
                         return {
-                            description: stock.Symbol || "",
-                            proName: `${proExchange}:${stock.Symbol}`
+                            description: symbol || "",
+                            proName: `${proExchange}:${symbol}`
                         };
                     });
                     loadTickerTape(symbols); // Load ticker tape widget with stocks

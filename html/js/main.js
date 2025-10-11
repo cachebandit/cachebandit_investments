@@ -12,19 +12,25 @@ import {
 
 import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
+import { getCategoryData } from './dataSource.js';
 
 // Main JavaScript functionality
 
 document.addEventListener('DOMContentLoaded', function() {
+    const isLocal = () => ["localhost","127.0.0.1"].includes(location.hostname);
+
     // Get reference to the refresh button
     const refreshButton = document.getElementById('refresh-button');
     
     // Add click event listener to the refresh button
-    if (refreshButton) {
+    if (isLocal() && refreshButton) {
         refreshButton.addEventListener('click', function() {
             this.setAttribute('data-refreshing', 'true'); // Set the refreshing flag
             fetchWatchlistData(); // Call the function to fetch data
         });
+    } else if (refreshButton) {
+        refreshButton.disabled = true;
+        refreshButton.title = "Refresh is disabled on the static site.";
     }
     
     // Initial load - use cache
@@ -81,56 +87,20 @@ async function fetchWatchlistData() {
 
     try {
         let lastUpdated = '';
-        const isRefreshing = document.getElementById('refresh-button').getAttribute('data-refreshing') === 'true';
+        const refreshButton = document.getElementById('refresh-button');
+        const isRefreshing = refreshButton ? refreshButton.getAttribute('data-refreshing') === 'true' : false;
         
         for (const [index, category] of categories.entries()) {
-            // Determine if we should refresh the cache
-            const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${isRefreshing}&first=${index === 0}&last=${index === categories.length - 1}`;
-            const response = await fetch(url);
-
-            // Detect custom server header that flags a rate-limit/upstream failure even when status is 200
-            const rlHeader = response.headers.get && response.headers.get('X-RateLimit-Detected');
-            if (rlHeader === '1') {
-                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
-                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
-                if (spinner) spinner.style.display = 'none';
-                return;
-            }
-
-            // If server explicitly returned 429, show banner and abort
-            if (response.status === 429) {
-                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
-                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
-                if (spinner) spinner.style.display = 'none';
-                return;
-            }
-
-            if (!response.ok) throw new Error('Network response was not ok.');
-            const responseData = await response.json();
-
-            // Server may include an error field
-            if (responseData && responseData.error === 'rate_limit') {
-                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
-                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
-                if (spinner) spinner.style.display = 'none';
-                return;
-            }
-
-            // If server expected symbols but returned empty data, treat as rate limit
-            if (responseData && responseData.expected_count && responseData.expected_count > 0 && (!responseData.data || responseData.data.length === 0)) {
-                showRateLimitBanner('Rate Limit Hit - Try Again Later', 10);
-                document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
-                if (spinner) spinner.style.display = 'none';
-                return;
-            }
+            const responseData = await getCategoryData(category, { refresh: isRefreshing });
 
             // Extract the data and last_updated timestamp
-            const data = responseData.data;
-            lastUpdated = responseData.last_updated;
+            // Handle both local server format (data, last_updated) and static build format (items, updated_at)
+            const data = responseData.items || responseData.data || [];
+            lastUpdated = responseData.updated_at || responseData.last_updated;
 
             // On the first successful data fetch (either initial load or refresh),
             // clear the old content before rendering the new data.
-            if (index === 0) {
+            if (index === 0 && (isRefreshing || document.querySelector('.section') === null)) {
                 document.querySelectorAll('.section').forEach(section => section.remove());
             }
             
@@ -139,7 +109,9 @@ async function fetchWatchlistData() {
         }
         
         // Reset the refreshing flag
-        document.getElementById('refresh-button').setAttribute('data-refreshing', 'false');
+        if (refreshButton) {
+            refreshButton.setAttribute('data-refreshing', 'false');
+        }
         
         // Update the last updated timestamp from the server
         if (lastUpdated) {
@@ -147,6 +119,7 @@ async function fetchWatchlistData() {
         }
     } catch (error) {
         console.error('Error fetching watchlist data:', error);
+        showRateLimitBanner(error.message, 15, true);
     } finally {
         if (spinner) spinner.style.display = 'none';
     }

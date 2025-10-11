@@ -1,4 +1,5 @@
 import { showChartPopup } from './chart.js';
+import { getCategoryData } from './dataSource.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadRsiData();
@@ -6,15 +7,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadRsiData() {
     try {
-        const response = await fetch('/api/all_stock_data');
-        if (!response.ok) {
-            throw new Error('Failed to load cached stock data.');
-        }
-        const cachedData = await response.json();
+        const categoriesToFetch = [
+            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
         
         let allStocks = [];
-        Object.values(cachedData.data).forEach(category => {
-            allStocks = allStocks.concat(category);
+        const processedSymbols = new Set();
+
+        results.forEach(responseData => {
+            const items = responseData.items || responseData.data || [];
+            items.forEach(stock => {
+                const symbol = stock.Symbol || stock.symbol;
+                if (!processedSymbols.has(symbol)) {
+                    allStocks.push(stock);
+                    processedSymbols.add(symbol);
+                }
+            });
         });
 
         const stocksWithRsi = allStocks.filter(stock => 

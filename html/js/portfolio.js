@@ -12,6 +12,7 @@ import {
 
 import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
+import { getCategoryData } from './dataSource.js';
 
 // Main JavaScript functionality for the Portfolio page
 
@@ -58,13 +59,10 @@ async function fetchPortfolioData() {
     const category = 'Owned';
 
     try {
-        const url = `/saved_stock_info?category=${encodeURIComponent(category)}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not ok.');
-        const responseData = await response.json();
+        const responseData = await getCategoryData(category);
         
-        // Extract the data and last_updated timestamp
-        const data = responseData.data;
+        // Handle both local server format (data) and static build format (items)
+        const data = responseData.items || responseData.data || [];
         
         // Render the category data
         renderPortfolio(data);
