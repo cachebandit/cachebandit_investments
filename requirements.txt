@@ -2,7 +2,7 @@
 #source venv/bin/activate
 #pip install -r requirements.txt
 # Core dependencies
-yfinance==0.2.59
+yfinance==0.2.66
 
 # Data handling
 pandas>=2.0.0

@@ -69,9 +69,9 @@ async function fetchWatchlistData() {
     const categories = [
         'Owned',
         'Information Technology',
+        'Financial Services',
         'Industrials',
         'Energy & Utilities',
-        'Financial Services',
         'Healthcare',
         'Communication Services',
         'Real Estate',

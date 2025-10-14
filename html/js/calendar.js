@@ -1,4 +1,5 @@
 import { showChartPopup } from './chart.js';
+import { showInfoPopup } from './popup.js';
 
 let currentDate = new Date();
 let cachedMonthsData = {}; // Cache for multiple months of data, e.g., {'2024-6': data}
@@ -106,7 +107,27 @@ function renderCalendar(earningsData = {}) {
                     companyDiv.className = 'earnings-item bmo';
                     companyDiv.title = `${company.symbol} - Before Hours`;
                     companyDiv.dataset.symbol = company.symbol;
+
+                    // Data for info popup
+                    const trailingPeColor = company['Trailing PE'] ? getTrailingPeColor(company['Trailing PE']) : 'inherit';
+                    const forwardPeColor = company['Forward PE'] ? getForwardPeColor(company['Forward PE'], company['Trailing PE']) : 'inherit';
+
                     companyDiv.innerHTML = `
+                        <button class="info-icon" 
+                                data-stock-name="${company.name}"
+                                data-fifty-two-week-high="${company.fiftyTwoWeekHigh || 'N/A'}"
+                                data-current-price="${company.close ? company.close.toFixed(2) : 'N/A'}"
+                                data-fifty-two-week-low="${company.fiftyTwoWeekLow || 'N/A'}"
+                                data-earnings-date="${company.earningsDate || 'N/A'}"
+                                title="${company.stock_description || 'No description available'}"
+                                data-trailing-pe="${company['Trailing PE'] || 'N/A'}"
+                                data-forward-pe="${company['Forward PE'] || 'N/A'}"
+                                data-ev-ebitda="${company['EV/EBITDA'] || 'N/A'}"
+                                data-trailing-pe-color="${trailingPeColor}"
+                                data-forward-pe-color="${forwardPeColor}"
+                                data-url="${company.stockUrl}">
+                            <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
+                        </button>
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
                         <span>${company.name}</span>
                     `;
@@ -153,7 +174,27 @@ function renderCalendar(earningsData = {}) {
                     companyDiv.className = 'earnings-item amc';
                     companyDiv.title = `${company.symbol} - After Hours`;
                     companyDiv.dataset.symbol = company.symbol;
+
+                    // Data for info popup
+                    const trailingPeColor = company['Trailing PE'] ? getTrailingPeColor(company['Trailing PE']) : 'inherit';
+                    const forwardPeColor = company['Forward PE'] ? getForwardPeColor(company['Forward PE'], company['Trailing PE']) : 'inherit';
+
                     companyDiv.innerHTML = `
+                        <button class="info-icon" 
+                                data-stock-name="${company.name}"
+                                data-fifty-two-week-high="${company.fiftyTwoWeekHigh || 'N/A'}"
+                                data-current-price="${company.close ? company.close.toFixed(2) : 'N/A'}"
+                                data-fifty-two-week-low="${company.fiftyTwoWeekLow || 'N/A'}"
+                                data-earnings-date="${company.earningsDate || 'N/A'}"
+                                title="${company.stock_description || 'No description available'}"
+                                data-trailing-pe="${company['Trailing PE'] || 'N/A'}"
+                                data-forward-pe="${company['Forward PE'] || 'N/A'}"
+                                data-ev-ebitda="${company['EV/EBITDA'] || 'N/A'}"
+                                data-trailing-pe-color="${trailingPeColor}"
+                                data-forward-pe-color="${forwardPeColor}"
+                                data-url="${company.stockUrl}">
+                            <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
+                        </button>
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
                         <span>${company.name}</span>
                     `;
@@ -208,6 +249,11 @@ if (calendarContainer) {
         const earningsItem = event.target.closest('.earnings-item');
         if (earningsItem && earningsItem.dataset.symbol) {
             showChartPopup(earningsItem.dataset.symbol);
+        }
+        const infoIcon = event.target.closest('.info-icon');
+        if (infoIcon) {
+            event.stopPropagation();
+            showInfoPopup(infoIcon);
         }
     });
 }

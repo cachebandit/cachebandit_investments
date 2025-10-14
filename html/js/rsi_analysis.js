@@ -1,4 +1,6 @@
 import { showChartPopup } from './chart.js';
+import { showInfoPopup } from './popup.js';
+import { getTrailingPeColor, getForwardPeColor } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadRsiData();
@@ -13,8 +15,17 @@ async function loadRsiData() {
         const cachedData = await response.json();
         
         let allStocks = [];
-        Object.values(cachedData.data).forEach(category => {
-            allStocks = allStocks.concat(category);
+        const processedSymbols = new Set();
+
+        // The data is nested under keys like "category_Owned". We iterate through the values of the data object,
+        // which are arrays of stocks, and flatten them into a single list.
+        Object.values(cachedData.data).forEach(stockArray => {
+            stockArray.forEach(stock => {
+                if (stock && stock.Symbol && !processedSymbols.has(stock.Symbol)) {
+                    allStocks.push(stock);
+                    processedSymbols.add(stock.Symbol);
+                }
+            });
         });
 
         const stocksWithRsi = allStocks.filter(stock => 
@@ -64,11 +75,17 @@ async function loadRsiData() {
         const gridContainer = document.querySelector('.rsi-grid-container');
         if (gridContainer) {
             gridContainer.addEventListener('click', function(event) {
-                const companyInfo = event.target.closest('.rsi-company-info');
-                if (companyInfo) {
-                    const rsiItem = companyInfo.closest('.rsi-item');
-                    if (rsiItem && rsiItem.dataset.symbol) {
-                        showChartPopup(rsiItem.dataset.symbol);
+                const infoIcon = event.target.closest('.info-icon');
+                if (infoIcon) {
+                    event.stopPropagation();
+                    showInfoPopup(infoIcon);
+                } else {
+                    const companyInfo = event.target.closest('.rsi-company-info');
+                    if (companyInfo) {
+                        const rsiItem = companyInfo.closest('.rsi-item');
+                        if (rsiItem && rsiItem.dataset.symbol) {
+                            showChartPopup(rsiItem.dataset.symbol);
+                        }
                     }
                 }
             });
@@ -102,9 +119,27 @@ function renderList(containerId, stocks) {
         else if (rsiValue <= 30) rsiClass = 'rsi-deep-oversold';       // Red
         else if (rsiValue <= 35) rsiClass = 'rsi-entering-oversold'; // Orange
 
+        const trailingPeColor = stock['Trailing PE'] ? getTrailingPeColor(stock['Trailing PE']) : 'inherit';
+        const forwardPeColor = stock['Forward PE'] ? getForwardPeColor(stock['Forward PE'], stock['Trailing PE']) : 'inherit';
+
         return `
             <div class="rsi-item" data-symbol="${stock.Symbol}">
                 <div class="rsi-company-info">
+                    <button class="info-icon" 
+                            data-stock-name="${stock.Name}"
+                            data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
+                            data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
+                            data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
+                            data-earnings-date="${stock.earningsDate || 'N/A'}"
+                            title="${stock.stock_description || 'No description available'}"
+                            data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
+                            data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                            data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                            data-trailing-pe-color="${trailingPeColor}"
+                            data-forward-pe-color="${forwardPeColor}"
+                            data-url="${stock.stockUrl}">
+                        <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
+                    </button>
                     <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name} logo" onerror="this.style.display='none'"/>
                     <span class="company-name-text">${stock.Name}</span>
                 </div>

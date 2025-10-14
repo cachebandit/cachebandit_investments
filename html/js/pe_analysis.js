@@ -35,9 +35,9 @@ function prepareChartData(categoryData) {
     // Define the single source of truth for active categories
     const activeCategories = [
         'Information Technology',
+        'Financial Services',
         'Industrials',
         'Energy & Utilities',
-        'Financial Services',
         'Healthcare',
         'Communication Services',
         'Real Estate',

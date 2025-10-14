@@ -382,7 +382,7 @@
                 },
                 {
                     "symbol": "HON",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Honeywell International Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/honeywell.svg"
                 }
@@ -738,7 +738,7 @@
             "Gambling": [
                 {
                     "symbol": "DKNG",
-                    "flag": false,
+                    "flag": true,
                     "Name": "DraftKings Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/draftkings.svg"
                 },
@@ -869,186 +869,6 @@
                     "flag": false,
                     "Name": "Vail Resorts, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/vail-resorts.svg"
-                }
-            ]
-        },
-        "Financial Services": {
-            "Regional Banks": [
-                {
-                    "symbol": "BAC",
-                    "flag": false,
-                    "Name": "Bank of America Corporation",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bank-of-america.svg"
-                },
-                {
-                    "symbol": "JPM",
-                    "flag": false,
-                    "Name": "JPMorgan Chase & Co.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/jpmorgan-chase.svg"
-                },
-                {
-                    "symbol": "WFC",
-                    "flag": false,
-                    "Name": "Wells Fargo & Company",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/wells-fargo.svg"
-                },
-                {
-                    "symbol": "C",
-                    "flag": false,
-                    "Name": "Citigroup Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/citigroup.svg"
-                },
-                {
-                    "symbol": "PNC",
-                    "flag": false,
-                    "Name": "The PNC Financial Services Group, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pnc-financial.svg"
-                },
-                {
-                    "symbol": "USB",
-                    "flag": false,
-                    "Name": "U.S. Bancorp",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/us-bancorp.svg"
-                }
-            ],
-            "Credit & Payments": [
-                {
-                    "symbol": "AXP",
-                    "flag": false,
-                    "Name": "American Express Company",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/american-express.svg"
-                },
-                {
-                    "symbol": "V",
-                    "flag": false,
-                    "Name": "Visa Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/visa.svg"
-                },
-                {
-                    "symbol": "MA",
-                    "flag": false,
-                    "Name": "Mastercard Incorporated",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mastercard.svg"
-                },
-                {
-                    "symbol": "PYPL",
-                    "flag": false,
-                    "Name": "PayPal Holdings, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/paypal.svg"
-                },
-                {
-                    "symbol": "XYZ",
-                    "flag": false,
-                    "Name": "Block, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/block.svg"
-                }
-            ],
-            "Brokerages and Digital Assets": [
-                {
-                    "symbol": "HOOD",
-                    "flag": false,
-                    "Name": "Robinhood Markets, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/robinhood.svg"
-                },
-                {
-                    "symbol": "COIN",
-                    "flag": false,
-                    "Name": "Coinbase Global, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/coinbase.svg"
-                },
-                {
-                    "symbol": "MSTR",
-                    "flag": false,
-                    "Name": "MicroStrategy Incorporated",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/microstrategy.svg"
-                }
-            ],
-            "Investment Banks": [
-                {
-                    "symbol": "SPGI",
-                    "flag": false,
-                    "Name": "S&P Global Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/s-and-p-global.svg"
-                },
-                {
-                    "symbol": "GS",
-                    "flag": false,
-                    "Name": "The Goldman Sachs Group, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/goldman-sachs.svg"
-                },
-                {
-                    "symbol": "BX",
-                    "flag": false,
-                    "Name": "Blackstone Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackstone.svg"
-                },
-                {
-                    "symbol": "BLK",
-                    "flag": false,
-                    "Name": "BlackRock, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackrock.svg"
-                },
-                {
-                    "symbol": "MS",
-                    "flag": false,
-                    "Name": "Morgan Stanley",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/morgan-stanley.svg"
-                },
-                {
-                    "symbol": "APO",
-                    "flag": false,
-                    "Name": "Apollo Global Management, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/apollo.svg"
-                },
-                {
-                    "symbol": "KKR",
-                    "flag": false,
-                    "Name": "KKR & Co. Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kkr.svg"
-                }
-            ],
-            "Insurance": [
-                {
-                    "symbol": "BRK-B",
-                    "flag": false,
-                    "Name": "Berkshire Hathaway Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/berkshire-hathaway.svg"
-                },
-                {
-                    "symbol": "PGR",
-                    "flag": false,
-                    "Name": "The Progressive Corporation",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prog.svg"
-                },
-                {
-                    "symbol": "AFL",
-                    "flag": false,
-                    "Name": "Aflac Incorporated",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/aflac.svg"
-                },
-                {
-                    "symbol": "MET",
-                    "flag": false,
-                    "Name": "MetLife, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/metlife.svg"
-                },
-                {
-                    "symbol": "TRV",
-                    "flag": false,
-                    "Name": "The Travelers Companies, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/travelers.svg"
-                },
-                {
-                    "symbol": "ALL",
-                    "flag": false,
-                    "Name": "The Allstate Corporation",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/allstate.svg"
-                },
-                {
-                    "symbol": "PRU",
-                    "flag": false,
-                    "Name": "Prudential Financial, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prudential.svg"
                 }
             ]
         },
@@ -1313,6 +1133,246 @@
                     "flag": false,
                     "Name": "Equinix, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/equinix.svg"
+                }
+            ]
+        },
+        "Financial Services": {
+            "Commerical & Retail Banks": [
+                {
+                    "symbol": "BAC",
+                    "flag": false,
+                    "Name": "Bank of America Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bank-of-america.svg"
+                },
+                {
+                    "symbol": "JPM",
+                    "flag": false,
+                    "Name": "JPMorgan Chase & Co.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/jpmorgan-chase.svg"
+                },
+                {
+                    "symbol": "WFC",
+                    "flag": false,
+                    "Name": "Wells Fargo & Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/wells-fargo.svg"
+                },
+                {
+                    "symbol": "C",
+                    "flag": false,
+                    "Name": "Citigroup Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/citigroup.svg"
+                },
+                {
+                    "symbol": "PNC",
+                    "flag": false,
+                    "Name": "The PNC Financial Services Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pnc-financial.svg"
+                },
+                {
+                    "symbol": "USB",
+                    "flag": false,
+                    "Name": "U.S. Bancorp",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/us-bancorp.svg"
+                }
+            ],
+            "Credit & Payments": [
+                {
+                    "symbol": "AXP",
+                    "flag": false,
+                    "Name": "American Express Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/american-express.svg"
+                },
+                {
+                    "symbol": "V",
+                    "flag": false,
+                    "Name": "Visa Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/visa.svg"
+                },
+                {
+                    "symbol": "MA",
+                    "flag": false,
+                    "Name": "Mastercard Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mastercard.svg"
+                },
+                {
+                    "symbol": "PYPL",
+                    "flag": false,
+                    "Name": "PayPal Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/paypal.svg"
+                },
+                {
+                    "symbol": "XYZ",
+                    "flag": false,
+                    "Name": "Block, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/block.svg"
+                }
+            ],
+            "Brokerages": [
+                {
+                    "symbol": "HOOD",
+                    "flag": false,
+                    "Name": "Robinhood Markets, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/robinhood.svg"
+                },
+                {
+                    "symbol": "COIN",
+                    "flag": false,
+                    "Name": "Coinbase Global, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/coinbase.svg"
+                },
+                {
+                    "symbol": "SCHW",
+                    "flag": false,
+                    "Name": "The Charles Schwab Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/schwab.svg"
+                },
+                {
+                    "symbol": "IBKR",
+                    "flag": false,
+                    "Name": "Interactive Brokers Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/interactive-brokers-group.svg"
+                }
+            ],
+            "Investment Banks": [
+                {
+                    "symbol": "GS",
+                    "flag": false,
+                    "Name": "The Goldman Sachs Group, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/goldman-sachs.svg"
+                },
+                {
+                    "symbol": "MS",
+                    "flag": false,
+                    "Name": "Morgan Stanley",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/morgan-stanley.svg"
+                }
+            ],
+            "Financial Data Analytics": [
+                {
+                    "symbol": "SPGI",
+                    "flag": false,
+                    "Name": "S&P Global Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/s-and-p-global.svg"
+                },
+                {
+                    "symbol": "MORN",
+                    "flag": false,
+                    "Name": "Morningstar, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/morningstar.svg"
+                },
+                {
+                    "symbol": "FICO",
+                    "flag": false,
+                    "Name": "Fair Isaac Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/fair-isaac.svg"
+                },
+                {
+                    "symbol": "MCO",
+                    "flag": false,
+                    "Name": "Moody's Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/moodys.svg"
+                },
+                {
+                    "symbol": "MSCI",
+                    "flag": false,
+                    "Name": "MSCI Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/msci.svg"
+                }
+            ],
+            "Private Equity": [
+                {
+                    "symbol": "BX",
+                    "flag": true,
+                    "Name": "Blackstone Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackstone.svg"
+                },
+                {
+                    "symbol": "KKR",
+                    "flag": true,
+                    "Name": "KKR & Co. Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kkr.svg"
+                },
+                {
+                    "symbol": "APO",
+                    "flag": true,
+                    "Name": "Apollo Global Management, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/apollo.svg"
+                },
+                {
+                    "symbol": "ARES",
+                    "flag": false,
+                    "Name": "Ares Management Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ares-management.svg"
+                },
+                {
+                    "symbol": "BAM",
+                    "flag": false,
+                    "Name": "Brookfield Asset Management Ltd.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/brookfield-asset-management.svg"
+                },
+                {
+                    "symbol": "CG",
+                    "flag": false,
+                    "Name": "The Carlyle Group Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/the-carlyle-group.svg"
+                }
+            ],
+            "Asset & Wealth Managment": [
+                {
+                    "symbol": "BLK",
+                    "flag": false,
+                    "Name": "BlackRock, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/blackrock.svg"
+                },
+                {
+                    "symbol": "STT",
+                    "flag": false,
+                    "Name": "State Street Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/state-street.svg"
+                }
+            ],
+            "Insurance": [
+                {
+                    "symbol": "BRK-B",
+                    "flag": false,
+                    "Name": "Berkshire Hathaway Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/berkshire-hathaway.svg"
+                },
+                {
+                    "symbol": "PGR",
+                    "flag": false,
+                    "Name": "The Progressive Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prog.svg"
+                },
+                {
+                    "symbol": "AFL",
+                    "flag": false,
+                    "Name": "Aflac Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/aflac.svg"
+                },
+                {
+                    "symbol": "MET",
+                    "flag": false,
+                    "Name": "MetLife, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/metlife.svg"
+                },
+                {
+                    "symbol": "TRV",
+                    "flag": false,
+                    "Name": "The Travelers Companies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/travelers.svg"
+                },
+                {
+                    "symbol": "ALL",
+                    "flag": false,
+                    "Name": "The Allstate Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/allstate.svg"
+                },
+                {
+                    "symbol": "PRU",
+                    "flag": false,
+                    "Name": "Prudential Financial, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/prudential.svg"
                 }
             ]
         }
