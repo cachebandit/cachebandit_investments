@@ -56,12 +56,12 @@ async function loadRsiData() {
 
         // Was oversold yesterday, now in the 30-35 band
         const exitingOversold = stocksWithYRsi
-            .filter(s => s.yRSI <= 30 && s.RSI > 30 && s.RSI <= 35)
+            .filter(s => s.yRSI <= 30 && s.RSI > 30)
             .sort(sortByMarketCap);
 
         // Was overbought yesterday, now in the 65-70 band
         const exitingOverbought = stocksWithYRsi
-            .filter(s => s.yRSI >= 70 && s.RSI < 70 && s.RSI >= 65)
+            .filter(s => s.yRSI >= 70 && s.RSI < 70)
             .sort(sortByMarketCap);
 
         // --- Render all tables ---
