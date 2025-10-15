@@ -127,25 +127,25 @@ function renderList(containerId, stocks) {
         const forwardPeColor = stock['Forward PE'] ? getForwardPeColor(stock['Forward PE'], stock['Trailing PE']) : 'inherit';
 
         return `
-            <div class="rsi-item" data-symbol="${stock.Symbol}">
+            <div class="rsi-item" data-symbol="${stock.Symbol || stock.symbol}">
                 <div class="rsi-company-info">
                     <button class="info-icon" 
-                            data-stock-name="${stock.Name}"
+                            data-stock-name="${stock.Name || stock.name}"
                             data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
                             data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
                             data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
                             data-earnings-date="${stock.earningsDate || 'N/A'}"
                             title="${stock.stock_description || 'No description available'}"
-                            data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
-                            data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                            data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
+                            data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
                             data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
                             data-trailing-pe-color="${trailingPeColor}"
                             data-forward-pe-color="${forwardPeColor}"
                             data-url="${stock.stockUrl}">
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
-                    <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name} logo" onerror="this.style.display='none'"/>
-                    <span class="company-name-text">${stock.Name}</span>
+                    <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'"/>
+                    <span class="company-name-text">${stock.Name || stock.name}</span>
                 </div>
                 <div class="rsi-market-data">
                     <span>${close}</span>

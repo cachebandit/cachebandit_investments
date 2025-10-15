@@ -228,51 +228,51 @@ function renderCategory(category, data) {
         const tbody = document.createElement('tbody');
         data.forEach(stock => {
             const row = document.createElement('tr');
-            row.setAttribute('data-symbol', stock.Symbol);
+            row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
             row.setAttribute('data-category', category);
             row.setAttribute('data-industry', stock.industry || 'Uncategorized');
             
             const priceChangeColor = getColorForChange(stock['Percent Change']);
             const percentChangeColor = getColorForChange(stock['Percent Change']);
             const rsiColor = getRsiBackgroundStyle(stock.RSI);
-            const trailingPeColor = getTrailingPeColor(stock["Trailing PE"]);
-            const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
-            const logoUrl = stock["stockUrl"];
+            const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
+            const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
+            const logoUrl = stock.stockUrl;
 
             row.innerHTML = `
                 <td class="company-name">
                     <div class="company-cell-content">
                     <span class="star-icon ${stock.flag ? 'active' : ''}" 
-                          data-symbol="${stock.Symbol}" 
-                          onclick="toggleFlag(event, '${stock.Symbol}', this)">
+                          data-symbol="${stock.Symbol || stock.symbol}" 
+                          onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
                         ★
                     </span>
                     <button class="info-icon" 
-                            data-stock-name="${stock.Name}"
-                            data-fifty-two-week-high="${stock['fiftyTwoWeekHigh'] || 'N/A'}"
-                            data-current-price="${stock['Close'] ? stock['Close'].toFixed(2) : 'N/A'}"
-                            data-fifty-two-week-low="${stock['fiftyTwoWeekLow'] || 'N/A'}"
-                            data-earnings-date="${stock['earningsDate'] || 'N/A'}"
+                            data-stock-name="${stock.Name || stock.name}"
+                            data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
+                            data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
+                            data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
+                            data-earnings-date="${stock.earningsDate || 'N/A'}"
                             title="${stock.stock_description || 'No description available'}"
-                            data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
-                            data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                            data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
+                            data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
                             data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
                             data-trailing-pe-color="${trailingPeColor}"
                             data-forward-pe-color="${forwardPeColor}"
                             data-url="${logoUrl}">
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
-                    <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
+                    <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
                         style="width: 20px; height: 20px;"/>
-                    <span class="company-text">${stock.Name}</span>
+                    <span class="company-text">${stock.Name || stock.name}</span>
                     </div>
                 </td>
-                <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
-                <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
-                <td class="open">${stock.Open !== undefined ? formatValue(stock.Open) : '-'}</td>
-                <td class="high">${stock.High !== undefined ? formatValue(stock.High) : '-'}</td>
-                <td class="low">${stock.Low !== undefined ? formatValue(stock.Low) : '-'}</td>
-                <td class="close">${stock.Close !== undefined ? formatValue(stock.Close) : '-'}</td>
+                <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol || stock.symbol}">${stock.Symbol || stock.symbol}</td>
+                <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
+                <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
+                <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
+                <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
+                <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
                 <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
                 <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
                 <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
@@ -331,48 +331,48 @@ function renderCategory(category, data) {
             const tbody = document.createElement('tbody');
             stocks.forEach(stock => {
                 const row = document.createElement('tr');
-                row.setAttribute('data-symbol', stock.Symbol);
+                row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
                 
                 const priceChangeColor = getColorForChange(stock['Percent Change']);
                 const percentChangeColor = getColorForChange(stock['Percent Change']);
                 const rsiColor = getRsiBackgroundStyle(stock.RSI);
-                const trailingPeColor = getTrailingPeColor(stock["Trailing PE"]);
-                const forwardPeColor = getForwardPeColor(stock["Forward PE"], stock["Trailing PE"]);
-                const logoUrl = stock["stockUrl"];
+                const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
+                const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
+                const logoUrl = stock.stockUrl;
 
                 row.innerHTML = `
                     <td class="company-name">
                         <div class="company-cell-content">
                         <span class="star-icon ${stock.flag ? 'active' : ''}" 
-                              data-symbol="${stock.Symbol}" 
-                              onclick="toggleFlag(event, '${stock.Symbol}', this)">
+                              data-symbol="${stock.Symbol || stock.symbol}" 
+                              onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
                             ★
                         </span>
                         <button class="info-icon" 
-                                data-stock-name="${stock.Name}"
+                                data-stock-name="${stock.Name || stock.name}"
                                 title="${stock.stock_description || 'No description available'}"
-                                data-fifty-two-week-high="${stock['fiftyTwoWeekHigh'] || 'N/A'}"
-                                data-current-price="${stock['Close'] ? stock['Close'].toFixed(2) : 'N/A'}"
-                                data-fifty-two-week-low="${stock['fiftyTwoWeekLow'] || 'N/A'}"
-                                data-earnings-date="${stock['earningsDate'] || 'N/A'}"
-                                data-trailing-pe="${stock['Trailing PE'] || 'N/A'}"
-                                data-forward-pe="${stock['Forward PE'] || 'N/A'}"
+                                data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
+                                data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
+                                data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
+                                data-earnings-date="${stock.earningsDate || 'N/A'}"
+                                data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
+                                data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
                                 data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
                                 data-trailing-pe-color="${trailingPeColor}"
                                 data-forward-pe-color="${forwardPeColor}">
                             <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
                         </button>
-                        <img src="${logoUrl}" alt="${stock.Name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
+                        <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
                             style="width: 20px; height: 20px;"/>
-                        <span class="company-text">${stock.Name}</span>
+                        <span class="company-text">${stock.Name || stock.name}</span>
                         </div>
                     </td>
-                    <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol}">${stock.Symbol}</td>
-                    <td class="market-cap">${formatMarketCap(stock['Market Cap'])}</td>
-                    <td class="open">${stock.Open !== undefined ? formatValue(stock.Open) : '-'}</td>
-                    <td class="high">${stock.High !== undefined ? formatValue(stock.High) : '-'}</td>
-                    <td class="low">${stock.Low !== undefined ? formatValue(stock.Low) : '-'}</td>
-                    <td class="close">${stock.Close !== undefined ? formatValue(stock.Close) : '-'}</td>
+                    <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol || stock.symbol}">${stock.Symbol || stock.symbol}</td>
+                    <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
+                    <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
+                    <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
+                    <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
+                    <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
                     <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
                     <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
                     <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
