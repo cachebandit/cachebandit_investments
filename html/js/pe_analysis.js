@@ -50,13 +50,14 @@ async function loadChartData() {
                 combinedData[categoryName] = responseData.items || responseData.data || [];
             }
         });
-        prepareChartData(combinedData);
-    } catch (error) {
+
         // Update the last updated timestamp in the UI
         if (lastUpdated) {
             document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
         }
 
+        prepareChartData(combinedData);
+    } catch (error) {
         console.error('Error loading P/E chart data:', error);
     }
 }

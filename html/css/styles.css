@@ -33,7 +33,7 @@ body {
 
 .header-container {
     display: flex;
-    align-items: flex-end; /* Align items to the bottom for correct vertical alignment */
+    align-items: flex-start; /* Revert to default top alignment */
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
@@ -186,14 +186,15 @@ td.close {
 
 .header-left {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Stack logo and timestamp vertically */
+    align-items: center;    /* Center them horizontally */
 }
 
 .header-controls {
     display: flex;
     flex-direction: column;
+    /* This is no longer needed as the timestamp has moved */
     align-items: flex-end;
-    justify-content: flex-end; /* Pushes content to the bottom of the container */
     /* Give the container enough width to prevent wrapping */
     min-width: 220px;
     /* The following properties are also important for alignment */
@@ -364,7 +365,7 @@ td.close {
 .last-updated {
     font-size: 12px;
     color: var(--text-secondary);
-    text-align: right;
+    text-align: center; /* Center the text now that it's under the logo */
     margin-top: 8px;
     white-space: nowrap; /* Prevent the timestamp from wrapping */
 }
@@ -395,10 +396,10 @@ td.close {
     width: 100%;
     padding: 10px 40px; /* T/B, L/R padding for icons */
     font-size: 14px;
-    border: 1px solid var(--border-color);
+    border: 1px solid transparent; /* Make border transparent initially */
     border-radius: 6px;
-    background-color: var(--container-bg);
-    color: var(--text-primary);
+    background-color: var(--hover-bg); /* Use a slightly off-white background */
+    color: var(--text-secondary); /* Start with secondary text color */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box; /* Ensure padding is included in width */
 }
@@ -407,6 +408,8 @@ td.close {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
     outline: none;
+    background-color: var(--container-bg); /* Switch to white on focus */
+    color: var(--text-primary); /* Use primary text color on focus */
 }
 
 .clear-search {
