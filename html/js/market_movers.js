@@ -14,11 +14,11 @@ import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
 import { getCategoryData } from './dataSource.js';
 
-// Main JavaScript functionality for the Portfolio page
+// Main JavaScript functionality for the Market Movers page
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initial load - use cache
-    fetchPortfolioData();
+    fetchMarketMoversData();
 
     // Setup popup handling for info icons
     document.addEventListener('click', function(event) {
@@ -31,92 +31,85 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.style.display = 'none';
         });
     });
-
-    // Add event listener to the search input
-    const searchInput = document.getElementById('search-input');
-    const clearSearch = document.getElementById('clear-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            filterTable(this.value);
-            clearSearch.style.display = this.value ? 'inline' : 'none';
-        });
-    }
-
-    // Add event listener to the clear search button
-    if (clearSearch) {
-        clearSearch.addEventListener('click', function() {
-            searchInput.value = '';
-            filterTable('');
-            clearSearch.style.display = 'none';
-        });
-    }
 });
 
-async function fetchPortfolioData() {
-    const spinner = document.getElementById('loading-spinner');
-    if (spinner) spinner.style.display = 'inline-block';
-
-    const category = 'Owned';
-
+async function fetchMarketMoversData() {
     try {
-        const responseData = await getCategoryData(category);
-        
-        // Extract the data and last_updated timestamp
-        // Handle both local server format (data) and static build format (items)
-        const data = responseData.items || responseData.data || [];
-        const lastUpdated = responseData.updated_at || responseData.last_updated;
-        
-        // Render the category data
-        renderPortfolio(data);
+        const categoriesToFetch = [
+            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
+
+        let allStocks = [];
+        const processedSymbols = new Set();
+        let lastUpdated = '';
+
+        results.forEach(responseData => {
+            const items = responseData.items || responseData.data || [];
+            if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
+                lastUpdated = responseData.updated_at || responseData.last_updated;
+            }
+
+            items.forEach(stock => {
+                const symbol = stock.Symbol || stock.symbol;
+                if (!processedSymbols.has(symbol)) {
+                    allStocks.push(stock);
+                    processedSymbols.add(symbol);
+                }
+            });
+        });
 
         // Update the last updated timestamp
         if (lastUpdated) {
             document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
         }
-        
+
+        // Filter and sort stocks
+        const movers = allStocks.filter(s => s['Percent Change'] !== null && s['Percent Change'] !== undefined && !isNaN(s['Percent Change']));
+
+        const topGainers = movers
+            .filter(s => s['Percent Change'] > 0)
+            .sort((a, b) => b['Percent Change'] - a['Percent Change']);
+
+        const topDecliners = movers
+            .filter(s => s['Percent Change'] < 0)
+            .sort((a, b) => a['Percent Change'] - b['Percent Change']);
+
+        // Render the tables
+        renderMoversTable('top-gainers-container', topGainers);
+        renderMoversTable('top-decliners-container', topDecliners);
+
     } catch (error) {
-        console.error('Error fetching portfolio data:', error);
-    } finally {
-        if (spinner) spinner.style.display = 'none';
+        console.error('Error fetching market movers data:', error);
     }
 }
 
-function renderPortfolio(data) {
-    const container = document.getElementById('stock-table-container');
+function renderMoversTable(containerId, data) {
+    const container = document.getElementById(containerId);
     container.innerHTML = ''; // Clear previous content
 
     if (data.length === 0) {
         const noDataMessage = document.createElement('p');
-        noDataMessage.textContent = 'Your portfolio is empty. Add stocks from the Watchlist by clicking the star icon.';
+        noDataMessage.textContent = 'No market data available for this category.';
         noDataMessage.style.textAlign = 'center';
         noDataMessage.style.marginTop = '20px';
+        noDataMessage.style.padding = '0 20px';
         container.appendChild(noDataMessage);
         return;
     }
-
-    // Clear the container now that we have data to render
-    document.querySelectorAll('.section').forEach(section => section.remove());
-
-    const section = document.createElement('div');
-    section.className = 'section';
-
-    const categoryHeading = document.createElement('h2');
-    categoryHeading.textContent = 'Owned';
-    section.appendChild(categoryHeading);
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr>
             <th class="company-name">Company Name</th>
-            <th class="symbol">Symbol</th>
-            <th class="market-cap">Market Cap</th>
-            <th class="open">Open</th>
-            <th class="high">High</th>
-            <th class="low">Low</th>
-            <th class="close">Close</th>
+            <th class="close">Price</th>
+            <th class="percent-change" style="width: 12%;">% Change</th>
             <th class="change">Change</th>
-            <th class="percent-change">% Change</th>
             <th class="rsi">RSI</th>
         </tr>
     `;
@@ -125,8 +118,6 @@ function renderPortfolio(data) {
     data.forEach(stock => {
         const row = document.createElement('tr');
         row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
-        row.setAttribute('data-category', 'Owned');
-        row.setAttribute('data-industry', stock.industry || 'Uncategorized');
         
         const priceChangeColor = getColorForChange(stock['Percent Change']);
         const percentChangeColor = getColorForChange(stock['Percent Change']);
@@ -137,8 +128,8 @@ function renderPortfolio(data) {
 
         row.innerHTML = `
             <td class="company-name">
-                <div class="company-cell-content">
-                <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                <div class="company-cell-content chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">
+                <span class="star-icon ${stock.flag ? 'active' : ''}"
                       data-symbol="${stock.Symbol || stock.symbol}" 
                       onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
                     ★
@@ -163,14 +154,9 @@ function renderPortfolio(data) {
                 <span class="company-text">${stock.Name || stock.name}</span>
                 </div>
             </td>
-            <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol || stock.symbol}">${stock.Symbol || stock.symbol}</td>
-            <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
-            <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
-            <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
-            <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
             <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-            <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
             <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
+            <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
             <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
         `;
 
@@ -179,40 +165,25 @@ function renderPortfolio(data) {
 
     table.appendChild(thead);
     table.appendChild(tbody);
-    section.appendChild(table);
-
-    container.appendChild(section);
+    container.appendChild(table);
     
     // Add event listeners after the section is added to the DOM
-    section.querySelectorAll('.symbol').forEach(symbolCell => {
-        symbolCell.addEventListener('click', function(event) {
-            event.preventDefault();
-            const symbol = this.getAttribute('data-symbol');
-            showChartPopup(symbol);
+    container.querySelectorAll('.chart-clickable').forEach(clickableCell => {
+        clickableCell.addEventListener('click', function(event) {
+            // Prevent click from triggering on the star or info icon
+            if (event.target.closest('.star-icon') || event.target.closest('.info-icon')) {
+                return;
+            }
+            const symbol = this.dataset.symbol;
+            if (symbol) showChartPopup(symbol);
         });
     });
     
-    section.querySelectorAll('.info-icon').forEach(infoIcon => {
+    container.querySelectorAll('.info-icon').forEach(infoIcon => {
         infoIcon.addEventListener('click', function(event) {
             event.stopPropagation();
             showInfoPopup(this);
         });
-    });
-}
-
-function filterTable(query) {
-    const searchTerm = query.toLowerCase();
-    const rows = document.querySelectorAll('.section table tbody tr');
-
-    rows.forEach(row => {
-        const symbol = row.querySelector('.symbol').textContent.toLowerCase();
-        const name = row.querySelector('.company-name').textContent.toLowerCase();
-        
-        if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
     });
 }
 
@@ -233,21 +204,11 @@ window.toggleFlag = function(event, symbol, element) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Instead of just toggling the class, we'll remove the row
-            // as it no longer belongs in the "Owned" portfolio view.
-            const row = element.closest('tr');
-            if (row) {
-                row.style.transition = 'opacity 0.5s ease';
-                row.style.opacity = '0';
-                setTimeout(() => row.remove(), 500);
-            }
+            element.classList.toggle('active');
         }
     })
     .catch(error => console.error('Error:', error));
 };
-
-// Since this JS file will be loaded from portfolio.html, we need to import these functions
-// so they are available in the global scope for inline event handlers.
 
 function importDependencies() {
     const script = document.createElement('script');

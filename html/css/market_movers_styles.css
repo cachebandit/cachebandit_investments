@@ -1,0 +1,62 @@
+/* Styles for Market Movers page */
+.movers-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.movers-section {
+    flex: 1; /* Each section takes up half the space */
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.movers-section h2 {
+    color: var(--text-primary);
+    font-size: 22px;
+    margin: 0;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600; /* SemiBold for section titles */
+}
+
+/* Override column widths specifically for the movers tables */
+.movers-section th.company-name,
+.movers-section td.company-name {
+    width: 45%;
+}
+
+.movers-section th.market-cap,
+.movers-section td.market-cap { width: 0; display: none; }
+
+.movers-section {
+    flex: 1; /* Each section takes up half the space */
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.movers-section h2 {
+    color: var(--text-primary);
+    font-size: 22px;
+    margin: 0;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600; /* SemiBold for section titles */
+}
+
+/* Override column widths specifically for the movers tables */
+.movers-section th.company-name,
+.movers-section td.company-name {
+    width: 45%;
+}
+
+.movers-section th.market-cap,
+.movers-section td.market-cap { width: 0; display: none; }

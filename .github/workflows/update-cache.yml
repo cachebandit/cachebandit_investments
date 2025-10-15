@@ -3,7 +3,6 @@ name: Update Stock Cache
 on:
   workflow_dispatch: # Allows manual runs from the Actions tab
   schedule:
-    # Runs M-F at 8:30, 9:00, 9:30 AM CST, then hourly from 10 AM to 3 PM CST.
     # Note: Times are in UTC. (CDT is UTC-5)
     - cron: '30 13 * * 1-5'   # 8:30 AM CDT
     - cron: '0 14-20 * * 1-5' 

@@ -1,5 +1,4 @@
-- alert for "when yfinance.exceptions.YFRateLimitError: Too Many Requests. Rate limited. Try after a while" and stop making API calls
-- have the same temporary holder for NA Values for every column
 - add individaul category refresh
 - make phone accessable
-- change loading function to be independent
+- use localstorage to allow to save favorites
+- set up auto delete old crons over a week old to clean up Github Action Tab

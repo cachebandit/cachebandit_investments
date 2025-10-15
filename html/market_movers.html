@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Portfolio</title>
+    <title>Market Movers</title>
     <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/market_movers_styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
@@ -22,10 +23,10 @@
                 <div id="last-updated" class="last-updated"></div>
             </div>
             <div class="header-center">
-                <h1>Stock Portfolio</h1>
+                <h1>Market Movers</h1>
                 <nav class="navigation">
                     <a href="watchlist.html">Watchlist</a>
-                    <a href="portfolio.html" class="active">Portfolio</a>
+                    <a href="market_movers.html" class="active">Market Movers</a>
                     <a href="earnings_calendar.html">Earnings Calendar</a>
                     <a href="rsi_analysis.html">RSI Analysis</a>
                     <a href="pe_analysis.html">P/E Analysis</a>
@@ -37,8 +38,15 @@
         </div>
         <div class="content-container">
             <!-- Table Container -->
-            <div class="table-container">
-                <div id="stock-table-container"></div>
+            <div class="movers-container">
+                <div class="movers-section">
+                    <h2>Top Gainers</h2>
+                    <div id="top-gainers-container"></div>
+                </div>
+                <div class="movers-section">
+                    <h2>Top Decliners</h2>
+                    <div id="top-decliners-container"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -51,7 +59,7 @@
         loadMarketTrendsWidget();
     </script>
 
-    <script type="module" src="./js/portfolio.js"></script>
+    <script type="module" src="./js/market_movers.js"></script>
 
 </body>
 </html>
