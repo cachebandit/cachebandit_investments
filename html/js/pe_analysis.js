@@ -1,4 +1,5 @@
 import { showChartPopup } from './chart.js';
+import { getCategoryData } from './dataSource.js';
 
 let myChart;
 let chartData = {}; // Will hold the nested data: { category: { industry: [stocks] } }
@@ -17,12 +18,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadChartData() {
     try {
-        const response = await fetch('/api/all_stock_data');
-        if (!response.ok) {
-            throw new Error('Failed to load cached stock data.');
-        }
-        const cachedData = await response.json();
-        prepareChartData(cachedData.data);
+        // Categories to display on the chart
+        const categoriesToFetch = [
+            'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        // Fetch all categories in parallel
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
+
+        // Combine the data into the format prepareChartData expects
+        const combinedData = {};
+        results.forEach(responseData => {
+            // The local server doesn't return the category name, so we derive it
+            const categoryName = responseData.category || categoriesToFetch.find(c => {
+                const items = responseData.items || responseData.data || [];
+                return items.length > 0 && items[0].category === c;
+            });
+
+            if (categoryName) {
+                combinedData[categoryName] = responseData.items || responseData.data || [];
+            }
+        });
+        prepareChartData(combinedData);
     } catch (error) {
         console.error('Error loading P/E chart data:', error);
     }
@@ -51,15 +71,12 @@ function prepareChartData(categoryData) {
     });
 
     // Flatten all stocks into a single list, avoiding duplicates from the "Owned" category
-    let allStocks = [];
-    Object.values(categoryData).forEach(stocks => {
-        // The 'stocks' variable is the array of stock objects for a category
-        stocks.forEach(stock => {
-            if (!processedSymbols.has(stock.Symbol)) {
-                allStocks.push(stock);
-                processedSymbols.add(stock.Symbol);
-            }
-        });
+    const allStocks = Object.values(categoryData).flat().filter(stock => {
+        if (processedSymbols.has(stock.symbol || stock.Symbol)) {
+            return false;
+        }
+        processedSymbols.add(stock.symbol || stock.Symbol);
+        return true;
     });
 
     allStocks.forEach(stock => {
@@ -75,9 +92,9 @@ function prepareChartData(categoryData) {
                     chartData[category][industry] = [];
                 }
                 chartData[category][industry].push({
-                    name: stock.Name,
+                    name: stock.Name || stock.name,
                     value: [marketCap, forwardPE], // Market Cap in Millions
-                    symbol: stock.Symbol
+                    symbol: stock.Symbol || stock.symbol
                 });
             }
         } else {

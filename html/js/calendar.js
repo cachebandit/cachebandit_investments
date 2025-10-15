@@ -1,5 +1,7 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
+import { getCategoryData } from './dataSource.js';
+import { getTrailingPeColor, getForwardPeColor } from './utils.js';
 
 let currentDate = new Date();
 let cachedMonthsData = {}; // Cache for multiple months of data, e.g., {'2024-6': data}
@@ -15,10 +17,41 @@ function getRsiColorClass(rsi) {
 }
 
 async function fetchEarningsData(month, year) {
+    const cacheKey = `${year}-${month}`;
+    if (cachedMonthsData[cacheKey]) {
+        return cachedMonthsData[cacheKey];
+    }
+
     try {
-        const response = await fetch(`/api/earnings?month=${month + 1}&year=${year}`);
-        if (!response.ok) throw new Error('Failed to fetch earnings data');
-        return await response.json();
+        const categoriesToFetch = [
+            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
+
+        const earningsData = {};
+        const processedSymbols = new Set();
+
+        results.forEach(responseData => {
+            const items = responseData.items || responseData.data || [];
+            items.forEach(stock => {
+                const symbol = stock.Symbol || stock.symbol;
+                if (processedSymbols.has(symbol)) return;
+                processedSymbols.add(symbol);
+
+                const earningsDate = stock.earningsDate;
+                if (earningsDate) {
+                    if (!earningsData[earningsDate]) earningsData[earningsDate] = [];
+                    earningsData[earningsDate].push(stock);
+                }
+            });
+        });
+
+        cachedMonthsData[cacheKey] = earningsData;
+        return earningsData;
     } catch (error) {
         console.error('Error fetching earnings data:', error);
         return {};
@@ -97,7 +130,13 @@ function renderCalendar(earningsData = {}) {
 
                 const bmoHeader = document.createElement('div');
                 bmoHeader.className = 'timing-header';
-                bmoHeader.textContent = 'Before Hours';
+                bmoHeader.textContent = 'Before Market Open';
+                bmoHeader.style.fontSize = '10px';
+                bmoHeader.style.fontWeight = '600';
+                bmoHeader.style.color = '#6c757d';
+                bmoHeader.style.textTransform = 'uppercase';
+                bmoHeader.style.padding = '4px 0 2px 4px';
+                bmoHeader.style.borderBottom = '1px solid #e9ecef';
                 bmoSection.appendChild(bmoHeader);
                 
                 bmoCompanies.forEach(company => {
@@ -105,48 +144,40 @@ function renderCalendar(earningsData = {}) {
 
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item bmo';
-                    companyDiv.title = `${company.symbol} - Before Hours`;
-                    companyDiv.dataset.symbol = company.symbol;
+                    const stockSymbol = company.symbol || company.Symbol;
+                    companyDiv.title = `${stockSymbol} - Before Hours`;
+                    companyDiv.dataset.symbol = stockSymbol;
 
                     // Data for info popup
-                    const trailingPeColor = company['Trailing PE'] ? getTrailingPeColor(company['Trailing PE']) : 'inherit';
-                    const forwardPeColor = company['Forward PE'] ? getForwardPeColor(company['Forward PE'], company['Trailing PE']) : 'inherit';
+                    const trailingPE = company['Trailing PE'] || company.trailingPE;
+                    const forwardPE = company['Forward PE'] || company.forwardPE;
+                    const trailingPeColor = trailingPE ? getTrailingPeColor(trailingPE) : 'inherit';
+                    const forwardPeColor = forwardPE ? getForwardPeColor(forwardPE, trailingPE) : 'inherit';
+                    const stockName = company.name || company.Name;
+                    const stockClose = company.close || company.Close;
 
                     companyDiv.innerHTML = `
-                        <button class="info-icon" 
-                                data-stock-name="${company.name}"
-                                data-fifty-two-week-high="${company.fiftyTwoWeekHigh || 'N/A'}"
-                                data-current-price="${company.close ? company.close.toFixed(2) : 'N/A'}"
-                                data-fifty-two-week-low="${company.fiftyTwoWeekLow || 'N/A'}"
-                                data-earnings-date="${company.earningsDate || 'N/A'}"
-                                title="${company.stock_description || 'No description available'}"
-                                data-trailing-pe="${company['Trailing PE'] || 'N/A'}"
-                                data-forward-pe="${company['Forward PE'] || 'N/A'}"
-                                data-ev-ebitda="${company['EV/EBITDA'] || 'N/A'}"
-                                data-trailing-pe-color="${trailingPeColor}"
-                                data-forward-pe-color="${forwardPeColor}"
-                                data-url="${company.stockUrl}">
-                            <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
-                        </button>
-                        <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
-                        <span>${company.name}</span>
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${stockName} logo" onerror="this.style.display='none'"/>
+                        <span>${stockName}</span>
                     `;
 
                     const marketDataDiv = document.createElement('div');
                     marketDataDiv.className = 'market-data';
 
                     // Format price and changes
-                    const price = company.close ? `$${company.close.toFixed(2)}` : 'N/A';
-                    const priceChange = company.priceChange !== null ? company.priceChange.toFixed(2) : 'N/A';
-                    const percentChange = company.percentChange !== null ? company.percentChange.toFixed(2) : 'N/A';
-                    const rsi = company.rsi ? company.rsi.toFixed(1) : 'N/A';
+                    const price = stockClose ? `$${stockClose.toFixed(2)}` : 'N/A';
+                    const priceChange = company['Price Change'] ?? company.priceChange;
+                    const percentChange = company['Percent Change'] ?? company.percentChange;
+                    const rsi = company.RSI ?? company.rsi;
+                    const formattedPriceChange = (priceChange != null) ? priceChange.toFixed(2) : 'N/A';
+                    const formattedPercentChange = (percentChange != null) ? percentChange.toFixed(2) : 'N/A';
 
                     marketDataDiv.innerHTML = `
                         <span>${price}</span>
-                        <span class="${company.priceChange > 0 ? 'price-up' : company.priceChange < 0 ? 'price-down' : ''}">
-                            ${priceChange} (${percentChange}%)
+                        <span class="${priceChange > 0 ? 'price-up' : priceChange < 0 ? 'price-down' : ''}">
+                            ${formattedPriceChange} (${formattedPercentChange}%)
                         </span>
-                        <span class="${getRsiColorClass(rsi)}">RSI: ${rsi}</span>
+                        <span class="${getRsiColorClass(rsi)}">RSI: ${(rsi != null) ? parseFloat(rsi).toFixed(1) : 'N/A'}</span>
                     `;
 
                     itemContainer.appendChild(companyDiv);
@@ -164,7 +195,13 @@ function renderCalendar(earningsData = {}) {
 
                 const amcHeader = document.createElement('div');
                 amcHeader.className = 'timing-header';
-                amcHeader.textContent = 'After Hours';
+                amcHeader.textContent = 'After Market Close';
+                amcHeader.style.fontSize = '10px';
+                amcHeader.style.fontWeight = '600';
+                amcHeader.style.color = '#6c757d';
+                amcHeader.style.textTransform = 'uppercase';
+                amcHeader.style.padding = '4px 0 2px 4px';
+                amcHeader.style.borderBottom = '1px solid #e9ecef';
                 amcSection.appendChild(amcHeader);
                 
                 amcCompanies.forEach(company => {
@@ -172,48 +209,40 @@ function renderCalendar(earningsData = {}) {
 
                     const companyDiv = document.createElement('div');
                     companyDiv.className = 'earnings-item amc';
-                    companyDiv.title = `${company.symbol} - After Hours`;
-                    companyDiv.dataset.symbol = company.symbol;
+                    const stockSymbol = company.symbol || company.Symbol;
+                    companyDiv.title = `${stockSymbol} - After Hours`;
+                    companyDiv.dataset.symbol = stockSymbol;
 
                     // Data for info popup
-                    const trailingPeColor = company['Trailing PE'] ? getTrailingPeColor(company['Trailing PE']) : 'inherit';
-                    const forwardPeColor = company['Forward PE'] ? getForwardPeColor(company['Forward PE'], company['Trailing PE']) : 'inherit';
+                    const trailingPE = company['Trailing PE'] || company.trailingPE;
+                    const forwardPE = company['Forward PE'] || company.forwardPE;
+                    const trailingPeColor = trailingPE ? getTrailingPeColor(trailingPE) : 'inherit';
+                    const forwardPeColor = forwardPE ? getForwardPeColor(forwardPE, trailingPE) : 'inherit';
+                    const stockName = company.name || company.Name;
+                    const stockClose = company.close || company.Close;
 
                     companyDiv.innerHTML = `
-                        <button class="info-icon" 
-                                data-stock-name="${company.name}"
-                                data-fifty-two-week-high="${company.fiftyTwoWeekHigh || 'N/A'}"
-                                data-current-price="${company.close ? company.close.toFixed(2) : 'N/A'}"
-                                data-fifty-two-week-low="${company.fiftyTwoWeekLow || 'N/A'}"
-                                data-earnings-date="${company.earningsDate || 'N/A'}"
-                                title="${company.stock_description || 'No description available'}"
-                                data-trailing-pe="${company['Trailing PE'] || 'N/A'}"
-                                data-forward-pe="${company['Forward PE'] || 'N/A'}"
-                                data-ev-ebitda="${company['EV/EBITDA'] || 'N/A'}"
-                                data-trailing-pe-color="${trailingPeColor}"
-                                data-forward-pe-color="${forwardPeColor}"
-                                data-url="${company.stockUrl}">
-                            <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
-                        </button>
-                        <img src="${company.stockUrl}" class="earnings-logo" alt="${company.name} logo" onerror="this.style.display='none'"/>
-                        <span>${company.name}</span>
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${stockName} logo" onerror="this.style.display='none'"/>
+                        <span>${stockName}</span>
                     `;
 
                     const marketDataDiv = document.createElement('div');
                     marketDataDiv.className = 'market-data';
 
                     // Format price and changes
-                    const price = company.close ? `$${company.close.toFixed(2)}` : 'N/A';
-                    const priceChange = company.priceChange !== null ? company.priceChange.toFixed(2) : 'N/A';
-                    const percentChange = company.percentChange !== null ? company.percentChange.toFixed(2) : 'N/A';
-                    const rsi = company.rsi ? company.rsi.toFixed(1) : 'N/A';
+                    const price = stockClose ? `$${stockClose.toFixed(2)}` : 'N/A';
+                    const priceChange = company['Price Change'] ?? company.priceChange;
+                    const percentChange = company['Percent Change'] ?? company.percentChange;
+                    const rsi = company.RSI ?? company.rsi;
+                    const formattedPriceChange = (priceChange != null) ? priceChange.toFixed(2) : 'N/A';
+                    const formattedPercentChange = (percentChange != null) ? percentChange.toFixed(2) : 'N/A';
 
                     marketDataDiv.innerHTML = `
                         <span>${price}</span>
-                        <span class="${company.priceChange > 0 ? 'price-up' : company.priceChange < 0 ? 'price-down' : ''}">
-                            ${priceChange} (${percentChange}%)
+                        <span class="${priceChange > 0 ? 'price-up' : priceChange < 0 ? 'price-down' : ''}">
+                            ${formattedPriceChange} (${formattedPercentChange}%)
                         </span>
-                        <span class="${getRsiColorClass(rsi)}">RSI: ${rsi}</span>
+                        <span class="${getRsiColorClass(rsi)}">RSI: ${(rsi != null) ? parseFloat(rsi).toFixed(1) : 'N/A'}</span>
                     `;
 
                     itemContainer.appendChild(companyDiv);
@@ -249,11 +278,6 @@ if (calendarContainer) {
         const earningsItem = event.target.closest('.earnings-item');
         if (earningsItem && earningsItem.dataset.symbol) {
             showChartPopup(earningsItem.dataset.symbol);
-        }
-        const infoIcon = event.target.closest('.info-icon');
-        if (infoIcon) {
-            event.stopPropagation();
-            showInfoPopup(infoIcon);
         }
     });
 }

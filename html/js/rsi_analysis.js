@@ -1,6 +1,7 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
 import { getTrailingPeColor, getForwardPeColor } from './utils.js';
+import { getCategoryData } from './dataSource.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadRsiData();
@@ -8,22 +9,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadRsiData() {
     try {
-        const response = await fetch('/api/all_stock_data');
-        if (!response.ok) {
-            throw new Error('Failed to load cached stock data.');
-        }
-        const cachedData = await response.json();
+        const categoriesToFetch = [
+            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Financial Services', 'Healthcare', 'Communication Services',
+            'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
+        ];
+
+        const promises = categoriesToFetch.map(cat => getCategoryData(cat));
+        const results = await Promise.all(promises);
         
         let allStocks = [];
         const processedSymbols = new Set();
 
-        // The data is nested under keys like "category_Owned". We iterate through the values of the data object,
-        // which are arrays of stocks, and flatten them into a single list.
-        Object.values(cachedData.data).forEach(stockArray => {
-            stockArray.forEach(stock => {
-                if (stock && stock.Symbol && !processedSymbols.has(stock.Symbol)) {
+        results.forEach(responseData => {
+            const items = responseData.items || responseData.data || [];
+            items.forEach(stock => {
+                const symbol = stock.Symbol || stock.symbol;
+                if (!processedSymbols.has(symbol)) {
                     allStocks.push(stock);
-                    processedSymbols.add(stock.Symbol);
+                    processedSymbols.add(symbol);
                 }
             });
         });
