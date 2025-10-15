@@ -2,6 +2,7 @@
 from __future__ import annotations
 from pathlib import Path
 import json
+from subprocess import run
 from datetime import datetime
 
 SITE_ROOT = Path("site")
@@ -29,6 +30,12 @@ def load_cache():
     with open(CACHE_FP, "r") as f:
         return json.load(f)
 
+def copy_assets():
+    """Copies all contents of the local 'html' directory to the build 'site/html' directory."""
+    source_dir = Path("html")
+    if source_dir.is_dir():
+        run(["cp", "-r", f"{source_dir}/.", str(HTML_DIR)])
+
 def normalize_stock_fields(s: dict) -> dict:
     """
     Make sure each stock has the keys your JS uses:
@@ -47,7 +54,9 @@ def build_payload(category: str, items: list, updated_at: str) -> dict:
 
 def main():
     # 1) Prep dirs
+    HTML_DIR.mkdir(parents=True, exist_ok=True)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    copy_assets()
 
     # 2) Load cache
     cache = load_cache()
