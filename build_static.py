@@ -1,199 +1,91 @@
+# build_static.py
 from __future__ import annotations
-import json, time, random, math
-from subprocess import run
 from pathlib import Path
-from datetime import datetime, timezone
-from typing import Dict, List
-import yfinance as yf
-import pandas as pd
+import json
+from datetime import datetime
 
-# --- Constants ---
 SITE_ROOT = Path("site")
-HTML_DIR = SITE_ROOT / "html"
-DATA_DIR = HTML_DIR / "data"
+HTML_DIR  = SITE_ROOT / "html"
+DATA_DIR  = HTML_DIR / "data"
+CACHE_FP  = Path("cache/stock_data.json")  # cache written by your server job
 
-# --- Setup and Helpers ---
-def load_categories_from_json(filepath='list_watchlist.json') -> Dict[str, List[str]]:
-    """Loads categories and symbols from the master JSON file."""
-    categories: Dict[str, List[str]] = {"Owned": []}
-    try:
-        with open(filepath, 'r') as f:
-            data = json.load(f).get("Categories", {})
-        
-        for category_name, industries in data.items():
-            categories.setdefault(category_name, [])
-            
-            for industry_name, stocks in industries.items():
-                for stock in stocks:
-                    symbol = stock.get("symbol")
-                    if not symbol: continue
-                    symbol = symbol.upper()
-                    
-                    if stock.get("flag", False):
-                        categories["Owned"].append(symbol)
-                    
-                    if symbol not in categories[category_name]:
-                        categories[category_name].append(symbol)
-    except Exception as e:
-        print(f"Error loading JSON: {e}")
-    return categories
+# The categories your UI expects (must match what's rendered on watchlist/portfolio/RSI/PE pages)
+ACTIVE_CATEGORIES = [
+    "Owned",
+    "Information Technology",
+    "Financial Services",
+    "Industrials",
+    "Energy & Utilities",
+    "Healthcare",
+    "Communication Services",
+    "Real Estate",
+    "Consumer Staples",
+    "Consumer Discretionary",
+]
 
-def copy_assets():
-    """Copies all contents of the local 'html' directory to the build 'site/html' directory."""
-    source_dir = Path("html")
-    if source_dir.is_dir():
-        run(["cp", "-r", f"{source_dir}/.", str(HTML_DIR)])
+def load_cache():
+    if not CACHE_FP.exists():
+        raise FileNotFoundError(f"Cache not found: {CACHE_FP}")
+    with open(CACHE_FP, "r") as f:
+        return json.load(f)
 
-def chunked(lst, n): 
-    for i in range(0, len(lst), n): 
-        yield lst[i:i+n]
+def normalize_stock_fields(s: dict) -> dict:
+    """
+    Make sure each stock has the keys your JS uses:
+      Symbol/Name, Market Cap, Open/High/Low/Close, Price Change, Percent Change, RSI,
+      Trailing PE/Forward PE/EV/EBITDA, stockUrl, earningsDate/earningsTiming, category/industry, flag
+    If some are missing in cache, leave them as-is; the UI already has defensive fallbacks.
+    """
+    return s
 
-def backoff_sleep(sec):
-    time.sleep(sec + random.uniform(0, 1.5))
-
-def safe_download(tickers: List[str], period="1y", interval="1d"):
-    wait = 10
-    while True:
-        try:
-            return yf.download(
-                tickers, period=period, interval=interval,
-                threads=False, group_by="ticker",
-                auto_adjust=False, progress=False
-            )
-        except Exception as e:
-            msg = str(e)
-            if "429" in msg or "Too Many" in msg or "blocked" in msg or "403" in msg:
-                backoff_sleep(wait); wait = min(wait*2, 120)
-            else:
-                backoff_sleep(3)
-
-def calculate_rsi(data, window=14):
-    """Calculate RSI using Wilder's Smoothing to match TradingView's calculation."""
-    if data is None or data.empty or len(data) < window + 1:
-        return None
-    
-    delta = data['Close'].diff(1)
-    gain = delta.where(delta > 0, 0.0).iloc[1:]
-    loss = -delta.where(delta < 0, 0.0).iloc[1:]
-
-    if gain.empty or loss.empty: return None
-
-    avg_gain = gain.iloc[:window].mean()
-    avg_loss = loss.iloc[:window].mean()
-
-    for i in range(window, len(gain)):
-        avg_gain = (avg_gain * (window - 1) + gain.iloc[i]) / window
-        avg_loss = (avg_loss * (window - 1) + loss.iloc[i]) / window
-    
-    if avg_loss == 0:
-        rsi = 100.0 if avg_gain > 0 else None
-    else:
-        rs = avg_gain / avg_loss
-        rsi = 100.0 - (100.0 / (1.0 + rs))
-
-    return rsi if rsi is not None and not (math.isnan(rsi) or math.isinf(rsi)) else None
-
-def summarize_prices(df, tickers: List[str]):
-    out = {}
-    if isinstance(df.columns, pd.MultiIndex):
-        for t in tickers:
-            if t in df:
-                sub = df[t]
-                close = sub["Close"].dropna()
-                if not close.empty:
-                    out[t] = {
-                        "price": float(close.iloc[-1]),
-                        "rsi14": calculate_rsi(sub),
-                        "yrsi14": calculate_rsi(sub.iloc[:-1])
-                    }
-    else:
-        if not tickers or df.empty: return out
-        close = df["Close"].dropna()
-        if not close.empty:
-            t = tickers[0]
-            out[t] = {
-                "price": float(close.iloc[-1]),
-                "rsi14": calculate_rsi(df),
-                "yrsi14": calculate_rsi(df.iloc[:-1])
-            }
-    return out
-
-def build_category_payload(category: str, tickers: List[str], data_cache: Dict):
-    """Assembles the JSON payload for a category using pre-fetched data."""
-    items = [data_cache[t] for t in tickers if t in data_cache]
+def build_payload(category: str, items: list, updated_at: str) -> dict:
     return {
         "category": category,
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "count": len(items),
-        "items": items,
+        "updated_at": updated_at,
+        "items": [normalize_stock_fields(s) for s in items]
     }
 
-# --- Build Process ---
-if __name__ == "__main__":
-    # 1. Create directories and copy assets
-    SITE_ROOT.mkdir(exist_ok=True)
-    HTML_DIR.mkdir(exist_ok=True)
-    DATA_DIR.mkdir(exist_ok=True)
-    print("1. Copying assets...")
-    copy_assets()
+def main():
+    # 1) Prep dirs
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 2. Load categories and all unique symbols from JSON
-    print("2. Loading categories from JSON...")
-    CATEGORIES = load_categories_from_json()
-    ALL_SYMBOLS = sorted(list(set(s for syms in CATEGORIES.values() for s in syms)))
+    # 2) Load cache
+    cache = load_cache()
 
-    # 3. Fetch data for ALL unique symbols ONCE and store in a cache
-    print(f"3. Fetching data for {len(ALL_SYMBOLS)} unique symbols...")
-    data_cache = {}
+    # Expected cache structure example:
+    # {
+    #   "last_updated": "10/14 02:00 PM",
+    #   "categories": { "<Category>": [ {...stocks...} , ... ] }
+    # }
+    updated_at = cache.get("last_updated") or datetime.now().strftime("%m/%d %I:%M %p")
+    categories = cache.get("categories") or {}
 
-    # Fetch prices and RSI in batches
-    price_map = {}
-    for i, grp in enumerate(chunked(ALL_SYMBOLS, 40)):
-        print(f"  - Fetching price batch {i+1}...")
-        df = safe_download(grp)
-        price_map.update(summarize_prices(df, grp))
-        backoff_sleep(1.5)
+    # 3) Build each category JSON
+    for cat in ACTIVE_CATEGORIES:
+        items = categories.get(cat, [])
 
-    # Fetch metadata in a single efficient batch
-    print(f"  - Fetching metadata for all {len(ALL_SYMBOLS)} symbols in a batch...")
-    tickers = yf.Tickers(' '.join(ALL_SYMBOLS))
-    for sym in ALL_SYMBOLS:
-        try:
-            info = tickers.tickers[sym].info
-            
-            # Extract earnings date and timing
-            earnings_timestamp = info.get('earningsTimestamp')
-            earnings_timing = 'TBA'
-            earnings_date = None
-            if earnings_timestamp:
-                date_obj = datetime.fromtimestamp(earnings_timestamp)
-                earnings_date = date_obj.strftime('%m-%d-%Y')
-                earnings_timing = 'BMO' if date_obj.hour < 12 else 'AMC'
+        if cat == "Owned":
+            # alphabetical by symbol
+            items = sorted(items, key=lambda x: (x.get("Symbol") or x.get("symbol") or "").lower())
+        else:
+            # sort by market cap desc where available
+            def cap(x):
+                v = x.get("Market Cap")
+                try:
+                    return float(v) if v not in (None, "N/A") else 0.0
+                except Exception:
+                    return 0.0
+            items = sorted(items, key=cap, reverse=True)
 
-            meta = {
-                "exchange": info.get("exchange"),
-                "currency": info.get("currency"),
-                "marketCap": info.get("marketCap"),
-                "trailingPE": info.get("trailingPE"),
-                "earningsDate": earnings_date,
-                "earningsTiming": earnings_timing,
-            }
-        except Exception:
-            print(f"    - Could not fetch metadata for {sym}, will be skipped.")
-            meta = {}
-
-        price_data = price_map.get(sym, {})
-        data_cache[sym] = {**{"symbol": sym}, **price_data, **meta}
-
-    # 4. Build each category's JSON file using the cached data
-    print("4. Building category files...")
-    for cat, syms in CATEGORIES.items():
-        payload = build_category_payload(cat, syms, data_cache)
+        payload = build_payload(cat, items, updated_at)
         (DATA_DIR / f"{cat}.json").write_text(json.dumps(payload, indent=2))
 
-    # 5. Create a root index.html to redirect to the correct start page
+    # 4) Make sure a simple redirect index exists (optional nicety)
     idx = SITE_ROOT / "index.html"
     if not idx.exists():
         idx.write_text('<meta http-equiv="refresh" content="0; url=html/watchlist.html" />')
-    
-    print("\nBuild complete! The static site is in the 'site/' directory.")
+
+    print("Static build complete -> site/html/data/*.json")
+
+if __name__ == "__main__":
+    main()
