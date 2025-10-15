@@ -1,4 +1,4 @@
-from services.stock_service import fetch_category_data, cache
+from .stock_service import fetch_category_data, cache
 
 # These categories must match the ones used by the UI and build_static.py
 ACTIVE_CATEGORIES = [
