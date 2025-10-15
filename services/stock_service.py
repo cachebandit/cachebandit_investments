@@ -3,6 +3,7 @@ import json
 import logging
 from datetime import datetime
 import math
+from zoneinfo import ZoneInfo
 from models.stock_cache import StockCache
 import pandas as pd
 
@@ -111,9 +112,11 @@ def fetch_category_data(category):
         earningsTiming = 'TBA'
         earningsDate = None
         if earnings_timestamp:
-            date_obj = datetime.fromtimestamp(earnings_timestamp)
-            earningsDate = date_obj.strftime('%m-%d-%Y')
-            earningsTiming = 'BMO' if date_obj.hour < 12 else 'AMC'
+            # Convert UTC timestamp from yfinance to US/Central to correctly determine BMO/AMC
+            utc_date = datetime.fromtimestamp(earnings_timestamp, tz=ZoneInfo("UTC"))
+            ct_date = utc_date.astimezone(ZoneInfo("US/Central"))
+            earningsDate = ct_date.strftime('%m-%d-%Y')
+            earningsTiming = 'BMO' if ct_date.hour < 12 else 'AMC'
         
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
