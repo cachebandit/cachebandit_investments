@@ -1,6 +1,6 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
-import { getTrailingPeColor, getForwardPeColor } from './utils.js';
+import { getTrailingPeColor, getForwardPeColor, formatMarketCap } from './utils.js';
 import { getCategoryData } from './dataSource.js';
 
 document.addEventListener('DOMContentLoaded', function() {
