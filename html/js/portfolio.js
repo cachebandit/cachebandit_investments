@@ -64,9 +64,15 @@ async function fetchPortfolioData() {
         // Extract the data and last_updated timestamp
         // Handle both local server format (data) and static build format (items)
         const data = responseData.items || responseData.data || [];
+        const lastUpdated = responseData.updated_at || responseData.last_updated;
         
         // Render the category data
         renderPortfolio(data);
+
+        // Update the last updated timestamp
+        if (lastUpdated) {
+            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+        }
         
     } catch (error) {
         console.error('Error fetching portfolio data:', error);

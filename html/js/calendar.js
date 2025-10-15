@@ -34,9 +34,15 @@ async function fetchEarningsData(month, year) {
 
         const earningsData = {};
         const processedSymbols = new Set();
+        let lastUpdated = '';
 
         results.forEach(responseData => {
             const items = responseData.items || responseData.data || [];
+            // Grab the timestamp from the first valid response
+            if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
+                lastUpdated = responseData.updated_at || responseData.last_updated;
+            }
+
             items.forEach(stock => {
                 const symbol = stock.Symbol || stock.symbol;
                 if (processedSymbols.has(symbol)) return;
@@ -49,6 +55,11 @@ async function fetchEarningsData(month, year) {
                 }
             });
         });
+
+        // Update the last updated timestamp in the UI
+        if (lastUpdated) {
+            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+        }
 
         cachedMonthsData[cacheKey] = earningsData;
         return earningsData;

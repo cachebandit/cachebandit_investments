@@ -31,12 +31,20 @@ async function loadChartData() {
 
         // Combine the data into the format prepareChartData expects
         const combinedData = {};
+        let lastUpdated = '';
+
         results.forEach(responseData => {
+            // Grab the timestamp from the first valid response
+            if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
+                lastUpdated = responseData.updated_at || responseData.last_updated;
+            }
+
             // The local server doesn't return the category name, so we derive it
             const categoryName = responseData.category || categoriesToFetch.find(c => {
                 const items = responseData.items || responseData.data || [];
                 return items.length > 0 && items[0].category === c;
             });
+
 
             if (categoryName) {
                 combinedData[categoryName] = responseData.items || responseData.data || [];
@@ -44,6 +52,11 @@ async function loadChartData() {
         });
         prepareChartData(combinedData);
     } catch (error) {
+        // Update the last updated timestamp in the UI
+        if (lastUpdated) {
+            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+        }
+
         console.error('Error loading P/E chart data:', error);
     }
 }
