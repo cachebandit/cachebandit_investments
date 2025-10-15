@@ -1,0 +1,39 @@
+name: Update Stock Cache
+
+on:
+  workflow_dispatch: # Allows manual runs from the Actions tab
+  schedule:
+    # Runs M-F at 8:30, 9:00, 9:30 AM CST, then hourly from 10 AM to 3 PM CST.
+    # Note: Times are in UTC. (CDT is UTC-5)
+    - cron: '30 13 * * 1-5'    # 8:30 AM CDT
+    - cron: '0,30 14 * * 1-5'  # 9:00 & 9:30 AM CDT
+    - cron: '0 15-20 * * 1-5'  # 10, 11, 12, 1, 2, 3 PM CDT
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run data refresh script
+        run: python services/run_cache_update.py
+
+      - name: Commit and push if cache changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: Automatic cache update"
+          file_pattern: "cache/stock_data.json"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Actions <actions@github.com>"
