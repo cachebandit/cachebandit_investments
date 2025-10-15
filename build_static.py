@@ -118,42 +118,6 @@ def summarize_prices(df, tickers: List[str]):
             }
     return out
 
-def fetch_fast_info(sym: str):
-    wait = 10
-    while True:
-        try:
-            fi = yf.Ticker(sym).fast_info
-            # Use .info instead of .fast_info to get all data, including earnings dates.
-            info = yf.Ticker(sym).info
-
-            # Extract earnings date and timing
-            earnings_timestamp = info.get('earningsTimestamp')
-            earnings_timing = 'TBA'
-            earnings_date = None
-            if earnings_timestamp:
-                date_obj = datetime.fromtimestamp(earnings_timestamp)
-                earnings_date = date_obj.strftime('%m-%d-%Y')
-                earnings_timing = 'BMO' if date_obj.hour < 12 else 'AMC'
-
-            return {
-                "exchange": getattr(fi, "exchange", None),
-                "currency": getattr(fi, "currency", None),
-                "marketCap": getattr(fi, "market_cap", None),
-                "trailingPE": getattr(fi, "trailing_pe", None),
-                "exchange": info.get("exchange"),
-                "currency": info.get("currency"),
-                "marketCap": info.get("marketCap"),
-                "trailingPE": info.get("trailingPE"),
-                "earningsDate": earnings_date,
-                "earningsTiming": earnings_timing,
-            }
-        except Exception as e:
-            msg = str(e)
-            if "429" in msg or "Too Many" in msg or "blocked" in msg or "403" in msg:
-                backoff_sleep(wait); wait = min(wait*2, 120)
-            else:
-                backoff_sleep(3)
-
 def build_category_payload(category: str, tickers: List[str], data_cache: Dict):
     """Assembles the JSON payload for a category using pre-fetched data."""
     items = [data_cache[t] for t in tickers if t in data_cache]
@@ -190,12 +154,36 @@ if __name__ == "__main__":
         price_map.update(summarize_prices(df, grp))
         backoff_sleep(1.5)
 
-    # Fetch metadata individually (with pacing) and combine into a single data_cache
-    for i, t in enumerate(ALL_SYMBOLS):
-        print(f"  - Fetching metadata for {t} ({i+1}/{len(ALL_SYMBOLS)})...")
-        meta = fetch_fast_info(t)
-        p = price_map.get(t, {})
-        data_cache[t] = {**{"symbol": t}, **p, **meta}
+    # Fetch metadata in a single efficient batch
+    print(f"  - Fetching metadata for all {len(ALL_SYMBOLS)} symbols in a batch...")
+    tickers = yf.Tickers(' '.join(ALL_SYMBOLS))
+    for sym in ALL_SYMBOLS:
+        try:
+            info = tickers.tickers[sym].info
+            
+            # Extract earnings date and timing
+            earnings_timestamp = info.get('earningsTimestamp')
+            earnings_timing = 'TBA'
+            earnings_date = None
+            if earnings_timestamp:
+                date_obj = datetime.fromtimestamp(earnings_timestamp)
+                earnings_date = date_obj.strftime('%m-%d-%Y')
+                earnings_timing = 'BMO' if date_obj.hour < 12 else 'AMC'
+
+            meta = {
+                "exchange": info.get("exchange"),
+                "currency": info.get("currency"),
+                "marketCap": info.get("marketCap"),
+                "trailingPE": info.get("trailingPE"),
+                "earningsDate": earnings_date,
+                "earningsTiming": earnings_timing,
+            }
+        except Exception:
+            print(f"    - Could not fetch metadata for {sym}, will be skipped.")
+            meta = {}
+
+        price_data = price_map.get(sym, {})
+        data_cache[sym] = {**{"symbol": sym}, **price_data, **meta}
 
     # 4. Build each category's JSON file using the cached data
     print("4. Building category files...")
