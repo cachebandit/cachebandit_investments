@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import logging
 from config import CACHE_DIR, CACHE_FILE
+from zoneinfo import ZoneInfo
 
 class StockCache:
     """Cache for storing stock data to reduce API calls"""
@@ -47,8 +48,10 @@ class StockCache:
     def save(self):
         """Save cache to file"""
         try:
-            # Only update the timestamp when explicitly saving after a refresh
-            self.last_updated = datetime.now().strftime('%m/%d %I:%M %p')  # 12-hour format
+            # Get current UTC time, convert to US/Central, and format it
+            utc_now = datetime.now(ZoneInfo("UTC"))
+            ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
+            self.last_updated = ct_time.strftime('%m/%d %I:%M %p CT')
             
             # Save both the data and the timestamp
             cache_data = {
@@ -90,7 +93,9 @@ class StockCache:
             self.data = self.temp_data
             self.temp_data = {}
             self.is_refreshing = False
-            self.last_updated = datetime.now().strftime('%m/%d %I:%M %p')  # 12-hour format
+            utc_now = datetime.now(ZoneInfo("UTC"))
+            ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
+            self.last_updated = ct_time.strftime('%m/%d %I:%M %p CT')
             self.save()
             logging.info("Committed refresh operation")
             return True

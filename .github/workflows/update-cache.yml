@@ -5,15 +5,18 @@ on:
   schedule:
     # Runs M-F at 8:30, 9:00, 9:30 AM CST, then hourly from 10 AM to 3 PM CST.
     # Note: Times are in UTC. (CDT is UTC-5)
-    - cron: '30 13 * * 1-5'    # 8:30 AM CDT
-    - cron: '0,30 14 * * 1-5'  # 9:00 & 9:30 AM CDT
-    - cron: '0 15-20 * * 1-5'  # 10, 11, 12, 1, 2, 3 PM CDT
+    - cron: '30 13 * * 1-5'   # 8:30 AM CDT
+    - cron: '0,30 14 * * 1-5' # 9:00 & 9:30 AM CDT
+    - cron: '0 15-20 * * 1-5' # 10, 11, 12, 1, 2, 3 PM CDT
 
 permissions:
-  contents: write
+  contents: read # Read-only access to checkout the repo
+  pages: write    # Permission to write to GitHub Pages
+  id-token: write # Permission for OIDC token
 
 jobs:
-  update-cache:
+  # This job fetches fresh data and builds the static site
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,14 +32,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run data refresh script
+      - name: Refresh stock data cache
         run: python -m services.run_cache_update
 
-      - name: Commit and push if cache changed
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Build static site
+        run: python build_static.py
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          commit_message: "chore: Automatic cache update"
-          file_pattern: "cache/stock_data.json"
-          commit_user_name: "GitHub Actions Bot"
-          commit_user_email: "actions@github.com"
-          commit_author: "GitHub Actions <actions@github.com>"
+          path: site
+
+  # This job takes the built site and deploys it
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
