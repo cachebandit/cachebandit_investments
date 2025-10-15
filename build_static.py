@@ -63,15 +63,15 @@ def main():
 
     # Expected cache structure example:
     # {
-    #   "last_updated": "10/14 02:00 PM",
-    #   "categories": { "<Category>": [ {...stocks...} , ... ] }
+    #   "data": { "category_Owned": [ {...stocks...} , ... ] },
+    #   "last_updated": "10/14 02:00 PM"
     # }
     updated_at = cache.get("last_updated") or datetime.now().strftime("%m/%d %I:%M %p")
-    categories = cache.get("categories") or {}
+    cached_categories = cache.get("data") or {}
 
     # 3) Build each category JSON
     for cat in ACTIVE_CATEGORIES:
-        items = categories.get(cat, [])
+        items = cached_categories.get(f"category_{cat}", [])
 
         if cat == "Owned":
             # alphabetical by symbol
