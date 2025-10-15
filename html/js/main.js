@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Get reference to the refresh button
     const refreshButton = document.getElementById('refresh-button');
+    const buttonContainer = refreshButton ? refreshButton.closest('.button-container') : null;
 
     // Add click event listener to the refresh button
     if (isLocal() && refreshButton) {
@@ -28,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setAttribute('data-refreshing', 'true'); // Set the refreshing flag
             fetchWatchlistData(); // Call the function to fetch data
         });
-    } else if (refreshButton) {
-        refreshButton.disabled = true;
-        refreshButton.title = "Refresh is disabled on the static site.";
+    } else if (buttonContainer) {
+        // On the static site, hide the entire button container
+        buttonContainer.style.display = 'none';
     }
     
     // Initial load - use cache
