@@ -150,6 +150,11 @@ function renderList(containerId, stocks) {
                             data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
                             data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
                             data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                            data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
+                            data-dividend-yield="${stock.dividendYield || 'N/A'}"
+                            data-total-revenue="${stock.totalRevenue || 'N/A'}"
+                            data-net-income="${stock.netIncomeToCommon || 'N/A'}"
+                            data-profit-margins="${stock.profitMargins || 'N/A'}"
                             data-trailing-pe-color="${trailingPeColor}"
                             data-forward-pe-color="${forwardPeColor}"
                             data-url="${stock.stockUrl}">

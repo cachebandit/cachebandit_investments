@@ -295,6 +295,28 @@ td.close {
     max-width: 350px;
     font-size: 14px;
     color: var(--text-primary);
+    max-height: 80vh; /* Set a max height for the popup */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+.popup-description {
+    font-size: 13px;
+    margin: 15px 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 25; /* Limit to a maximum of 8 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.popup-description.expandable {
+    cursor: pointer; /* Add pointer cursor to indicate it's clickable */
+}
+
+.popup-description.expanded {
+    -webkit-line-clamp: unset; /* Remove line limit when expanded */
+    overflow: visible;
 }
 
 .heatmap-button {
@@ -510,3 +532,34 @@ td.close {
 }
 
 .rate-limit-modal .cta:hover { background: var(--accent-hover); }
+
+/* Styles for the info popup bar chart */
+.popup-chart {
+    margin: 15px 0 5px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.chart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.chart-label {
+    width: 80px; /* Fixed width for labels */
+    flex-shrink: 0;
+}
+
+.chart-bar-container {
+    flex-grow: 1;
+    background-color: var(--hover-bg);
+    border-radius: 3px;
+    height: 12px;
+}
+
+.chart-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease-out;
+}

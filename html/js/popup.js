@@ -1,5 +1,5 @@
 import { getForwardPeColor, getTrailingPeColor } from './utils.js';
-function showInfoPopup(button) {
+function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     const stockName = button.getAttribute('data-stock-name');
 
     const description = button.getAttribute('title');
@@ -13,12 +13,26 @@ function showInfoPopup(button) {
     const fiftyTwoWeekLow = parseFloat(button.getAttribute('data-fifty-two-week-low'));
     const earningsDate = button.getAttribute('data-earnings-date');
     const logoUrl = button.getAttribute('data-url');
+    const marketCap = button.getAttribute('data-market-cap');
+    const dividendYield = parseFloat(button.getAttribute('data-dividend-yield'));
+    const totalRevenue = parseFloat(button.getAttribute('data-total-revenue'));
+    const netIncome = parseFloat(button.getAttribute('data-net-income'));
+    const profitMargins = parseFloat(button.getAttribute('data-profit-margins'));
 
     // Format values
     const formattedCurrentPrice = currentPrice ? currentPrice.toFixed(2) : 'N/A';
     const formattedHigh = fiftyTwoWeekHigh ? fiftyTwoWeekHigh.toFixed(2) : 'N/A';
     const formattedLow = fiftyTwoWeekLow ? fiftyTwoWeekLow.toFixed(2) : 'N/A';
     const formattedEarningsDate = earningsDate ? earningsDate : 'N/A';
+    const formattedDividendYield = dividendYield ? `${dividendYield.toFixed(2)}%` : 'N/A';
+    const formattedRevenue = totalRevenue ? `$${(totalRevenue / 1_000_000_000).toFixed(2)}B` : 'N/A';
+    const formattedNetIncome = netIncome ? `$${(netIncome / 1_000_000_000).toFixed(2)}B` : 'N/A';
+    const formattedProfitMargins = profitMargins ? `${(profitMargins * 100).toFixed(2)}%` : 'N/A';
+
+    // Calculate bar chart values
+    const netMarginBarWidth = profitMargins ? Math.abs(profitMargins * 100) : 0;
+    const netMarginBarColor = netIncome >= 0 ? 'var(--price-up-color)' : 'var(--price-down-color)';
+
 
     // Create overlay
     const overlay = document.createElement('div');
@@ -55,13 +69,32 @@ function showInfoPopup(button) {
             <span>${stockName}</span>
             <span style="font-size: 12px; margin-left: auto;">Earnings Date: ${formattedEarningsDate}</span>
         </h3>
-        <p style="font-size: 14px;">${description}</p>
-        <p>
+        <div style="font-size: 14px; margin: 15px 0;">
+            <span style=""><strong>Market Cap:</strong> ${marketCap}</span>
+            <span style="margin-left: 20px;"><strong>Dividend Yield (TTM):</strong> ${formattedDividendYield}</span>
+        </div>
+        <div class="popup-description">${description}</div>
+        <div style="font-size: 14px; margin: 15px 0;">
             <span style="color: ${trailingPeColor};"><strong>Trailing PE:</strong> ${trailingPE}</span>
             <span style="margin-left: 20px; color: ${forwardPeColor};"><strong>Forward PE:</strong> ${forwardPE}</span>
             <span style="margin-left: 20px;"><strong>EV/EBITDA:</strong> ${evEbitda}</span>
-        </p>
-        <div style="display: flex; align-items: center; margin: 10px 0; font-size: 14px;">
+        </div>
+        <div style="display: flex; align-items: center; margin: 15px 0; font-size: 14px;">
+            <span style=""><strong>Revenue:</strong> ${formattedRevenue}</span>
+            <span style="margin-left: 20px;"><strong>Net Margin:</strong> ${formattedNetIncome}</span>
+            <span style="margin-left: 20px;"><strong>Net Margin %:</strong> ${formattedProfitMargins}</span>
+        </div>
+        <div class="popup-chart">
+            <div class="chart-row">
+                <div class="chart-label">Revenue</div>
+                <div class="chart-bar-container"><div class="chart-bar" style="width: 100%; background-color: var(--accent-color);"></div></div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-label">Net Margin</div>
+                <div class="chart-bar-container"><div class="chart-bar" style="width: ${netMarginBarWidth}%; background-color: ${netMarginBarColor};"></div></div>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; margin: 15px 0 0 0; font-size: 14px;">
             <div style="margin-right: 10px;"><strong>52 Week Low: $${formattedLow}</strong></div>
             <div style="flex-grow: 1; position: relative;">
                 <hr style="border: 1px solid #ccc;"/>
@@ -71,7 +104,7 @@ function showInfoPopup(button) {
             </div>
             <div style="margin-left: 10px;"><strong>52 Week High: $${formattedHigh}</strong></div>
         </div>
-        <div style="text-align: center; margin-top: 5px;">
+        <div style="text-align: center; margin-top: 2px;">
             <strong style="font-size: 14px;"><strong>Current Price:</strong> $${formattedCurrentPrice}</strong>
         </div>
     `;
