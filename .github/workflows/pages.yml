@@ -1,7 +1,6 @@
 name: Build & Deploy site to GitHub Pages
 
 on:
-  push:                # run on all branches
   workflow_dispatch:   # allow manual runs
 
 permissions:
