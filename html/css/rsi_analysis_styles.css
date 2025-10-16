@@ -2,7 +2,8 @@
     display: grid;
     gap: 15px;
     align-items: start; 
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* Define 5 equal, flexible columns that won't wrap and will prevent content from breaking the layout. */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .rsi-column {
@@ -63,9 +64,9 @@
 }
 
 .company-name-text {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    /* By removing 'white-space: nowrap', the text can wrap if needed */
 }
 
 .rsi-market-data {

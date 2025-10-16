@@ -1,8 +1,9 @@
 /* Styles for Market Movers page */
 .movers-container {
     display: flex;
-    gap: 20px;
+    gap: 24px;
     align-items: flex-start;
+    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
 }
 
 .movers-section {
@@ -10,7 +11,8 @@
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto; /* Allow horizontal scrolling on very small screens */
+    min-width: 320px; /* Ensure each section has a minimum width */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -24,39 +26,36 @@
     font-weight: 600; /* SemiBold for section titles */
 }
 
-/* Override column widths specifically for the movers tables */
+/* Allow text to wrap within table cells on this page */
+.movers-section th,
+.movers-section td {
+    white-space: normal;
+}
+
+/* Ensure table headers on this page do not get truncated */
+.movers-section th {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* Override column widths specifically for the movers tables.
+   Use auto for the company name to let it take up remaining space. */
 .movers-section th.company-name,
 .movers-section td.company-name {
-    width: 45%;
+    width: auto;
 }
 
 .movers-section th.market-cap,
 .movers-section td.market-cap { width: 0; display: none; }
 
-.movers-section {
-    flex: 1; /* Each section takes up half the space */
-    background-color: var(--container-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+/* Give numeric columns a minimum width to prevent squishing and ensure content is visible */
+.movers-section .close {
+    min-width: 70px;
 }
-
-.movers-section h2 {
-    color: var(--text-primary);
-    font-size: 22px;
-    margin: 0;
-    padding: 15px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid var(--border-color);
-    font-weight: 600; /* SemiBold for section titles */
+.movers-section .close,
+.movers-section .change,
+.movers-section .percent-change,
+.movers-section .rsi {
+    white-space: nowrap;
+    min-width: 85px;
 }
-
-/* Override column widths specifically for the movers tables */
-.movers-section th.company-name,
-.movers-section td.company-name {
-    width: 45%;
-}
-
-.movers-section th.market-cap,
-.movers-section td.market-cap { width: 0; display: none; }
