@@ -2,14 +2,15 @@ import { showChartPopup } from './chart.js';
 import { getCategoryData } from './dataSource.js';
 
 let myChart;
-let chartData = {}; // Will hold the nested data: { category: { industry: [stocks] } }
-let currentView = 'categories'; // Can be 'categories' or 'industries'
+let chartData = {}; // { category: { industry: [ {name, value:[cap, fpe], symbol} ] } }
+let currentView = 'categories'; // 'categories' | 'industries'
 let selectedCategory = null;
 let highlightedSeries = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     const chartDom = document.getElementById('peScatterChart');
     if (chartDom) {
+        // assumes echarts is globally available
         myChart = echarts.init(chartDom);
         setupEventListeners();
     }
@@ -18,43 +19,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadChartData() {
     try {
-        // Categories to display on the chart
+        // Include "Owned" so we can merge its stocks into their true categories/industries.
         const categoriesToFetch = [
+            'Owned',
             'Information Technology', 'Industrials', 'Energy & Utilities',
             'Financial Services', 'Healthcare', 'Communication Services',
             'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
         ];
 
-        // Fetch all categories in parallel
         const promises = categoriesToFetch.map(cat => getCategoryData(cat));
         const results = await Promise.all(promises);
 
-        // Combine the data into the format prepareChartData expects
         const combinedData = {};
         let lastUpdated = '';
 
-        results.forEach(responseData => {
-            // Grab the timestamp from the first valid response
+        results.forEach((responseData, idx) => {
+            if (!responseData) return;
+
+            // Grab timestamp once
             if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
                 lastUpdated = responseData.updated_at || responseData.last_updated;
             }
 
-            // The local server doesn't return the category name, so we derive it
-            const categoryName = responseData.category || categoriesToFetch.find(c => {
-                const items = responseData.items || responseData.data || [];
-                return items.length > 0 && items[0].category === c;
-            });
+            const requestedCat = categoriesToFetch[idx];
+            const items = (responseData.items || responseData.data || []).filter(Boolean);
 
-
-            if (categoryName) {
-                combinedData[categoryName] = responseData.items || responseData.data || [];
+            // IMPORTANT: If we requested "Owned", force the bucket to be named "Owned"
+            // so we can merge it later. Do not infer from the items.
+            let categoryName = responseData.category;
+            if (requestedCat === 'Owned') {
+                categoryName = 'Owned';
+            } else if (!categoryName) {
+                // For non-Owned, try to infer from the first item, else fall back to requested name.
+                const inferred = items.length > 0 ? items[0].category : null;
+                categoryName = inferred || requestedCat;
             }
+
+            if (!combinedData[categoryName]) combinedData[categoryName] = [];
+            combinedData[categoryName].push(...items);
         });
 
-        // Update the last updated timestamp in the UI
-        if (lastUpdated) {
-            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+        // ---- Merge "Owned" into real categories/industries, then remove it ----
+        if (combinedData['Owned']) {
+            const ownedItems = combinedData['Owned'];
+            for (const stk of ownedItems) {
+                const cat = stk.category || 'Uncategorized';
+                if (!combinedData[cat]) combinedData[cat] = [];
+                combinedData[cat].push(stk);
+            }
+            delete combinedData['Owned'];
         }
+
+        // Update the "Last Updated" UI
+        const el = document.getElementById('last-updated');
+        if (el && lastUpdated) el.innerText = `Last Updated: ${lastUpdated}`;
 
         prepareChartData(combinedData);
     } catch (error) {
@@ -66,7 +84,7 @@ function prepareChartData(categoryData) {
     const negativePeStocks = [];
     const processedSymbols = new Set();
 
-    // Define the single source of truth for active categories
+    // Single source of truth for charted categories (Owned intentionally excluded)
     const activeCategories = [
         'Information Technology',
         'Financial Services',
@@ -79,44 +97,56 @@ function prepareChartData(categoryData) {
         'Consumer Discretionary'
     ];
 
-    // Initialize the nested data structure
-    activeCategories.forEach(cat => {
-        chartData[cat] = {};
-    });
+    // Reset and initialize nested structure
+    chartData = {};
+    activeCategories.forEach(cat => { chartData[cat] = {}; });
 
-    // Flatten all stocks into a single list, avoiding duplicates from the "Owned" category
-    const allStocks = Object.values(categoryData).flat().filter(stock => {
-        if (processedSymbols.has(stock.symbol || stock.Symbol)) {
-            return false;
-        }
-        processedSymbols.add(stock.symbol || stock.Symbol);
-        return true;
-    });
+    // Flatten all stocks while deduping by symbol (case-insensitive)
+    const allStocks = Object.entries(categoryData)
+        .filter(([cat]) => activeCategories.includes(cat)) // ignore Uncategorized or others
+        .map(([, arr]) => arr)
+        .flat()
+        .filter(stock => {
+            const sym = (stock.Symbol || stock.symbol || '').toUpperCase().trim();
+            if (!sym) return false;
+            if (processedSymbols.has(sym)) return false;
+            processedSymbols.add(sym);
+            return true;
+        });
 
     allStocks.forEach(stock => {
-        const marketCap = stock['Market Cap'] ? parseFloat(stock['Market Cap']) : null;
-        const forwardPE = stock['Forward PE'];
         const category = stock.category || 'Uncategorized';
         const industry = stock.industry || 'Uncategorized';
 
-        // Process the stock only if its category is in our active list
-        if (activeCategories.includes(category) && marketCap && forwardPE !== null && forwardPE !== 'N/A' && forwardPE > 0) {
-            if (chartData[category]) {
-                if (!chartData[category][industry]) {
-                    chartData[category][industry] = [];
-                }
-                chartData[category][industry].push({
-                    name: stock.Name || stock.name,
-                    value: [marketCap, forwardPE], // Market Cap in Millions
-                    symbol: stock.Symbol || stock.symbol
-                });
-            }
+        // Parse market cap
+        const mcRaw = stock['Market Cap'];
+        const marketCap = (mcRaw !== undefined && mcRaw !== null && mcRaw !== 'N/A')
+            ? Number(mcRaw)
+            : null;
+
+        // Parse Forward PE (could be number or string)
+        const fpeRaw = stock['Forward PE'];
+        const forwardPE = (fpeRaw !== undefined && fpeRaw !== null && fpeRaw !== 'N/A' && fpeRaw !== '-')
+            ? Number(fpeRaw)
+            : null;
+
+        const validCategory = activeCategories.includes(category);
+        const validCap = marketCap && isFinite(marketCap) && marketCap > 0;
+        const validFPE = forwardPE && isFinite(forwardPE) && forwardPE > 0;
+
+        if (validCategory && validCap && validFPE) {
+            if (!chartData[category][industry]) chartData[category][industry] = [];
+            chartData[category][industry].push({
+                name: stock.Name || stock.name || (stock.Symbol || stock.symbol),
+                value: [marketCap, forwardPE], // market cap expected in millions in your data
+                symbol: stock.Symbol || stock.symbol
+            });
         } else {
             negativePeStocks.push(stock);
         }
     });
 
-    renderChart(); // Render the initial category view
+    renderChart();
     renderNegativePeList(negativePeStocks);
 }
 
@@ -130,7 +160,6 @@ function renderChart() {
     if (currentView === 'categories') {
         legendData = Object.keys(chartData);
         series = legendData.map(category => {
-            // Combine all stocks from all industries within this category
             const categoryStocks = Object.values(chartData[category]).flat();
             return {
                 name: category,
@@ -138,7 +167,7 @@ function renderChart() {
                 data: categoryStocks,
                 symbolSize: 8,
                 label: {
-                    show: false, // Initially hidden
+                    show: false,
                     formatter: (params) => params.data.symbol,
                     position: 'top',
                     fontSize: 10
@@ -167,29 +196,20 @@ function renderChart() {
     }
 
     const option = {
-        title: {
-            text: chartTitle,
-            left: 'center',
-            top: 20
-        },
+        title: { text: chartTitle, left: 'center', top: 20 },
         tooltip: {
             trigger: 'item',
             formatter: function (params) {
                 const marketCapInMillions = params.data.value[0];
-                let marketCapFormatted;
-                if (marketCapInMillions >= 1000) {
-                    marketCapFormatted = `$${(marketCapInMillions / 1000).toFixed(2)}B`;
-                } else {
-                    marketCapFormatted = `$${marketCapInMillions.toFixed(2)}M`;
-                }
+                const asB = marketCapInMillions >= 1000
+                    ? `$${(marketCapInMillions / 1000).toFixed(2)}B`
+                    : `$${marketCapInMillions.toFixed(2)}M`;
                 return `${params.data.name} (${params.data.symbol})<br/>` +
-                       `Market Cap: ${marketCapFormatted}<br/>` +
+                       `Market Cap: ${asB}<br/>` +
                        `Forward P/E: ${params.data.value[1].toFixed(2)}`;
             }
         },
-        grid: {
-            bottom: '20%'
-        },
+        grid: { bottom: '20%' },
         legend: {
             data: legendData,
             orient: 'horizontal',
@@ -203,10 +223,7 @@ function renderChart() {
             nameGap: 30,
             axisLabel: {
                 formatter: function (value) {
-                    if (value >= 1000) { // Now in millions, so 1000M = 1B
-                        return (value / 1000) + 'B';
-                    }
-                    return value + 'M';
+                    return value >= 1000 ? (value / 1000) + 'B' : value + 'M';
                 }
             }
         },
@@ -216,10 +233,10 @@ function renderChart() {
             nameLocation: 'middle',
             nameGap: 40
         },
-        series: series
+        series
     };
 
-    myChart.setOption(option, true); // `true` clears the previous chart state
+    myChart.setOption(option, true);
 }
 
 function setupEventListeners() {
@@ -234,69 +251,53 @@ function setupEventListeners() {
         });
     }
 
-    // This handles clicks on data points to open the TradingView chart
     myChart.on('click', function (params) {
-        // If a data point (a stock) is clicked, always show the chart popup
         if (params.componentType === 'series' && params.data && params.data.symbol) {
             showChartPopup(params.data.symbol);
-        }
-        // If a blank area is clicked and a series is highlighted, reset the highlighting
-        else if (params.seriesName === undefined && highlightedSeries) {
-             highlightedSeries = null;
-             const seriesOption = myChart.getOption().series;
-             const resetSeries = seriesOption.map(s => ({
-                 name: s.name,
-                 itemStyle: { opacity: 1 },
-                 label: { show: false }
-             }));
-             myChart.setOption({ series: resetSeries });
+        } else if (params.seriesName === undefined && highlightedSeries) {
+            highlightedSeries = null;
+            const seriesOption = myChart.getOption().series;
+            const resetSeries = seriesOption.map(s => ({
+                name: s.name,
+                itemStyle: { opacity: 1 },
+                label: { show: false }
+            }));
+            myChart.setOption({ series: resetSeries });
         }
     });
 
-    // This handles clicks on the legend for drilling down and highlighting
     myChart.on('legendselectchanged', function (params) {
         const clickedSeriesName = params.name;
         const allSeriesNames = myChart.getOption().legend[0].data;
 
-        // Immediately re-select all legend items to prevent them from being toggled off
+        // keep all series selected (legend acts as drill/highlight control)
         allSeriesNames.forEach(name => {
             myChart.dispatchAction({ type: 'legendSelect', name: name });
         });
 
-        // If in category view, a legend click drills down
         if (currentView === 'categories') {
             selectedCategory = clickedSeriesName;
             currentView = 'industries';
-            highlightedSeries = null; // Reset highlight on drilldown
+            highlightedSeries = null;
             renderChart();
-            document.getElementById('back-button').style.display = 'inline-block';
-        } 
-        // If in industry view, a legend click highlights the industry
-        else {
-            // Use a zero-delay timeout to ensure this runs after the event queue is cleared
+            const backBtn = document.getElementById('back-button');
+            if (backBtn) backBtn.style.display = 'inline-block';
+        } else {
             setTimeout(() => {
-                // If the user clicks the already highlighted series, reset everything
                 if (highlightedSeries === clickedSeriesName) {
                     highlightedSeries = null;
-                    // Create a configuration to reset the opacity and hide labels for all series
                     const resetSeries = myChart.getOption().series.map(s => ({
                         name: s.name,
                         itemStyle: { opacity: 1 },
-                    label: { show: true }
+                        label: { show: true }
                     }));
                     myChart.setOption({ series: resetSeries });
                 } else {
-                    // Otherwise, highlight the new series and downplay others
                     highlightedSeries = clickedSeriesName;
-                    // Create a configuration that sets the opacity and label visibility for each series
                     const updatedSeries = myChart.getOption().series.map(s => ({
                         name: s.name,
-                        itemStyle: {
-                            opacity: s.name === highlightedSeries ? 1 : 0.2
-                        },
-                        label: {
-                            show: s.name === highlightedSeries
-                        }
+                        itemStyle: { opacity: s.name === highlightedSeries ? 1 : 0.2 },
+                        label: { show: s.name === highlightedSeries }
                     }));
                     myChart.setOption({ series: updatedSeries });
                 }
@@ -316,15 +317,15 @@ function renderNegativePeList(stocks) {
         return;
     }
 
-    // Sort stocks by market cap in descending order
+    // Sort by market cap desc (treating N/A as 0)
     stocks.sort((a, b) => {
-        const capA = a['Market Cap'] === 'N/A' ? 0 : parseFloat(a['Market Cap']);
-        const capB = b['Market Cap'] === 'N/A' ? 0 : parseFloat(b['Market Cap']);
+        const capA = (a['Market Cap'] === 'N/A' || a['Market Cap'] == null) ? 0 : Number(a['Market Cap']);
+        const capB = (b['Market Cap'] === 'N/A' || b['Market Cap'] == null) ? 0 : Number(b['Market Cap']);
         return capB - capA;
     });
 
     const itemsHtml = stocks.map(stock => 
-        `<li>${stock.Name} (${stock.Symbol})</li>`
+        `<li>${stock.Name || stock.name || (stock.Symbol || stock.symbol)} (${stock.Symbol || stock.symbol})</li>`
     ).join('');
 
     listContainer.innerHTML = itemsHtml;
