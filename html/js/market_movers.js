@@ -14,6 +14,16 @@ import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
 import { getCategoryData } from './dataSource.js';
 
+function getRsiColorClass(rsi) {
+    if (rsi === null || rsi === undefined || rsi === 'N/A') return '';
+    const rsiValue = parseFloat(rsi);
+    if (rsiValue >= 70) return 'rsi-deep-overbought';
+    if (rsiValue >= 65) return 'rsi-entering-overbought';
+    if (rsiValue <= 30) return 'rsi-deep-oversold';
+    if (rsiValue <= 35) return 'rsi-entering-oversold';
+    return '';
+}
+
 // Main JavaScript functionality for the Market Movers page
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -73,11 +83,13 @@ async function fetchMarketMoversData() {
 
         const topGainers = movers
             .filter(s => s['Percent Change'] > 0)
-            .sort((a, b) => b['Percent Change'] - a['Percent Change']);
+            .sort((a, b) => b['Percent Change'] - a['Percent Change'])
+            .slice(0, 20); // Limit to the top 20
 
         const topDecliners = movers
             .filter(s => s['Percent Change'] < 0)
-            .sort((a, b) => a['Percent Change'] - b['Percent Change']);
+            .sort((a, b) => a['Percent Change'] - b['Percent Change'])
+            .slice(0, 20); // Limit to the top 20
 
         // Render the tables
         renderMoversTable('top-gainers-container', topGainers);
@@ -102,33 +114,29 @@ function renderMoversTable(containerId, data) {
         return;
     }
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr>
-            <th class="company-name">Company Name</th>
-            <th class="close">Price</th>
-            <th class="percent-change" style="width: 12%;">% Change</th>
-            <th class="change">Change</th>
-            <th class="rsi">RSI</th>
-        </tr>
-    `;
+    const listContainer = document.createElement('div');
+    listContainer.className = 'mover-list';
 
-    const tbody = document.createElement('tbody');
     data.forEach(stock => {
-        const row = document.createElement('tr');
-        row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
+        const item = document.createElement('div');
+        item.className = 'mover-item';
+        item.setAttribute('data-symbol', stock.Symbol || stock.symbol);
         
         const priceChangeColor = getColorForChange(stock['Percent Change']);
-        const percentChangeColor = getColorForChange(stock['Percent Change']);
-        const rsiColor = getRsiBackgroundStyle(stock.RSI);
+        const changeColorClass = stock['Percent Change'] > 0 ? 'price-up' : (stock['Percent Change'] < 0 ? 'price-down' : '');
         const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
         const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
         const logoUrl = stock.stockUrl;
 
-        row.innerHTML = `
-            <td class="company-name">
-                <div class="company-cell-content chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">
+        const changeValue = stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-';
+        const percentChangeValue = stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-';
+
+        const price = stock.Close != null ? formatValue(stock.Close) : '-';
+        const rsi = stock.RSI !== undefined ? formatRsi(stock.RSI) : '-';
+        const rsiColorClass = getRsiColorClass(stock.RSI);
+
+        item.innerHTML = `
+            <div class="mover-item-company chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">
                 <button class="info-icon" 
                         data-stock-name="${stock.Name || stock.name}"
                         data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
@@ -152,23 +160,23 @@ function renderMoversTable(containerId, data) {
                 <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
                     style="width: 20px; height: 20px;"/>
                 <span class="company-text">${stock.Name || stock.name}</span>
+            </div>
+            <div class="mover-item-data">
+                <div class="price-line">
+                    <span class="price">${price}</span>
+                    <span class="change-value ${changeColorClass}">${changeValue} (${percentChangeValue})</span>
                 </div>
-            </td>
-            <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-            <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-            <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
-            <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
+                <div class="rsi-line ${rsiColorClass}">RSI: ${rsi}</div>
+            </div>
         `;
 
-        tbody.appendChild(row);
+        listContainer.appendChild(item);
     });
 
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
+    container.appendChild(listContainer);
     
     // Add event listeners after the section is added to the DOM
-    container.querySelectorAll('.chart-clickable').forEach(clickableCell => {
+    container.querySelectorAll('.mover-item-company').forEach(clickableCell => {
         clickableCell.addEventListener('click', function(event) {
             // Prevent click from triggering on the star or info icon
             if (event.target.closest('.star-icon') || event.target.closest('.info-icon')) {

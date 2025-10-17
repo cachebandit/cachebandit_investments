@@ -141,8 +141,8 @@ th.company-name, td.company-name {
 }
 
 th.symbol, td.symbol {
-    width: 7%; /* Decreased width for symbol */
-    width: 7%;
+    width: 8%; /* Decreased width for symbol */
+    width: 8%;
     text-align: center; /* Centered symbol */
 }
 
