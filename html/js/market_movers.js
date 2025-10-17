@@ -108,7 +108,6 @@ function renderMoversTable(containerId, data) {
         <tr>
             <th class="company-name">Company Name</th>
             <th class="close">Price</th>
-            <th class="percent-change" style="width: 12%;">% Change</th>
             <th class="change">Change</th>
             <th class="rsi">RSI</th>
         </tr>
@@ -125,6 +124,9 @@ function renderMoversTable(containerId, data) {
         const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
         const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
         const logoUrl = stock.stockUrl;
+
+        const changeValue = stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-';
+        const percentChangeValue = stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-';
 
         row.innerHTML = `
             <td class="company-name">
@@ -155,8 +157,7 @@ function renderMoversTable(containerId, data) {
                 </div>
             </td>
             <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-            <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-            <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
+            <td class="change" style="color: ${priceChangeColor};">${changeValue} (${percentChangeValue})</td>
             <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
         `;
 
