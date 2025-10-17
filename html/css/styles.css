@@ -136,11 +136,13 @@ th {
 
 th.company-name, td.company-name {
     width: 28%; /* Increased width for company name */
+    width: 26%;
     text-align: left;
 }
 
 th.symbol, td.symbol {
     width: 7%; /* Decreased width for symbol */
+    width: 7%;
     text-align: center; /* Centered symbol */
 }
 
@@ -148,6 +150,9 @@ th.market-cap, td.market-cap { width: 10%; }
 th.open, td.open { width: 8%; }
 th.high, td.high { width: 8%; }
 th.low, td.low { width: 8%; }
+th.open, td.open,
+th.high, td.high,
+th.low, td.low,
 th.close, td.close { width: 8%; }
 th.change, td.change { width: 8%; }
 th.percent-change, td.percent-change { width: 9%; }
@@ -187,7 +192,7 @@ td.close {
 .header-left {
     display: flex;
     flex-direction: column; /* Stack logo and timestamp vertically */
-    align-items: flex-start; /* Align to the start of the container */
+    align-items: flex-start; /* Align logo to the far left */
     flex: 1; /* Allow this section to grow and shrink */
 }
 
@@ -195,8 +200,14 @@ td.close {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    flex: 1; /* Allow this section to grow and shrink */
-    /* Remove fixed widths to allow flexibility */
+    flex: 1; /* Allow this section to grow and shrink, creating symmetry */
+}
+
+/* Ensure empty header controls still reserve space to balance the layout */
+.header-controls:empty::after {
+  content: "";
+  display: block;
+  width: 180px;   /* Invisible spacer to match approximate logo/timestamp width */
 }
 
 .navigation {
@@ -302,6 +313,7 @@ td.close {
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 25; /* Limit to a maximum of 8 lines */
+    -webkit-line-clamp: 8; /* Limit to a maximum of 8 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -559,4 +571,42 @@ td.close {
     height: 100%;
     border-radius: 3px;
     transition: width 0.5s ease-out;
+}
+
+/* ===== Mobile & Portrait Tablet Breakpoint ===== */
+@media (max-width: 820px) {
+  .header-container {
+    align-items: center;              /* vertical alignment */
+    justify-content: space-between;   /* keep 3-column balance */
+    gap: 10px;
+  }
+
+  /* Reserve equal left/right width so center truly centers */
+  .header-left,
+  .header-controls {
+    flex: 0 0 140px;                  /* Tweak 130–160px as needed */
+  }
+  .header-center { flex: 1 1 auto; }
+
+  /* Make the logo/titles scale down on portrait */
+  .header-logo { height: 34px; }
+  .header-center h1 { font-size: 18px; }
+
+  /* Keep “Last Updated” under the logo nicely centered */
+  .header-left { align-items: center; }
+  .last-updated { text-align: center; margin-top: 6px; }
+
+  /* Keep tabs neat on narrow width */
+  .navigation {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .navigation a {
+    min-width: 110px;                 /* down from 130 */
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  .header-controls:empty::after { width: 140px; }
 }
