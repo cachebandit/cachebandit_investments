@@ -129,11 +129,6 @@ function renderMoversTable(containerId, data) {
         row.innerHTML = `
             <td class="company-name">
                 <div class="company-cell-content chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">
-                <span class="star-icon ${stock.flag ? 'active' : ''}"
-                      data-symbol="${stock.Symbol || stock.symbol}" 
-                      onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
-                    ★
-                </span>
                 <button class="info-icon" 
                         data-stock-name="${stock.Name || stock.name}"
                         data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
@@ -191,29 +186,6 @@ function renderMoversTable(containerId, data) {
         });
     });
 }
-
-window.toggleFlag = function(event, symbol, element) {
-    event.stopPropagation();
-    const newFlag = !element.classList.contains('active');
-    
-    fetch('/api/update_flag', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            symbol: symbol,
-            flag: newFlag
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            element.classList.toggle('active');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-};
 
 function importDependencies() {
     const script = document.createElement('script');

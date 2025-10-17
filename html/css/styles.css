@@ -201,6 +201,7 @@ td.close {
     flex-direction: column;
     align-items: flex-end;
     flex: 1; /* Allow this section to grow and shrink, creating symmetry */
+    min-width: 180px; /* Reserve space to balance the logo, even when empty */
 }
 
 /* Ensure empty header controls still reserve space to balance the layout */
@@ -241,6 +242,7 @@ td.close {
 .button-container {
     display: flex;
     align-items: center;
+    display: none; /* Hide by default to prevent flash on static site */
     gap: 10px;
 }
 

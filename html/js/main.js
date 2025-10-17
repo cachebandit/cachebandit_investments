@@ -24,14 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttonContainer = refreshButton ? refreshButton.closest('.button-container') : null;
 
     // Add click event listener to the refresh button
-    if (isLocal() && refreshButton) {
+    if (isLocal() && buttonContainer) {
+        buttonContainer.style.display = 'flex'; // Show the button only on localhost
         refreshButton.addEventListener('click', function() {
             this.setAttribute('data-refreshing', 'true'); // Set the refreshing flag
             fetchWatchlistData(); // Call the function to fetch data
         });
-    } else if (buttonContainer) {
-        // On the static site, hide the entire button container
-        buttonContainer.style.display = 'none';
     }
     
     // Initial load - use cache
