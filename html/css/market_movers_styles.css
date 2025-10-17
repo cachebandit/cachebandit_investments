@@ -1,7 +1,7 @@
 /* Styles for Market Movers page */
 .movers-container {
     display: flex;
-    gap: 24px;
+    gap: 20px;
     align-items: flex-start;
     flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
 }
@@ -11,7 +11,7 @@
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    overflow-x: auto; /* Allow horizontal scrolling on very small screens */
+    overflow: hidden; /* Hide overflow, as content will be handled internally */
     min-width: 320px; /* Ensure each section has a minimum width */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
@@ -26,43 +26,71 @@
     font-weight: 600; /* SemiBold for section titles */
 }
 
-/* Allow text to wrap within table cells on this page */
-.movers-section th,
-.movers-section td {
-    white-space: normal;
+.mover-list {
+    display: flex;
+    flex-direction: column;
 }
 
-/* Ensure table headers on this page do not get truncated */
-.movers-section th {
-    overflow: visible;
-    text-overflow: clip;
+.mover-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
 }
 
-/* Override column widths specifically for the movers tables.
-   Use auto for the company name to let it take up remaining space. */
-.movers-section th.company-name,
-.movers-section td.company-name {
-    width: 45%; /* Give a bit less to the name to make room for Change */
+.mover-item:last-child {
+    border-bottom: none;
 }
 
-.movers-section th.market-cap,
-.movers-section td.market-cap { width: 0; display: none; }
-
-/* Give numeric columns flexible widths */
-.movers-section .close,
-.movers-section .rsi {
-    white-space: nowrap;
-    width: 15%;
+.mover-item:hover {
+    background-color: var(--hover-bg);
 }
 
-.movers-section .change {
-    white-space: nowrap;
-    width: 25%; /* Give the combined Change column significantly more space */
+.mover-item-company {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1; /* Allow it to take up available space */
+    min-width: 0; /* Important for flex truncation */
 }
 
-/* Ensure numeric columns and their headers are always centered */
-.movers-section .close,
-.movers-section .change,
-.movers-section .rsi {
-    text-align: center;
+.mover-item-data {
+    text-align: right;
+    font-weight: 600;
+    flex-shrink: 0; /* Prevent this column from shrinking */
+    padding-left: 15px;
+}
+
+.price-line {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.price-line .price {
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.price-line .change-value {
+    font-size: 14px;
+}
+
+.rsi-line {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* --- Color Coordination --- */
+.price-up { color: var(--price-up-color); }
+.price-down { color: var(--price-down-color); }
+.rsi-deep-oversold { color: var(--price-down-color); font-weight: bold; }
+.rsi-entering-oversold { color: #ff9800; }
+.rsi-entering-overbought { color: #e6c300; }
+.rsi-deep-overbought { color: var(--price-up-color); font-weight: bold; }
 }
