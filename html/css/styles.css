@@ -187,19 +187,16 @@ td.close {
 .header-left {
     display: flex;
     flex-direction: column; /* Stack logo and timestamp vertically */
-    align-items: center;    /* Center them horizontally */
+    align-items: flex-start; /* Align to the start of the container */
+    flex: 1; /* Allow this section to grow and shrink */
 }
 
 .header-controls {
     display: flex;
     flex-direction: column;
-    /* This is no longer needed as the timestamp has moved */
     align-items: flex-end;
-    /* Give the container enough width to prevent wrapping */
-    min-width: 220px;
-    /* The following properties are also important for alignment */
-    flex-basis: 220px;
-    flex-shrink: 0;
+    flex: 1; /* Allow this section to grow and shrink */
+    /* Remove fixed widths to allow flexibility */
 }
 
 .navigation {

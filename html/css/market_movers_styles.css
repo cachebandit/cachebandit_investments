@@ -42,7 +42,7 @@
    Use auto for the company name to let it take up remaining space. */
 .movers-section th.company-name,
 .movers-section td.company-name {
-    width: auto;
+    width: 40%; /* Assign a flexible percentage width */
 }
 
 .movers-section th.market-cap,
@@ -50,12 +50,20 @@
 
 /* Give numeric columns a minimum width to prevent squishing and ensure content is visible */
 .movers-section .close {
-    min-width: 70px;
+    width: 15%;
 }
 .movers-section .close,
 .movers-section .change,
 .movers-section .percent-change,
 .movers-section .rsi {
     white-space: nowrap;
-    min-width: 85px;
+    width: 15%; /* Assign equal flexible widths to other columns */
+}
+
+/* Ensure numeric columns and their headers are always centered */
+.movers-section .close,
+.movers-section .change,
+.movers-section .percent-change,
+.movers-section .rsi {
+    text-align: center;
 }
