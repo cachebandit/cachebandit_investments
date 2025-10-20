@@ -22,8 +22,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     env:
-      KEEP_PER_WORKFLOW: "5"   # keep newest 5 runs per workflow
-      RETAIN_DAYS: "7"         # delete only runs older than 7 days
+      KEEP_PER_WORKFLOW: "5"   # Keep the 5 newest runs per workflow
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
     steps:
       - name: Delete old workflow runs & artifacts (all events)
@@ -32,14 +31,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const keepPerWorkflow = parseInt(process.env.KEEP_PER_WORKFLOW || "5", 10);
-            const retainDays = parseInt(process.env.RETAIN_DAYS || "7", 10);
             const dryRun = (process.env.DRY_RUN || "false").toLowerCase() === "true";
 
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const cutoff = new Date(Date.now() - retainDays * 24 * 60 * 60 * 1000);
 
-            core.info(`Cleanup starting (keep ${keepPerWorkflow} per workflow, delete if older than ${retainDays} days, dry_run=${dryRun})`);
+            core.info(`Cleanup starting (keeping newest ${keepPerWorkflow} runs per workflow, dry_run=${dryRun})`);
 
             // 1) List all workflows
             const { data: { workflows } } = await github.rest.actions.listRepoWorkflows({ owner, repo, per_page: 100 });
@@ -60,9 +57,6 @@ jobs:
               const toConsider = runs.slice(keepPerWorkflow);
 
               for (const run of toConsider) {
-                const created = new Date(run.created_at);
-                if (created > cutoff) continue; // still within retention window
-
                 // 3) Delete artifacts first
                 const artifacts = await github.paginate(
                   github.rest.actions.listWorkflowRunArtifacts,
