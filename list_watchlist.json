@@ -128,7 +128,7 @@
                 },
                 {
                     "symbol": "MSFT",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Microsoft Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/microsoft.svg"
                 }

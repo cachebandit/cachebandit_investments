@@ -1,0 +1,93 @@
+name: Weekly Actions Cleanup
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"     # Mondays 06:00 UTC ≈ Sunday midnight Central (00:00)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview only (true/false)"
+        required: false
+        default: "false"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: cleanup-weekly
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      KEEP_PER_WORKFLOW: "5"   # keep newest 5 runs per workflow
+      RETAIN_DAYS: "7"         # delete only runs older than 7 days
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
+    steps:
+      - name: Delete old workflow runs & artifacts (all events)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const keepPerWorkflow = parseInt(process.env.KEEP_PER_WORKFLOW || "5", 10);
+            const retainDays = parseInt(process.env.RETAIN_DAYS || "7", 10);
+            const dryRun = (process.env.DRY_RUN || "false").toLowerCase() === "true";
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const cutoff = new Date(Date.now() - retainDays * 24 * 60 * 60 * 1000);
+
+            core.info(`Cleanup starting (keep ${keepPerWorkflow} per workflow, delete if older than ${retainDays} days, dry_run=${dryRun})`);
+
+            // 1) List all workflows
+            const { data: { workflows } } = await github.rest.actions.listRepoWorkflows({ owner, repo, per_page: 100 });
+
+            for (const wf of workflows || []) {
+              // 2) Get completed runs for this workflow (ALL events)
+              const runs = await github.paginate(
+                github.rest.actions.listWorkflowRuns,
+                { owner, repo, workflow_id: wf.id, status: "completed", per_page: 100 }
+              );
+
+              if (!runs.length) continue;
+
+              // newest first
+              runs.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+              // keep newest N; consider older ones for deletion if past cutoff
+              const toConsider = runs.slice(keepPerWorkflow);
+
+              for (const run of toConsider) {
+                const created = new Date(run.created_at);
+                if (created > cutoff) continue; // still within retention window
+
+                // 3) Delete artifacts first
+                const artifacts = await github.paginate(
+                  github.rest.actions.listWorkflowRunArtifacts,
+                  { owner, repo, run_id: run.id, per_page: 100 }
+                );
+
+                for (const art of artifacts) {
+                  const msg = `artifact ${art.id} (${art.name}) from run #${run.run_number} [${wf.name}]`;
+                  if (dryRun) {
+                    core.info(`[DRY RUN] Would delete ${msg}`);
+                  } else {
+                    await github.rest.actions.deleteArtifact({ owner, repo, artifact_id: art.id });
+                    core.info(`Deleted ${msg}`);
+                  }
+                }
+
+                // 4) Delete the run
+                const runMsg = `run id ${run.id} (#${run.run_number}) [${wf.name}] created ${run.created_at}`;
+                if (dryRun) {
+                  core.info(`[DRY RUN] Would delete ${runMsg}`);
+                } else {
+                  await github.rest.actions.deleteWorkflowRun({ owner, repo, run_id: run.id });
+                  core.info(`Deleted ${runMsg}`);
+                }
+              }
+            }
+
+            core.info("Cleanup finished.");

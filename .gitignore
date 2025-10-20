@@ -29,7 +29,7 @@ ENV/
 .history/
 
 # Project specific
-cache/
+.cache/
 *.log
 server_control.log
 .env
