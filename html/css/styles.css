@@ -213,8 +213,9 @@ td.close {
 
 .navigation {
     display: flex;
+    justify-content: center; /* Center the tabs horizontally */
     gap: 10px;
-    margin-top: 15px; /* Space between title and nav */
+    margin-bottom: 20px; /* Space below the navigation bar */
 }
 
 .navigation a {
