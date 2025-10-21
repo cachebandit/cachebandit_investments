@@ -575,6 +575,12 @@ td.close {
     transition: width 0.5s ease-out;
 }
 
+/* Styles for the Heatmap Widget Container */
+#heatmap-widget-container {
+    height: 80vh; /* Give the container a height so the widget can render */
+    width: 100%;
+}
+
 /* ===== Mobile & Portrait Tablet Breakpoint ===== */
 @media (max-width: 820px) {
   .header-container {
