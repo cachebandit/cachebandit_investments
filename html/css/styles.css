@@ -294,32 +294,46 @@ td.close {
     transform: scale(1.1);
 }
 
-.popup {
-    position: absolute;
+/* === Popup overlay/panel (top-anchored to prevent jump) === */
+.info-overlay {
+    position: fixed;
+    inset: 0; /* top, right, bottom, left = 0 */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* was center; top-anchor keeps top edge fixed */
+    padding-top: 5vh;        /* small breathing room from top */
+}
+
+.info-popup {
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
     padding: 15px;
     border-radius: 6px;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: none;
-    max-width: 350px;
+    width: 80%;
+    max-width: 600px;
     font-size: 14px;
     color: var(--text-primary);
     max-height: 80vh; /* Set a max height for the popup */
     overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
 
+/* === Description block: collapsed vs expanded === */
 .popup-description {
     font-size: 13px;
     margin: 15px 0;
-    line-height: 1.5;
+    line-height: 1.4; /* helps line-clamp look clean */
     display: -webkit-box;
-    -webkit-line-clamp: 25; /* Limit to a maximum of 8 lines */
     -webkit-line-clamp: 8; /* Limit to a maximum of 8 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    /* Hide the ellipsis by adding padding and a negative margin */
+    padding-right: 5px;
+    margin-right: -5px;
 }
 
 .popup-description.expandable {
@@ -328,7 +342,27 @@ td.close {
 
 .popup-description.expanded {
     -webkit-line-clamp: unset; /* Remove line limit when expanded */
-    overflow: visible;
+    padding-right: 10px; /* Add space for scrollbar when expanded */
+    max-height: 300px; /* Fixed reading window so popup top stays put */
+    overflow-y: auto; /* Enable vertical scrolling within the description */
+}
+
+.expand-description-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.popup-description.expanded + .expand-description-btn {
+    position: static; /* Let it flow naturally when expanded */
+    background: none;
+    padding-left: 0;
+    margin-top: 4px; /* Reduced margin to bring button closer */
 }
 
 .heatmap-button {
