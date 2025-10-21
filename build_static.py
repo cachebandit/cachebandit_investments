@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 from subprocess import run
 from datetime import datetime
+import shutil
 
 SITE_ROOT = Path("site")
 HTML_DIR  = SITE_ROOT / "html"
@@ -32,6 +33,10 @@ def load_cache():
 
 def copy_assets():
     """Copies all contents of the local 'html' directory to the build 'site/html' directory."""
+    # First, ensure the destination directory is clean to avoid stale files
+    if HTML_DIR.exists():
+        shutil.rmtree(HTML_DIR)
+    
     source_dir = Path("html")
     if source_dir.is_dir():
         run(["cp", "-r", f"{source_dir}/.", str(HTML_DIR)])
