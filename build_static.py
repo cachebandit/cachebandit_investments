@@ -59,9 +59,9 @@ def build_payload(category: str, items: list, updated_at: str) -> dict:
 
 def main():
     # 1) Prep dirs
-    HTML_DIR.mkdir(parents=True, exist_ok=True)
+    HTML_DIR.mkdir(parents=True, exist_ok=True) # Ensure site/html exists
+    copy_assets() # Clean and copy source assets first
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    copy_assets()
 
     # 2) Load cache
     cache = load_cache()
