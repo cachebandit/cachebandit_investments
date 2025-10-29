@@ -1,4 +1,6 @@
 - add individaul category refresh
 - make phone accessable
 - use localstorage to allow to save favorites
-- set up auto delete old crons over a week old to clean up Github Action Tab
+- add beta to info button
+- add 3M RSI as short-term-rsi
+- Short Term RSI Volitility Strategy

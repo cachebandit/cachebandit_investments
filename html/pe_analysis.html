@@ -28,13 +28,25 @@
                 <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
-        <nav class="navigation">
-            <a href="watchlist.html">Watchlist</a>
-            <a href="market_movers.html">Market Movers</a>
-            <a href="earnings_calendar.html">Earnings Calendar</a>
-            <a href="rsi_analysis.html">RSI Analysis</a>
-            <a href="pe_analysis.html" class="active">P/E Analysis</a>
-            <a href="heatmap.html">Heat Map</a>
+        <nav class="dropdown-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropbtn">Market Overview ▼</a>
+                    <div class="dropdown-content">
+                        <a href="watchlist.html">Watchlist</a>
+                        <a href="market_movers.html">Market Movers</a>
+                        <a href="heatmap.html">Heatmap</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropbtn">Analysis ▼</a>
+                    <div class="dropdown-content">
+                        <a href="rsi_analysis.html">RSI Analysis</a>
+                        <a href="pe_analysis.html">P/E Analysis</a>
+                    </div>
+                </li>
+                <li><a href="earnings_calendar.html">Calendar</a></li>
+            </ul>
         </nav>
         <div id="peScatterChart"></div>
         <div class="section">
