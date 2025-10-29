@@ -1,6 +1,7 @@
 import { getForwardPeColor, getTrailingPeColor } from './utils.js';
 function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     const stockName = button.getAttribute('data-stock-name');
+    const beta = button.getAttribute('data-beta');
 
     const description = button.getAttribute('title');
     const trailingPE = parseFloat(button.getAttribute('data-trailing-pe')).toFixed(2);
@@ -22,6 +23,7 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     // Format values
     const formattedCurrentPrice = currentPrice ? currentPrice.toFixed(2) : 'N/A';
     const formattedHigh = fiftyTwoWeekHigh ? fiftyTwoWeekHigh.toFixed(2) : 'N/A';
+    const formattedBeta = beta ? parseFloat(beta).toFixed(2) : 'N/A';
     const formattedLow = fiftyTwoWeekLow ? fiftyTwoWeekLow.toFixed(2) : 'N/A';
     const formattedEarningsDate = earningsDate ? earningsDate : 'N/A';
     const formattedDividendYield = dividendYield ? `${dividendYield.toFixed(2)}%` : 'N/A';
@@ -83,6 +85,7 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
         <div style="font-size: 14px; margin: 15px 0;">
             <span style=""><strong>Market Cap:</strong> ${marketCap}</span>
             <span style="margin-left: 20px;"><strong>Dividend Yield (TTM):</strong> ${formattedDividendYield}</span>
+            <span style="margin-left: 20px;"><strong>Beta (5Y):</strong> ${formattedBeta}</span>
         </div>
         <div class="description-container" style="position: relative;">
             <div class="popup-description">${description}</div>

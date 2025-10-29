@@ -137,6 +137,7 @@ def fetch_category_data(category):
             'fiftyTwoWeekHigh': _clean_value(info.get('fiftyTwoWeekHigh')),
             'fiftyTwoWeekLow': _clean_value(info.get('fiftyTwoWeekLow')),
             'earningsDate': earningsDate,
+            'beta': _clean_value(info.get('beta')), # Add this line
             'earningsTiming': earningsTiming,
             'stockUrl': stock_info.get("stockUrl", None),
             'exchangeName': info.get('exchange'),
