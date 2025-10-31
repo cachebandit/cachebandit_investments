@@ -162,7 +162,7 @@
             "Semiconductor": [
                 {
                     "symbol": "NVDA",
-                    "flag": true,
+                    "flag": false,
                     "Name": "NVIDIA Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/nvidia.svg"
                 },

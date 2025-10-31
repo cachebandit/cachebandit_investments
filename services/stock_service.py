@@ -6,6 +6,7 @@ import math
 from zoneinfo import ZoneInfo
 from models.stock_cache import StockCache
 import pandas as pd
+from services.volatility_service import get_vol_signal_fields
 
 # Custom exception to signal yfinance/API rate limit errors
 class RateLimitError(Exception):
@@ -155,24 +156,31 @@ def fetch_detailed_info(symbols):
 
     detailed_data = {}
     try:
-        # Batch download historical data. `group_by='ticker'` is convenient.
-        hist_data = yf.download(symbols, period="1y", interval="1d", progress=False, group_by='ticker')
+        # Batch download 1 year of daily data for standard calculations (RSI-14, ATR)
+        hist_data_daily = yf.download(symbols, period="1y", interval="1d", progress=False, group_by='ticker')
+
+        # Batch download 3 months of hourly data for the RSI(3) calculation
+        hist_data_hourly = yf.download(symbols, period="3mo", interval="1h", progress=False, group_by='ticker')
 
         for symbol in symbols:
-            # Access the DataFrame for the specific symbol
-            symbol_hist = hist_data.get(symbol)
+            # Access the DataFrames for the specific symbol
+            symbol_hist_daily = hist_data_daily.get(symbol)
+            symbol_hist_hourly = hist_data_hourly.get(symbol)
             
             # Check for valid data
-            if symbol_hist is None or symbol_hist.empty or symbol_hist['Close'].isnull().all():
+            if symbol_hist_daily is None or symbol_hist_daily.empty or symbol_hist_daily['Close'].isnull().all():
                 logging.warning(f"No valid historical data for {symbol}, skipping detailed info.")
                 continue
 
-            latest_data = symbol_hist.iloc[-1]
-            previous_close = symbol_hist.iloc[-2]['Close'] if len(symbol_hist) > 1 else None
+            latest_data = symbol_hist_daily.iloc[-1]
+            previous_close = symbol_hist_daily.iloc[-2]['Close'] if len(symbol_hist_daily) > 1 else None
 
             price_change = (latest_data['Close'] - previous_close) if previous_close is not None else None
             percent_change = (price_change / previous_close * 100) if price_change is not None and previous_close != 0 else None
             
+            # Calculate volatility signals using the new service
+            signal_fields = get_vol_signal_fields(symbol_hist_daily, symbol_hist_hourly)
+
             detailed_data[symbol] = {
                 'Open': _clean_value(latest_data['Open']),
                 'Close': _clean_value(latest_data['Close']),
@@ -180,8 +188,11 @@ def fetch_detailed_info(symbols):
                 'Low': _clean_value(latest_data['Low']),
                 'Price Change': _clean_value(price_change),
                 'Percent Change': _clean_value(percent_change),
-                'RSI': calculate_rsi(symbol_hist),
-                'yRSI': calculate_rsi(symbol_hist.iloc[:-1]) # RSI of the day before
+                'ATR': signal_fields.get('atr'),
+                'ATR_Percent': signal_fields.get('atr_percent'),
+                'RSI3M': signal_fields.get('rsi3m'),
+                'RSI': calculate_rsi(symbol_hist_daily),
+                'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
             }
     except Exception as e:
         # If yfinance or the upstream HTTP client responds with a rate-limit 429, bubble up a RateLimitError

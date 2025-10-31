@@ -1,13 +1,13 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
-import { getTrailingPeColor, getForwardPeColor, formatMarketCap } from './utils.js';
 import { getCategoryData } from './dataSource.js';
+import { formatMarketCap } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadRsiData();
+    loadVolatilityData();
 });
 
-async function loadRsiData() {
+async function loadVolatilityData() {
     try {
         const categoriesToFetch = [
             'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
@@ -24,7 +24,6 @@ async function loadRsiData() {
 
         results.forEach(responseData => {
             const items = responseData.items || responseData.data || [];
-            // Grab the timestamp from the first valid response
             if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
                 lastUpdated = responseData.updated_at || responseData.last_updated;
             }
@@ -38,76 +37,50 @@ async function loadRsiData() {
             });
         });
 
-        // Update the last updated timestamp in the UI
         if (lastUpdated) {
             document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
         }
 
-        const stocksWithRsi = allStocks.filter(stock => 
-            stock.RSI !== null && stock.RSI !== 'N/A' && !isNaN(parseFloat(stock.RSI))
+        // 1. Filter for stocks with ATR% >= 2%
+        const highAtrStocks = allStocks
+            .filter(stock => stock.ATR_Percent !== null && stock.ATR_Percent !== 'N/A' && parseFloat(stock.ATR_Percent) >= 2)
+            .sort((a, b) => parseFloat(b.ATR_Percent) - parseFloat(a.ATR_Percent)); // Sort all by highest ATR% first
+
+        // 2. Split the high ATR stocks into oversold and overbought lists based on RSI(1h)
+        const oversoldStocks = highAtrStocks.filter(stock => 
+            stock.RSI3M !== null && stock.RSI3M !== 'N/A' && parseFloat(stock.RSI3M) <= 30
         );
 
-        const sortByMarketCap = (a, b) => {
-            const capA = a['Market Cap'] === 'N/A' ? 0 : parseFloat(a['Market Cap']);
-            const capB = b['Market Cap'] === 'N/A' ? 0 : parseFloat(b['Market Cap']);
-            return capB - capA; // Descending order
-        };
+        const overboughtStocks = highAtrStocks.filter(stock => 
+            stock.RSI3M !== null && stock.RSI3M !== 'N/A' && parseFloat(stock.RSI3M) >= 70
+        );
 
-        // --- Categorize stocks based on RSI and yRSI ---
-        const oversold = stocksWithRsi
-            .filter(s => parseFloat(s.RSI) <= 30)
-            .sort(sortByMarketCap);
+        renderList('oversold-list', oversoldStocks);
+        renderList('overbought-list', overboughtStocks);
 
-        const overbought = stocksWithRsi
-            .filter(s => parseFloat(s.RSI) >= 70)
-            .sort(sortByMarketCap);
-
-        const stocksWithYRsi = stocksWithRsi.filter(s => s.yRSI !== null && s.yRSI !== 'N/A' && !isNaN(parseFloat(s.yRSI)));
-
-        // Was not oversold yesterday, now in the 30-35 band
-        const enteringOversold = stocksWithYRsi
-            .filter(s => s.yRSI > 30 && s.RSI > 30 && s.RSI <= 35)
-            .sort(sortByMarketCap);
-
-        // Was oversold yesterday, now in the 30-35 band
-        const exitingOversold = stocksWithYRsi
-            .filter(s => s.yRSI <= 30 && s.RSI > 30)
-            .sort(sortByMarketCap);
-
-        // Was overbought yesterday, now in the 65-70 band
-        const exitingOverbought = stocksWithYRsi
-            .filter(s => s.yRSI >= 70 && s.RSI < 70)
-            .sort(sortByMarketCap);
-
-        // --- Render all tables ---
-        renderList('overbought-list', overbought);
-        renderList('oversold-list', oversold);
-        renderList('entering-oversold-list', enteringOversold);
-        renderList('exiting-oversold-list', exitingOversold);
-        renderList('exiting-overbought-list', exitingOverbought);
-
-        // Add a single event listener to the grid container for chart popups
-        const gridContainer = document.querySelector('.rsi-grid-container');
+        // Add event listeners for popups
+        const gridContainer = document.querySelector('.volatility-grid-container');
         if (gridContainer) {
             gridContainer.addEventListener('click', function(event) {
                 const infoIcon = event.target.closest('.info-icon');
                 if (infoIcon) {
                     event.stopPropagation();
+                    // The showInfoPopup function expects the button element itself,
+                    // which now has all the necessary data attributes.
                     showInfoPopup(infoIcon);
-                } else {
-                    const companyInfo = event.target.closest('.rsi-company-info');
-                    if (companyInfo) {
-                        const rsiItem = companyInfo.closest('.rsi-item');
-                        if (rsiItem && rsiItem.dataset.symbol) {
-                            showChartPopup(rsiItem.dataset.symbol);
-                        }
+                    return; // Prevent the chart popup from also opening
+                }
+                const rsiItem = event.target.closest('.rsi-item');
+                if (rsiItem) {
+                    if (rsiItem && rsiItem.dataset.symbol) {
+                        showChartPopup(rsiItem.dataset.symbol);
                     }
                 }
             });
         }
 
     } catch (error) {
-        console.error('Error loading RSI data:', error);
+        console.error('Error loading Volatility data:', error);
     }
 }
 
@@ -121,26 +94,23 @@ function renderList(containerId, stocks) {
     }
 
     const itemsHtml = stocks.map(stock => {
-        const rsi = parseFloat(stock.RSI).toFixed(2);
+        const rsi1h = stock.RSI3M !== 'N/A' ? parseFloat(stock.RSI3M).toFixed(2) : 'N/A';
+        const atr = stock.ATR !== 'N/A' ? parseFloat(stock.ATR).toFixed(2) : 'N/A';
+        const atrPercent = stock.ATR_Percent !== 'N/A' ? `${parseFloat(stock.ATR_Percent).toFixed(2)}%` : 'N/A';
         const close = stock.Close ? `$${parseFloat(stock.Close).toFixed(2)}` : 'N/A';
         const priceChange = stock['Price Change'] ? stock['Price Change'].toFixed(2) : 'N/A';
         const percentChange = stock['Percent Change'] ? `${parseFloat(stock['Percent Change']).toFixed(2)}%` : 'N/A';
-        const changeColor = stock['Percent Change'] > 0 ? 'price-up' : (stock['Percent Change'] < 0 ? 'price-down' : '');
+        const changeColorClass = stock['Percent Change'] > 0 ? 'price-up' : (stock['Percent Change'] < 0 ? 'price-down' : '');
 
-        let rsiClass = '';
-        const rsiValue = parseFloat(rsi);
-        if (rsiValue >= 70) rsiClass = 'rsi-deep-overbought';       // Green
-        else if (rsiValue >= 65) rsiClass = 'rsi-entering-overbought'; // Yellow
-        else if (rsiValue <= 30) rsiClass = 'rsi-deep-oversold';       // Red
-        else if (rsiValue <= 35) rsiClass = 'rsi-entering-oversold'; // Orange
-
-        const trailingPeColor = stock['Trailing PE'] ? getTrailingPeColor(stock['Trailing PE']) : 'inherit';
-        const forwardPeColor = stock['Forward PE'] ? getForwardPeColor(stock['Forward PE'], stock['Trailing PE']) : 'inherit';
+        let rsi1hClass = '';
+        if (rsi1h <= 15) rsi1hClass = 'rsi-deep-oversold';
+        else if (rsi1h >= 85) rsi1hClass = 'rsi-deep-overbought';
 
         return `
             <div class="rsi-item" data-symbol="${stock.Symbol || stock.symbol}">
                 <div class="rsi-company-info">
                     <button class="info-icon" 
+                            data-stock-symbol="${stock.Symbol || stock.symbol}"
                             data-stock-name="${stock.Name || stock.name}"
                             data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
                             data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
@@ -157,18 +127,20 @@ function renderList(containerId, stocks) {
                             data-total-revenue="${stock.totalRevenue || 'N/A'}"
                             data-net-income="${stock.netIncomeToCommon || 'N/A'}"
                             data-profit-margins="${stock.profitMargins || 'N/A'}"
-                            data-trailing-pe-color="${trailingPeColor}"
-                            data-forward-pe-color="${forwardPeColor}"
                             data-url="${stock.stockUrl}">
                         <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
                     </button>
                     <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'"/>
                     <span class="company-name-text">${stock.Name || stock.name}</span>
                 </div>
+                <div class="volatility-price-data">
+                    <span class="price">${close}</span>
+                    <span class="change-value ${changeColorClass}">${priceChange} (${percentChange})</span>
+                </div>
                 <div class="rsi-market-data">
-                    <span>${close}</span>
-                    <span class="${changeColor}">${priceChange} (${percentChange})</span>
-                    <span class="${rsiClass}">RSI: ${rsi}</span>
+                    <span style="font-weight: 600;">ATR: ${atr}</span>
+                    <span style="font-weight: 600;">ATR%: ${atrPercent}</span>
+                    <span class="${rsi1hClass}" style="font-weight: 600;">RSI(1h): ${rsi1h}</span>
                 </div>
             </div>
         `;

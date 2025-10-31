@@ -143,6 +143,7 @@ function renderMoversTable(containerId, data) {
                         data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
                         data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
                         data-earnings-date="${stock.earningsDate || 'N/A'}"
+                        data-atr-percent="${stock.ATR_Percent || 'N/A'}"
                         data-beta="${stock.beta || 'N/A'}"
                         title="${stock.stock_description || 'No description available'}"
                         data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"

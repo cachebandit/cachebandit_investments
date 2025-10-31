@@ -715,3 +715,46 @@ td.close {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+/* --- Volatility Analysis Page Layout --- */
+.rsi-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rsi-company-info {
+    flex-grow: 1;
+    min-width: 0; /* Allows the company name to truncate */
+}
+
+.volatility-price-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 0 20px;
+    font-size: 14px;
+}
+
+.volatility-price-data .price {
+    font-weight: 600;
+}
+
+/* --- Volatility Analysis Page - Market Data Spacing --- */
+.rsi-item .rsi-market-data {
+    display: flex;
+    gap: 30px; /* Add space between the ATR, ATR%, and RSI(3) items */
+}
+
+.rsi-item .rsi-market-data span {
+    min-width: 90px; /* Give each metric a minimum width to align them nicely */
+    text-align: right; /* Right-align the text within each block */
+}
+
+/* --- Volatility Analysis Page - 2 Column Grid --- */
+.volatility-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Create two equal-width columns */
+    gap: 20px; /* Space between the columns */
+    align-items: start;
+}
