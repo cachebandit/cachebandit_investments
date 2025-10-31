@@ -4,62 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volatility Analysis</title>
+
+    <!-- Fonts & Core Theme -->
     <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared Styles -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/hamburger.css">
     <link rel="stylesheet" href="css/info_popup_styles.css">
     <link rel="stylesheet" href="css/rate_limit_popup_styles.css">
     <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/rsi_analysis_styles.css"> <!-- Reusing styles for consistency -->
+
+    <!-- Volatility-Specific Styles -->
     <link rel="stylesheet" href="css/volatility_analysis_styles.css">
 </head>
+
 <body>
+    <!-- Side Navigation -->
     <div id="sidenav-overlay" class="sidenav-overlay"></div>
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" id="closeNav">&times;</a>
+
         <div class="nav-category">Market Overview</div>
         <a href="watchlist.html">Watchlist</a>
         <a href="market_movers.html">Market Movers</a>
         <a href="heatmap.html">Heatmap</a>
+
         <div class="nav-category">Analysis</div>
         <a href="rsi_analysis.html">RSI Analysis</a>
-        <a href="volatility_analysis.html">Volatility Analysis</a>
+        <a href="volatility_analysis.html" class="active">Volatility Analysis</a>
         <a href="pe_analysis.html">P/E Analysis</a>
+
         <div class="nav-category">Events</div>
         <a href="earnings_calendar.html">Earnings Calendar</a>
     </div>
 
+    <!-- Main Container -->
     <div class="container">
+        <!-- Header -->
         <div class="header-container">
             <div class="header-left">
                 <span class="hamburger-icon" id="openNav">&#9776;</span>
-                <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
+                <img src="cachebandit_logo.png" alt="CacheBandit Logo" class="header-logo">
             </div>
+
             <div class="header-center">
-                <h1>Volatility Analysis (ATR% ≥ 2%)</h1>
+                <h1>Volatility Analysis</h1>
+                <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-top:4px;">
+                    ATR% ≥ 2 • Monitoring Short-Term RSI (1h)
+                </div>
             </div>
+
             <div class="header-controls">
                 <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
+
+        <!-- === Main Volatility Grid === -->
         <div class="volatility-grid-container">
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Oversold (RSI-1h ≤ 30)</h2>
-                    <div id="oversold-list" class="rsi-list"></div>
+            
+            <!-- Oversold Panel -->
+            <div class="volatility-box">
+                <h2>
+                    <span>Oversold (RSI-1h ≤ 30)</span>
+                    <span class="subtext">Potential bounce</span>
+                </h2>
+
+                <div class="volatility-table">
+                    <!-- Header row -->
+                    <div class="volatility-header-row volatility-header-sticky">
+                        <div>Company</div>
+                        <div>Price</div>
+                        <div>Chg</div>
+                        <div>ATR%</div>
+                        <div>RSI-1h</div>
+                    </div>
+
+                    <!-- Dynamic content from JS -->
+                    <div id="oversold-list" class="volatility-list"></div>
                 </div>
             </div>
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Overbought (RSI-1h ≥ 70)</h2>
-                    <div id="overbought-list" class="rsi-list"></div>
+
+            <!-- Overbought Panel -->
+            <div class="volatility-box">
+                <h2>
+                    <span>Overbought (RSI-1h ≥ 70)</span>
+                    <span class="subtext">Extended / hot</span>
+                </h2>
+
+                <div class="volatility-table">
+                    <!-- Header row -->
+                    <div class="volatility-header-row volatility-header-sticky">
+                        <div>Company</div>
+                        <div>Price</div>
+                        <div>Chg</div>
+                        <div>ATR%</div>
+                        <div>RSI-1h</div>
+                    </div>
+
+                    <!-- Dynamic content from JS -->
+                    <div id="overbought-list" class="volatility-list"></div>
                 </div>
             </div>
+
         </div>
     </div>
+
+    <!-- JS Modules -->
     <script type="module" src="./js/nav.js"></script>
     <script type="module" src="./js/utils.js"></script>
     <script type="module" src="./js/chart.js"></script>
