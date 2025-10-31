@@ -716,19 +716,20 @@ td.close {
     display: block;
 }
 
-/* --- Volatility Analysis Page Layout --- */
-.rsi-item {
+/* --- Volatility Analysis Page Layout - Flexbox for single row items --- */
+.volatility-grid-container .rsi-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.rsi-company-info {
+.volatility-grid-container .rsi-company-info {
     flex-grow: 1;
     min-width: 0; /* Allows the company name to truncate */
+    margin-bottom: 0; /* Override margin from rsi_analysis_styles.css */
 }
 
-.volatility-price-data {
+.volatility-grid-container .volatility-price-data {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -741,12 +742,14 @@ td.close {
 }
 
 /* --- Volatility Analysis Page - Market Data Spacing --- */
-.rsi-item .rsi-market-data {
+.volatility-grid-container .rsi-item .rsi-market-data {
     display: flex;
     gap: 30px; /* Add space between the ATR, ATR%, and RSI(3) items */
+    border-top: none; /* Override border from rsi_analysis_styles.css */
+    padding-top: 0; /* Override padding from rsi_analysis_styles.css */
 }
 
-.rsi-item .rsi-market-data span {
+.volatility-grid-container .rsi-item .rsi-market-data span {
     min-width: 90px; /* Give each metric a minimum width to align them nicely */
     text-align: right; /* Right-align the text within each block */
 }
