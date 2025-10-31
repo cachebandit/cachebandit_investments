@@ -133,14 +133,23 @@ function renderList(containerId, stocks) {
                     <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'"/>
                     <span class="company-name-text">${stock.Name || stock.name}</span>
                 </div>
-                <div class="volatility-price-data">
-                    <span class="price">${close}</span>
-                    <span class="change-value ${changeColorClass}">${priceChange} (${percentChange})</span>
-                </div>
-                <div class="rsi-market-data">
-                    <span style="font-weight: 600;">ATR: ${atr}</span>
-                    <span style="font-weight: 600;">ATR%: ${atrPercent}</span>
-                    <span class="${rsi1hClass}" style="font-weight: 600;">RSI(1h): ${rsi1h}</span>
+                <div class="volatility-data-grid">
+                    <div class="metric-item price-metric">
+                        <span class="metric-label">Price</span>
+                        <span class="metric-value">${close}</span>
+                    </div>
+                    <div class="metric-item change-metric">
+                        <span class="metric-label">Change</span>
+                        <span class="metric-value ${changeColorClass}">${priceChange} (${percentChange})</span>
+                    </div>
+                    <div class="metric-item atr-metric">
+                        <span class="metric-label">ATR%</span>
+                        <span class="metric-value">${atrPercent}</span>
+                    </div>
+                    <div class="metric-item rsi-metric">
+                        <span class="metric-label">RSI(1h)</span>
+                        <span class="metric-value ${rsi1hClass}">${rsi1h}</span>
+                    </div>
                 </div>
             </div>
         `;

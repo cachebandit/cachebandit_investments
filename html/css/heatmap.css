@@ -1,0 +1,5 @@
+/* Styles for the Heatmap Widget Container */
+#heatmap-widget-container {
+    height: 80vh; /* Give the container a height so the widget can render */
+    width: 100%;
+}

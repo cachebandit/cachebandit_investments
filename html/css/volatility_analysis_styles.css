@@ -1,0 +1,59 @@
+/* --- Volatility Analysis Page Layout --- */
+.volatility-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Create two equal-width columns */
+    gap: 20px;
+    align-items: start;
+}
+
+.volatility-grid-container .rsi-item {
+    display: block; /* Each item is a block, allowing for internal rows */
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+}
+
+.volatility-grid-container .rsi-company-info {
+    margin-bottom: 8px; /* Space between company name and the data row below */
+}
+
+.volatility-data-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr 1fr; /* Define 4 columns with flexible widths */
+    gap: 10px;
+    align-items: start;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.metric-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.metric-value {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Specific alignment for each metric column */
+.price-metric {
+    align-items: flex-start;
+}
+
+.change-metric {
+    align-items: flex-start;
+}
+
+.atr-metric {
+    align-items: flex-end;
+}
+
+.rsi-metric {
+    align-items: flex-end;
+}

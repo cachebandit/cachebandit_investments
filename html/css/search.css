@@ -1,0 +1,57 @@
+/* New styles for the search bar */
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none; /* Make icon non-interactive */
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px 40px; /* T/B, L/R padding for icons */
+    font-size: 14px;
+    border: 1px solid transparent; /* Make border transparent initially */
+    border-radius: 6px;
+    background-color: var(--hover-bg); /* Use a slightly off-white background */
+    color: var(--text-secondary); /* Start with secondary text color */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+#search-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+    background-color: var(--container-bg); /* Switch to white on focus */
+    color: var(--text-primary); /* Use primary text color on focus */
+}
+
+.clear-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-secondary);
+    display: none;
+    line-height: 1;
+}
+
+#search-input:not(:placeholder-shown) ~ .clear-search {
+    display: inline;
+}

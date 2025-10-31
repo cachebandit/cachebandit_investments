@@ -9,12 +9,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hamburger.css">
+    <link rel="stylesheet" href="css/info_popup_styles.css">
+    <link rel="stylesheet" href="css/rate_limit_popup_styles.css">
+    <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/rsi_analysis_styles.css"> <!-- Reusing styles for consistency -->
+    <link rel="stylesheet" href="css/volatility_analysis_styles.css">
 </head>
 <body>
+    <div id="sidenav-overlay" class="sidenav-overlay"></div>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" id="closeNav">&times;</a>
+        <div class="nav-category">Market Overview</div>
+        <a href="watchlist.html">Watchlist</a>
+        <a href="market_movers.html">Market Movers</a>
+        <a href="heatmap.html">Heatmap</a>
+        <div class="nav-category">Analysis</div>
+        <a href="rsi_analysis.html">RSI Analysis</a>
+        <a href="volatility_analysis.html">Volatility Analysis</a>
+        <a href="pe_analysis.html">P/E Analysis</a>
+        <div class="nav-category">Events</div>
+        <a href="earnings_calendar.html">Earnings Calendar</a>
+    </div>
+
     <div class="container">
         <div class="header-container">
             <div class="header-left">
+                <span class="hamburger-icon" id="openNav">&#9776;</span>
                 <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
             </div>
             <div class="header-center">
@@ -24,27 +45,6 @@
                 <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
-        <nav class="dropdown-nav">
-            <ul>
-                <li class="dropdown">
-                    <a href="javascript:void(0);" class="dropbtn">Market Overview ▼</a>
-                    <div class="dropdown-content">
-                        <a href="watchlist.html">Watchlist</a>
-                        <a href="market_movers.html">Market Movers</a>
-                        <a href="heatmap.html">Heatmap</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="javascript:void(0);" class="dropbtn">Analysis ▼</a>
-                    <div class="dropdown-content">
-                        <a href="rsi_analysis.html">RSI Analysis</a>
-                        <a href="volatility_analysis.html">Volatility Analysis</a>
-                        <a href="pe_analysis.html">P/E Analysis</a>
-                    </div>
-                </li>
-                <li><a href="earnings_calendar.html">Calendar</a></li>
-            </ul>
-        </nav>
         <div class="volatility-grid-container">
             <div class="rsi-column">
                 <div class="rsi-box">
@@ -60,6 +60,10 @@
             </div>
         </div>
     </div>
+    <script type="module" src="./js/nav.js"></script>
+    <script type="module" src="./js/utils.js"></script>
+    <script type="module" src="./js/chart.js"></script>
+    <script type="module" src="./js/popup.js"></script>
     <script type="module" src="./js/volatility_analysis.js"></script>
 </body>
 </html>
