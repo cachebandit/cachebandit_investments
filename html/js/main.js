@@ -212,7 +212,6 @@ function renderCategory(category, data) {
         thead.innerHTML = `
             <tr>
                 <th class="company-name">Company Name</th>
-                <th class="symbol">Symbol</th>
                 <th class="market-cap">Market Cap</th>
                 <th class="open">Open</th>
                 <th class="high">High</th>
@@ -238,42 +237,42 @@ function renderCategory(category, data) {
             const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
             const logoUrl = stock.stockUrl;
 
+            const industry = stock.industry || '—';
+
             row.innerHTML = `
                 <td class="company-name">
-                    <div class="company-cell-content">
-                    <span class="star-icon ${stock.flag ? 'active' : ''}" 
-                          data-symbol="${stock.Symbol || stock.symbol}" 
-                          onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
-                        ★
-                    </span>
-                    <button class="info-icon" 
-                            data-stock-name="${stock.Name || stock.name}"
-                            data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
-                            data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
-                            data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
-                            data-earnings-date="${stock.earningsDate || 'N/A'}"
-                            title="${stock.stock_description || 'No description available'}"
-                            data-atr-percent="${stock.ATR_Percent || 'N/A'}"
-                            data-beta="${stock.beta || 'N/A'}"
-                            data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
-                            data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
-                            data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
-                            data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
-                            data-dividend-yield="${stock.dividendYield || 'N/A'}"
-                            data-total-revenue="${stock.totalRevenue || 'N/A'}"
-                            data-net-income="${stock.netIncomeToCommon || 'N/A'}"
-                            data-profit-margins="${stock.profitMargins || 'N/A'}"
-                            data-trailing-pe-color="${trailingPeColor}"
-                            data-forward-pe-color="${forwardPeColor}"
-                            data-url="${logoUrl}">
-                        <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
-                    </button>
-                    <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                        style="width: 20px; height: 20px;"/>
-                    <span class="company-text">${stock.Name || stock.name}</span>
+                    <div class="company-cell">
+                        <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                              data-symbol="${stock.Symbol || stock.symbol}" 
+                              onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">★</span>
+                        <button class="company-info-btn"
+                                data-stock-name="${stock.Name || stock.name}"
+                                data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
+                                data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
+                                data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
+                                data-earnings-date="${stock.earningsDate || 'N/A'}"
+                                data-beta="${stock.beta || 'N/A'}"
+                                data-atr-percent="${stock.ATR_Percent || 'N/A'}"
+                                title="${stock.stock_description || 'No description available'}"
+                                data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
+                                data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
+                                data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                                data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
+                                data-dividend-yield="${stock.dividendYield || 'N/A'}"
+                                data-total-revenue="${stock.totalRevenue || 'N/A'}"
+                                data-net-income="${stock.netIncomeToCommon || 'N/A'}"
+                                data-profit-margins="${stock.profitMargins || 'N/A'}"
+                                data-url="${logoUrl}"><img src="info.png" alt="Info"></button>
+                        <img class="company-logo chart-clickable" src="${logoUrl}" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'" data-symbol="${stock.Symbol || stock.symbol}">
+                        <div class="company-text-block">
+                            <div class="company-name-line">
+                                <span class="company-name-text chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">${stock.Name || stock.name}</span>
+                                <span class="ticker-chip">${stock.Symbol || stock.symbol}</span>
+                            </div>
+                            <div class="company-subline">${industry}</div>
+                        </div>
                     </div>
                 </td>
-                <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol || stock.symbol}">${stock.Symbol || stock.symbol}</td>
                 <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
                 <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
                 <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
@@ -322,7 +321,6 @@ function renderCategory(category, data) {
             thead.innerHTML = `
                 <tr>
                     <th class="company-name">Company Name</th>
-                    <th class="symbol">Symbol</th>
                     <th class="market-cap">Market Cap</th>
                     <th class="open">Open</th>
                     <th class="high">High</th>
@@ -346,41 +344,41 @@ function renderCategory(category, data) {
                 const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
                 const logoUrl = stock.stockUrl;
 
+                const industry = stock.industry || '—';
+
                 row.innerHTML = `
                     <td class="company-name">
-                        <div class="company-cell-content">
-                        <span class="star-icon ${stock.flag ? 'active' : ''}" 
-                              data-symbol="${stock.Symbol || stock.symbol}" 
-                              onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">
-                            ★
-                        </span>
-                        <button class="info-icon" 
-                                data-stock-name="${stock.Name || stock.name}"
-                                title="${stock.stock_description || 'No description available'}"
-                                data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
-                                data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
-                                data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
-                                data-earnings-date="${stock.earningsDate || 'N/A'}"
-                                data-atr-percent="${stock.ATR_Percent || 'N/A'}"
-                                data-beta="${stock.beta || 'N/A'}"
-                                data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
-                                data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
-                                data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
-                                data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
-                                data-dividend-yield="${stock.dividendYield || 'N/A'}"
-                                data-total-revenue="${stock.totalRevenue || 'N/A'}"
-                                data-net-income="${stock.netIncomeToCommon || 'N/A'}"
-                                data-profit-margins="${stock.profitMargins || 'N/A'}"
-                                data-trailing-pe-color="${trailingPeColor}"
-                                data-forward-pe-color="${forwardPeColor}">
-                            <img src="info.png" alt="Info" style="width: 20px; height: 20px; border: none;"/>
-                        </button>
-                        <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                            style="width: 20px; height: 20px;"/>
-                        <span class="company-text">${stock.Name || stock.name}</span>
+                        <div class="company-cell">
+                            <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                                  data-symbol="${stock.Symbol || stock.symbol}" 
+                                  onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">★</span>
+                            <button class="company-info-btn"
+                                    data-stock-name="${stock.Name || stock.name}"
+                                    data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
+                                    data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
+                                    data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
+                                    data-earnings-date="${stock.earningsDate || 'N/A'}"
+                                    data-beta="${stock.beta || 'N/A'}"
+                                    data-atr-percent="${stock.ATR_Percent || 'N/A'}"
+                                    title="${stock.stock_description || 'No description available'}"
+                                    data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
+                                    data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
+                                    data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
+                                    data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
+                                    data-dividend-yield="${stock.dividendYield || 'N/A'}"
+                                    data-total-revenue="${stock.totalRevenue || 'N/A'}"
+                                    data-net-income="${stock.netIncomeToCommon || 'N/A'}"
+                                    data-profit-margins="${stock.profitMargins || 'N/A'}"
+                                    data-url="${logoUrl}"><img src="info.png" alt="Info"></button>
+                            <img class="company-logo chart-clickable" src="${logoUrl}" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'" data-symbol="${stock.Symbol || stock.symbol}">
+                            <div class="company-text-block">
+                                <div class="company-name-line">
+                                    <span class="company-name-text chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">${stock.Name || stock.name}</span>
+                                    <span class="ticker-chip">${stock.Symbol || stock.symbol}</span>
+                                </div>
+                            </div>
                         </div>
                     </td>
-                    <td class="symbol" style="cursor: pointer; color: blue; text-decoration: underline;" data-symbol="${stock.Symbol || stock.symbol}">${stock.Symbol || stock.symbol}</td>
                     <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
                     <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
                     <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
@@ -404,11 +402,11 @@ function renderCategory(category, data) {
     document.querySelector('.container').appendChild(section);
     
     // Add event listeners after the section is added to the DOM
-    section.querySelectorAll('.symbol').forEach(symbolCell => {
-        symbolCell.addEventListener('click', function(event) {
+    section.querySelectorAll('.chart-clickable').forEach(clickableElement => {
+        clickableElement.addEventListener('click', function(event) {
             event.preventDefault();
-            const symbol = this.getAttribute('data-symbol');
-            showChartPopup(symbol);
+            event.stopPropagation(); // Prevent row click if any
+            showChartPopup(this.dataset.symbol);
         });
     });
     

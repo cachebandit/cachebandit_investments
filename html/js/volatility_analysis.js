@@ -177,6 +177,8 @@ function renderRowHtml(stock) {
                     data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
                     data-fifty-two-week-low="${escapeHtml(low52)}"
                     data-earnings-date="${escapeHtml(earningsDate)}"
+                    data-beta="${escapeHtml(stock.beta)}"
+                    data-atr-percent="${escapeHtml(stock.ATR_Percent)}"
                     title="${escapeHtml(desc)}"
                     data-trailing-pe="${escapeHtml(trailingPE)}"
                     data-forward-pe="${escapeHtml(forwardPE)}"

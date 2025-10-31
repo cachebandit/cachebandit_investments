@@ -44,14 +44,6 @@
    SHARED GRID LAYOUT
    ========================== */
 
-/* Tuned widths:
-   1. Company: flex
-   2. Price:   100px
-   3. Chg:     120px
-   4. ATR%:    70px
-   5. RSI-1H:  70px
-*/
-
 .volatility-header-row,
 .volatility-row {
     display: grid;
@@ -78,8 +70,6 @@
     line-height: 1.2;
 }
 
-/* Center PRICE / CHG / ATR% / RSI-1H text in header.
-   COMPANY stays left-aligned. */
 .volatility-header-row > :nth-child(2),
 .volatility-header-row > :nth-child(3),
 .volatility-header-row > :nth-child(4),
@@ -137,7 +127,7 @@
 
 .company-cell {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     min-width: 0;
     gap: 6px;
 }
@@ -156,8 +146,8 @@
 }
 
 .company-info-btn img {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     opacity: 0.7;
     transition: transform 0.15s ease, opacity 0.15s ease;
     filter: grayscale(0.2);
@@ -178,7 +168,6 @@
     object-fit: contain;
     background-color: #fff;
     box-shadow: 0 0 0 1px var(--border-color);
-    margin-top: 1px;
 }
 
 /* Text block (name line + industry line) */
