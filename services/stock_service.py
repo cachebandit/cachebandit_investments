@@ -190,7 +190,7 @@ def fetch_detailed_info(symbols):
                 'Percent Change': _clean_value(percent_change),
                 'ATR': signal_fields.get('atr'),
                 'ATR_Percent': signal_fields.get('atr_percent'),
-                'RSI3M': signal_fields.get('rsi3m'),
+                'RSI1H': signal_fields.get('RSI1H'),
                 'RSI': calculate_rsi(symbol_hist_daily),
                 'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
             }

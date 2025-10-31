@@ -40,19 +40,33 @@ def calculate_atr_latest(df, window=14):
 
 def calculate_rsi_series(close_prices, window=3):
     """
-    Classic RSI but with a short window (3-day).
-    Uses Wilder-style smoothing for avg gains/losses.
+    Calculate the Relative Strength Index (RSI) to match TradingView's calculation.
+    This version returns the entire series of RSI values, seeding the initial
+    average with an SMA, which is critical for matching platform values.
     """
+    if close_prices.empty or len(close_prices) < window + 1:
+        return pd.Series(dtype=float)
+
     delta = close_prices.diff()
 
-    gain = delta.clip(lower=0)
-    loss = -delta.clip(upper=0)
+    gain = delta.where(delta > 0, 0.0).iloc[1:]
+    loss = -delta.where(delta < 0, 0.0).iloc[1:]
 
-    # Wilder-style smoothing: same idea as ATR (EMA with alpha=1/window)
-    avg_gain = gain.ewm(alpha=1/window, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1/window, adjust=False).mean()
+    # Create series to store average gains and losses
+    avg_gain = pd.Series(index=gain.index, dtype=float)
+    avg_loss = pd.Series(index=loss.index, dtype=float)
 
-    rs = avg_gain / avg_loss.replace(0, np.nan)
+    # Calculate initial average gain and loss using SMA for the first `window` periods.
+    avg_gain.iloc[window-1] = gain.iloc[:window].mean()
+    avg_loss.iloc[window-1] = loss.iloc[:window].mean()
+
+    # Apply Wilder's smoothing for the rest of the periods.
+    for i in range(window, len(gain)):
+        avg_gain.iloc[i] = (avg_gain.iloc[i-1] * (window - 1) + gain.iloc[i]) / window
+        avg_loss.iloc[i] = (avg_loss.iloc[i-1] * (window - 1) + loss.iloc[i]) / window
+
+    # Calculate RS and RSI
+    rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
 
     return rsi
@@ -69,13 +83,13 @@ def get_vol_signal_fields(daily_df, hourly_df):
     Returns dict with:
       - atr
       - atr_percent
-      - rsi3m
+      - RSI1H
     """
 
     result = {
         "atr": 'N/A',
         "atr_percent": 'N/A',
-        "rsi3m": 'N/A'
+        "RSI1H": 'N/A'
     }
 
     # --- ATR & ATR% (from daily data) ---
@@ -91,10 +105,10 @@ def get_vol_signal_fields(daily_df, hourly_df):
     # --- RSI(3) (from hourly data) ---
     if hourly_df is not None and not hourly_df.empty:
         try:
-            rsi_series = calculate_rsi_series(hourly_df['Close'], window=3)
+            rsi_series = calculate_rsi_series(hourly_df['Close'], window=14)
             rsi_latest = rsi_series.iloc[-1]
             if pd.notna(rsi_latest):
-                result["rsi3m"] = round(float(rsi_latest), 2)
+                result["RSI1H"] = round(float(rsi_latest), 2)
         except Exception as e:
             logging.error(f"RSI(3) calc error: {e}")
 

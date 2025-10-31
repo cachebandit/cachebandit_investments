@@ -48,11 +48,11 @@ async function loadVolatilityData() {
 
         // 2. Split the high ATR stocks into oversold and overbought lists based on RSI(1h)
         const oversoldStocks = highAtrStocks.filter(stock => 
-            stock.RSI3M !== null && stock.RSI3M !== 'N/A' && parseFloat(stock.RSI3M) <= 30
+            stock.RSI1H !== null && stock.RSI1H !== 'N/A' && parseFloat(stock.RSI1H) <= 30
         );
 
         const overboughtStocks = highAtrStocks.filter(stock => 
-            stock.RSI3M !== null && stock.RSI3M !== 'N/A' && parseFloat(stock.RSI3M) >= 70
+            stock.RSI1H !== null && stock.RSI1H !== 'N/A' && parseFloat(stock.RSI1H) >= 70
         );
 
         renderList('oversold-list', oversoldStocks);
@@ -94,7 +94,7 @@ function renderList(containerId, stocks) {
     }
 
     const itemsHtml = stocks.map(stock => {
-        const rsi1h = stock.RSI3M !== 'N/A' ? parseFloat(stock.RSI3M).toFixed(2) : 'N/A';
+        const rsi1h = stock.RSI1H !== 'N/A' ? parseFloat(stock.RSI1H).toFixed(2) : 'N/A';
         const atr = stock.ATR !== 'N/A' ? parseFloat(stock.ATR).toFixed(2) : 'N/A';
         const atrPercent = stock.ATR_Percent !== 'N/A' ? `${parseFloat(stock.ATR_Percent).toFixed(2)}%` : 'N/A';
         const close = stock.Close ? `$${parseFloat(stock.Close).toFixed(2)}` : 'N/A';
