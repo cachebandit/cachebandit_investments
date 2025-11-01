@@ -1,9 +1,14 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
-import { getTrailingPeColor, getForwardPeColor, formatMarketCap } from './utils.js';
+import {
+    getTrailingPeColor,
+    getForwardPeColor,
+    formatMarketCap,
+    getRsiBackgroundStyle
+} from './utils.js';
 import { getCategoryData } from './dataSource.js';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadRsiData();
 });
 
@@ -17,14 +22,13 @@ async function loadRsiData() {
 
         const promises = categoriesToFetch.map(cat => getCategoryData(cat));
         const results = await Promise.all(promises);
-        
+
         let allStocks = [];
         const processedSymbols = new Set();
         let lastUpdated = '';
 
         results.forEach(responseData => {
             const items = responseData.items || responseData.data || [];
-            // Grab the timestamp from the first valid response
             if (!lastUpdated && (responseData.updated_at || responseData.last_updated)) {
                 lastUpdated = responseData.updated_at || responseData.last_updated;
             }
@@ -38,141 +42,218 @@ async function loadRsiData() {
             });
         });
 
-        // Update the last updated timestamp in the UI
+        // timestamp
         if (lastUpdated) {
-            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+            const ts = document.getElementById('last-updated');
+            if (ts) ts.textContent = `Last Updated: ${lastUpdated}`;
         }
 
-        const stocksWithRsi = allStocks.filter(stock => 
-            stock.RSI !== null && stock.RSI !== 'N/A' && !isNaN(parseFloat(stock.RSI))
+        // keep only stocks with valid RSI
+        const stocksWithRsi = allStocks.filter(stock =>
+            stock.RSI !== null &&
+            stock.RSI !== 'N/A' &&
+            !isNaN(parseFloat(stock.RSI))
         );
 
-        const sortByMarketCap = (a, b) => {
+        // helper sort: big names first
+        const sortByMarketCapDesc = (a, b) => {
             const capA = a['Market Cap'] === 'N/A' ? 0 : parseFloat(a['Market Cap']);
             const capB = b['Market Cap'] === 'N/A' ? 0 : parseFloat(b['Market Cap']);
-            return capB - capA; // Descending order
+            return capB - capA;
         };
 
-        // --- Categorize stocks based on RSI and yRSI ---
+        // build groupings
         const oversold = stocksWithRsi
             .filter(s => parseFloat(s.RSI) <= 30)
-            .sort(sortByMarketCap);
+            .sort(sortByMarketCapDesc);
 
         const overbought = stocksWithRsi
             .filter(s => parseFloat(s.RSI) >= 70)
-            .sort(sortByMarketCap);
+            .sort(sortByMarketCapDesc);
 
-        const stocksWithYRsi = stocksWithRsi.filter(s => s.yRSI !== null && s.yRSI !== 'N/A' && !isNaN(parseFloat(s.yRSI)));
+        // we need yRSI logic for transitions
+        const withYRsi = stocksWithRsi.filter(
+            s => s.yRSI !== null && s.yRSI !== 'N/A' && !isNaN(parseFloat(s.yRSI))
+        );
 
-        // Was not oversold yesterday, now in the 30-35 band
-        const enteringOversold = stocksWithYRsi
-            .filter(s => s.yRSI > 30 && s.RSI > 30 && s.RSI <= 35)
-            .sort(sortByMarketCap);
+        // Was NOT oversold yesterday, now in 30 < RSI ≤ 35 (early dip watch)
+        const enteringOversold = withYRsi
+            .filter(s => parseFloat(s.yRSI) > 30 &&
+                         parseFloat(s.RSI)  > 30 &&
+                         parseFloat(s.RSI)  <= 35)
+            .sort(sortByMarketCapDesc);
 
-        // Was oversold yesterday, now in the 30-35 band
-        const exitingOversold = stocksWithYRsi
-            .filter(s => s.yRSI <= 30 && s.RSI > 30)
-            .sort(sortByMarketCap);
+        // WAS oversold yesterday (yRSI ≤ 30), now recovering >30 (bounce watch)
+        const exitingOversold = withYRsi
+            .filter(s => parseFloat(s.yRSI) <= 30 &&
+                         parseFloat(s.RSI)  > 30)
+            .sort(sortByMarketCapDesc);
 
-        // Was overbought yesterday, now in the 65-70 band
-        const exitingOverbought = stocksWithYRsi
-            .filter(s => s.yRSI >= 70 && s.RSI < 70)
-            .sort(sortByMarketCap);
+        // WAS overbought yesterday (yRSI ≥ 70), cooling off <70 (top watch)
+        const exitingOverbought = withYRsi
+            .filter(s => parseFloat(s.yRSI) >= 70 &&
+                         parseFloat(s.RSI)  < 70)
+            .sort(sortByMarketCapDesc);
 
-        // --- Render all tables ---
-        renderList('overbought-list', overbought);
+        // render into each section
         renderList('oversold-list', oversold);
+        renderList('overbought-list', overbought);
         renderList('entering-oversold-list', enteringOversold);
         renderList('exiting-oversold-list', exitingOversold);
         renderList('exiting-overbought-list', exitingOverbought);
 
-        // Add a single event listener to the grid container for chart popups
+        // single event delegation for all RSI tables
         const gridContainer = document.querySelector('.rsi-grid-container');
         if (gridContainer) {
-            gridContainer.addEventListener('click', function(event) {
-                const infoIcon = event.target.closest('.info-icon');
-                if (infoIcon) {
+            gridContainer.addEventListener('click', function (event) {
+                // info button click stops row click
+                const infoBtn = event.target.closest('.company-info-btn');
+                if (infoBtn) {
                     event.stopPropagation();
-                    showInfoPopup(infoIcon);
-                } else {
-                    const companyInfo = event.target.closest('.rsi-company-info');
-                    if (companyInfo) {
-                        const rsiItem = companyInfo.closest('.rsi-item');
-                        if (rsiItem && rsiItem.dataset.symbol) {
-                            showChartPopup(rsiItem.dataset.symbol);
-                        }
-                    }
+                    showInfoPopup(infoBtn);
+                    return;
+                }
+
+                // otherwise, row click opens chart
+                const row = event.target.closest('.rsi-row');
+                if (row && row.dataset.symbol) {
+                    showChartPopup(row.dataset.symbol);
                 }
             });
         }
-
-    } catch (error) {
-        console.error('Error loading RSI data:', error);
+    } catch (err) {
+        console.error('Error loading RSI data:', err);
     }
 }
 
+/**
+ * Render a list of stocks into a given container.
+ * Target containers (in HTML) will live inside each .rsi-table just like oversold-list etc.
+ * We output rows matching the shared table style (company | price | chg | rsi).
+ */
 function renderList(containerId, stocks) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    if (stocks.length === 0) {
-        container.innerHTML = '<p style="padding: 10px; color: #6c757d; font-size: 14px;">No stocks in this category.</p>';
+    if (!stocks || stocks.length === 0) {
+        container.innerHTML = `
+            <p style="padding:12px 16px; color:#6c757d; font-size:13px;">
+                No stocks in this category.
+            </p>
+        `;
         return;
     }
 
-    const itemsHtml = stocks.map(stock => {
-        const rsi = parseFloat(stock.RSI).toFixed(2);
-        const close = stock.Close ? `$${parseFloat(stock.Close).toFixed(2)}` : 'N/A';
-        const priceChange = stock['Price Change'] ? stock['Price Change'].toFixed(2) : 'N/A';
-        const percentChange = stock['Percent Change'] ? `${parseFloat(stock['Percent Change']).toFixed(2)}%` : 'N/A';
-        const changeColor = stock['Percent Change'] > 0 ? 'price-up' : (stock['Percent Change'] < 0 ? 'price-down' : '');
+    container.innerHTML = stocks.map(renderRowHtml).join('');
+}
 
-        let rsiClass = '';
-        const rsiValue = parseFloat(rsi);
-        if (rsiValue >= 70) rsiClass = 'rsi-deep-overbought';       // Green
-        else if (rsiValue >= 65) rsiClass = 'rsi-entering-overbought'; // Yellow
-        else if (rsiValue <= 30) rsiClass = 'rsi-deep-oversold';       // Red
-        else if (rsiValue <= 35) rsiClass = 'rsi-entering-oversold'; // Orange
+/**
+ * Render one row (company cell + price/chg/RSI).
+ * Mirrors the Volatility-style row:
+ * - .rsi-row is a grid with fixed numeric column widths
+ * - first column is company info block
+ * - last column shows RSI as a colored badge
+ */
+function renderRowHtml(stock) {
+    const symbol = stock.Symbol || stock.symbol || '';
+    const name = stock.Name || stock.name || symbol;
+    const industry = stock.industry || '—';
+    const logoUrl = stock.stockUrl || '';
 
-        const trailingPeColor = stock['Trailing PE'] ? getTrailingPeColor(stock['Trailing PE']) : 'inherit';
-        const forwardPeColor = stock['Forward PE'] ? getForwardPeColor(stock['Forward PE'], stock['Trailing PE']) : 'inherit';
+    // numeric data
+    const closeNum = parseFloat(stock.Close);
+    const changeNum = parseFloat(stock['Price Change']);
+    const pctChangeNum = parseFloat(stock['Percent Change']);
+    const rsiNum = parseFloat(stock.RSI);
 
-        return `
-            <div class="rsi-item" data-symbol="${stock.Symbol || stock.symbol}">
-                <div class="rsi-company-info">
-                    <button class="info-icon" 
-                            data-stock-name="${stock.Name || stock.name}"
-                            data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
-                            data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
-                            data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
-                            data-earnings-date="${stock.earningsDate || 'N/A'}"
-                            data-atr-percent="${stock.ATR_Percent || 'N/A'}"
-                            data-beta="${stock.beta || 'N/A'}"
-                            title="${stock.stock_description || 'No description available'}"
-                            data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
-                            data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
-                            data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
-                            data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
-                            data-dividend-yield="${stock.dividendYield || 'N/A'}"
-                            data-total-revenue="${stock.totalRevenue || 'N/A'}"
-                            data-net-income="${stock.netIncomeToCommon || 'N/A'}"
-                            data-profit-margins="${stock.profitMargins || 'N/A'}"
-                            data-trailing-pe-color="${trailingPeColor}"
-                            data-forward-pe-color="${forwardPeColor}"
-                            data-url="${stock.stockUrl}">
-                        <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
-                    </button>
-                    <img src="${stock.stockUrl}" class="rsi-logo" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'"/>
-                    <span class="company-name-text">${stock.Name || stock.name}</span>
+    const priceText = isFinite(closeNum) ? `$${closeNum.toFixed(2)}` : 'N/A';
+
+    const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
+        ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
+        : 'N/A';
+
+    let changeClass = '';
+    if (isFinite(pctChangeNum)) {
+        if (pctChangeNum > 0) changeClass = 'metric-change-up';
+        else if (pctChangeNum < 0) changeClass = 'metric-change-down';
+    }
+
+    const rsiText = isFinite(rsiNum) ? rsiNum.toFixed(1) : 'N/A';
+    const rsiBg = getRsiBackgroundStyle(stock.RSI);
+
+    // fundamentals popup data attrs
+    const trailingPE = stock['Trailing PE'] || stock.trailingPE || 'N/A';
+    const forwardPE  = stock['Forward PE'] || stock.forwardPE  || 'N/A';
+    const evEbitda   = stock['EV/EBITDA'] || 'N/A';
+    const earningsDate = stock.earningsDate || 'N/A';
+    const high52 = stock.fiftyTwoWeekHigh || 'N/A';
+    const low52  = stock.fiftyTwoWeekLow  || 'N/A';
+    const dividend = stock.dividendYield || 'N/A';
+    const totalRev = stock.totalRevenue || 'N/A';
+    const netInc   = stock.netIncomeToCommon || 'N/A';
+    const margin   = stock.profitMargins || 'N/A';
+    const desc     = stock.stock_description || 'No description available';
+    const marketCap = formatMarketCap(stock['Market Cap'] || stock.marketCap);
+
+    return `
+    <div class="rsi-row" data-symbol="${escapeHtml(symbol)}">
+        <!-- COL 1: company block -->
+        <div class="company-cell">
+            <button class="company-info-btn"
+                    data-stock-name="${escapeHtml(name)}"
+                    data-fifty-two-week-high="${escapeHtml(high52)}"
+                    data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
+                    data-fifty-two-week-low="${escapeHtml(low52)}"
+                    data-earnings-date="${escapeHtml(earningsDate)}"
+                    title="${escapeHtml(desc)}"
+                    data-trailing-pe="${escapeHtml(trailingPE)}"
+                    data-forward-pe="${escapeHtml(forwardPE)}"
+                    data-ev-ebitda="${escapeHtml(evEbitda)}"
+                    data-market-cap="${escapeHtml(marketCap)}"
+                    data-dividend-yield="${escapeHtml(dividend)}"
+                    data-total-revenue="${escapeHtml(totalRev)}"
+                    data-net-income="${escapeHtml(netInc)}"
+                    data-profit-margins="${escapeHtml(margin)}"
+                    data-url="${escapeHtml(logoUrl)}">
+                <img src="info.png" alt="Info">
+            </button>
+
+            <img class="company-logo"
+                 src="${escapeHtml(logoUrl)}"
+                 alt="${escapeHtml(name)} logo"
+                 onerror="this.style.display='none'"/>
+
+            <div class="company-text-block">
+                <div class="company-name-line">
+                    <span class="company-name-text">${escapeHtml(name)}</span>
                 </div>
-                <div class="rsi-market-data">
-                    <span>${close}</span>
-                    <span class="${changeColor}">${priceChange} (${percentChange})</span>
-                    <span class="${rsiClass}">RSI: ${rsi}</span>
+                <div class="company-subline">${escapeHtml(industry)}</div>
+                <div class="company-price-line">
+                    <span class="price-text">${escapeHtml(priceText)}</span>
+                    <span class="change-text ${changeClass}">${escapeHtml(changeText)}</span>
                 </div>
             </div>
-        `;
-    }).join('');
+        </div>
 
-    container.innerHTML = itemsHtml;
+        <!-- COL 2: fixed ticker chip lane -->
+        <div class="ticker-col">
+            <span class="ticker-chip">${escapeHtml(symbol)}</span>
+        </div>
+
+        <!-- COL 3: RSI badge -->
+        <div class="badge-metric" style="background-color:${escapeHtml(rsiBg)};">
+            ${escapeHtml(rsiText)}
+        </div>
+    </div>`;
+}
+
+
+/* tiny util to safely escape text going into HTML */
+function escapeHtml(raw) {
+    if (raw === null || raw === undefined) return '';
+    return String(raw)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 }

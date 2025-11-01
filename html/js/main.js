@@ -218,7 +218,6 @@ function renderCategory(category, data) {
                 <th class="low">Low</th>
                 <th class="close">Close</th>
                 <th class="change">Change</th>
-                <th class="percent-change">% Change</th>
                 <th class="rsi">RSI</th>
             </tr>
         `;
@@ -230,14 +229,20 @@ function renderCategory(category, data) {
             row.setAttribute('data-category', category);
             row.setAttribute('data-industry', stock.industry || 'Uncategorized');
             
-            const priceChangeColor = getColorForChange(stock['Percent Change']);
-            const percentChangeColor = getColorForChange(stock['Percent Change']);
             const rsiColor = getRsiBackgroundStyle(stock.RSI);
             const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
             const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
             const logoUrl = stock.stockUrl;
 
             const industry = stock.industry || '—';
+
+            // Combine Change and % Change
+            const changeNum = parseFloat(stock['Price Change']);
+            const pctChangeNum = parseFloat(stock['Percent Change']);
+            const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
+                ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
+                : 'N/A';
+            const changeClass = pctChangeNum > 0 ? 'metric-change-up' : (pctChangeNum < 0 ? 'metric-change-down' : '');
 
             row.innerHTML = `
                 <td class="company-name">
@@ -273,14 +278,13 @@ function renderCategory(category, data) {
                         </div>
                     </div>
                 </td>
-                <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
+                <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
                 <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
                 <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
                 <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
                 <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-                <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
-                <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-                <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
+                <td class="change"><div class="metric-main ${changeClass}">${changeText}</div></td>
+                <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
             `;
 
             tbody.appendChild(row);
@@ -327,7 +331,6 @@ function renderCategory(category, data) {
                     <th class="low">Low</th>
                     <th class="close">Close</th>
                     <th class="change">Change</th>
-                    <th class="percent-change">% Change</th>
                     <th class="rsi">RSI</th>
                 </tr>
             `;
@@ -337,14 +340,20 @@ function renderCategory(category, data) {
                 const row = document.createElement('tr');
                 row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
                 
-                const priceChangeColor = getColorForChange(stock['Percent Change']);
-                const percentChangeColor = getColorForChange(stock['Percent Change']);
                 const rsiColor = getRsiBackgroundStyle(stock.RSI);
                 const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
                 const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
                 const logoUrl = stock.stockUrl;
 
                 const industry = stock.industry || '—';
+
+                // Combine Change and % Change
+                const changeNum = parseFloat(stock['Price Change']);
+                const pctChangeNum = parseFloat(stock['Percent Change']);
+                const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
+                    ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
+                    : 'N/A';
+                const changeClass = pctChangeNum > 0 ? 'metric-change-up' : (pctChangeNum < 0 ? 'metric-change-down' : '');
 
                 row.innerHTML = `
                     <td class="company-name">
@@ -379,14 +388,13 @@ function renderCategory(category, data) {
                             </div>
                         </div>
                     </td>
-                    <td class="market-cap">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</td>
+                    <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
                     <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
                     <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
                     <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
                     <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-                    <td class="change" style="background-color: ${priceChangeColor};">${stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-'}</td>
-                    <td class="percent-change" style="background-color: ${percentChangeColor};">${stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-'}</td>
-                    <td class="rsi" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</td>
+                    <td class="change"><div class="metric-main ${changeClass}">${changeText}</div></td>
+                    <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
                 `;
 
                 tbody.appendChild(row);
@@ -410,7 +418,7 @@ function renderCategory(category, data) {
         });
     });
     
-    section.querySelectorAll('.info-icon').forEach(infoIcon => {
+    section.querySelectorAll('.company-info-btn').forEach(infoIcon => {
         infoIcon.addEventListener('click', function(event) {
             event.stopPropagation();
             showInfoPopup(this);

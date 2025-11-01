@@ -107,3 +107,46 @@
     text-overflow: ellipsis;
     margin-top: 2px;
 }
+
+/* === Badge and Metric Styles (from Volatility Page) === */
+
+.badge-metric {
+    min-width: 56px;
+    height: 24px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.metric-main {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.metric-change-up {
+    color: var(--price-up-color);
+}
+
+.metric-change-down {
+    color: var(--price-down-color);
+}
+
+/* Override default background colors for RSI badges */
+.badge-metric[style*="background-color"] {
+    color: #000; /* Default to black text for colored badges */
+}
+.badge-metric[style*="background-color: #FF6347"] {
+    color: #fff; /* Use white text on red badge */
+}
