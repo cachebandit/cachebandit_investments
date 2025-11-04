@@ -37,8 +37,8 @@
 
 /* Company Logo */
 .company-logo {
-    width: 24px;
-    height: 24px;
+    width: 25px;
+    height: 25px;
     flex-shrink: 0;
     border-radius: 4px;
     object-fit: contain;
