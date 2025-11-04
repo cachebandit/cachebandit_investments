@@ -142,12 +142,6 @@ function renderCalendar(earningsData = {}) {
                 const bmoHeader = document.createElement('div');
                 bmoHeader.className = 'timing-header';
                 bmoHeader.textContent = 'Before Market Open';
-                bmoHeader.style.fontSize = '10px';
-                bmoHeader.style.fontWeight = '600';
-                bmoHeader.style.color = '#6c757d';
-                bmoHeader.style.textTransform = 'uppercase';
-                bmoHeader.style.padding = '4px 0 2px 4px';
-                bmoHeader.style.borderBottom = '1px solid #e9ecef';
                 bmoSection.appendChild(bmoHeader);
                 
                 bmoCompanies.forEach(company => {
@@ -207,12 +201,6 @@ function renderCalendar(earningsData = {}) {
                 const amcHeader = document.createElement('div');
                 amcHeader.className = 'timing-header';
                 amcHeader.textContent = 'After Market Close';
-                amcHeader.style.fontSize = '10px';
-                amcHeader.style.fontWeight = '600';
-                amcHeader.style.color = '#6c757d';
-                amcHeader.style.textTransform = 'uppercase';
-                amcHeader.style.padding = '4px 0 2px 4px';
-                amcHeader.style.borderBottom = '1px solid #e9ecef';
                 amcSection.appendChild(amcHeader);
                 
                 amcCompanies.forEach(company => {
