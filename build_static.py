@@ -57,6 +57,19 @@ def build_payload(category: str, items: list, updated_at: str) -> dict:
         "items": [normalize_stock_fields(s) for s in items]
     }
 
+def add_cache_buster(version_str: str):
+    """
+    Adds a cache-busting query string to assets in all HTML files.
+    This ensures browsers fetch the new version after a deployment.
+    """
+    print(f"Adding cache-buster version: {version_str}")
+    for html_file in HTML_DIR.glob("*.html"):
+        content = html_file.read_text()
+        # Replace in both preload links and image sources
+        content = content.replace('href="cachebandit_logo.png"', f'href="cachebandit_logo.png?v={version_str}"')
+        content = content.replace('src="cachebandit_logo.png"', f'src="cachebandit_logo.png?v={version_str}"')
+        html_file.write_text(content)
+
 def main():
     # 1) Prep dirs
     HTML_DIR.mkdir(parents=True, exist_ok=True) # Ensure site/html exists
@@ -93,6 +106,10 @@ def main():
 
         payload = build_payload(cat, items, updated_at)
         (DATA_DIR / f"{cat}.json").write_text(json.dumps(payload, indent=2))
+
+    # 4) Add cache-buster to static assets
+    version_str = datetime.now().strftime("%Y%m%d%H%M%S")
+    add_cache_buster(version_str)
 
     # 4) Make sure a simple redirect index exists (optional nicety)
     idx = SITE_ROOT / "index.html"
