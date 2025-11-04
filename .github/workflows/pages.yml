@@ -26,6 +26,11 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build static site
         run: python build_static.py
+      - name: Copy static assets to site folder
+        run: |
+          cp html/*.png site/ || true
+          cp html/css/*.css site/css/ -r || true
+          cp html/js/*.js site/js/ -r || true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

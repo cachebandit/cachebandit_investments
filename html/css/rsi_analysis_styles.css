@@ -248,7 +248,7 @@
 
 /* RIGHT COLUMN: RSI badge */
 .badge-metric {
-    align-self: center; /* Vertically center only the badge in its grid cell */
+    align-self: top;
     margin: 0 auto; /* Center the badge within its table cell */
     min-width: 56px;
     height: 30px;
