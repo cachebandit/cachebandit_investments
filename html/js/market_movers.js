@@ -140,7 +140,7 @@ function renderMoverRow(stock) {
     // price / change
     const priceNum = stock.Close;
     const priceText = (priceNum !== null && priceNum !== undefined && !isNaN(priceNum))
-        ? formatValue(priceNum)
+        ? `$${formatValue(priceNum)}`
         : '—';
 
     const rawChange = stock['Price Change'];

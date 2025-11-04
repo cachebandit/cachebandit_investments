@@ -255,12 +255,13 @@
   font-weight: 600;   /* un-bolded, medium weight */
   color: var(--text-primary);   /* solid black text */
   line-height: 1.1;
+  margin-top: 3px;
 }
 
 /* second line (change) picks color */
 .mover-change-delta {
   font-size: 15px;              /* bump up a bit */
-  font-weight: 700;             /* bold */
+  font-weight: 600;             /* bold */
   line-height: 1.1;
 }
 .mover-change-delta.metric-change-up {
