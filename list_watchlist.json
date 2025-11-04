@@ -250,7 +250,7 @@
                 },
                 {
                     "symbol": "LIN",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Linde plc",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/linde.svg"
                 }
@@ -278,7 +278,7 @@
             "Waste Management": [
                 {
                     "symbol": "WM",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Waste Management, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/waste-management.svg"
                 },
@@ -536,7 +536,7 @@
             "Tobacco": [
                 {
                     "symbol": "MO",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Altria Group, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/altria.svg"
                 },
@@ -612,7 +612,7 @@
                 },
                 {
                     "symbol": "KVUE",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Kenvue Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/kenvue.svg"
                 }
@@ -1373,6 +1373,118 @@
                     "flag": false,
                     "Name": "Prudential Financial, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/prudential.svg"
+                }
+            ]
+        },
+        "ETFs": {
+            "Broad Market ETFs": [
+                {
+                    "symbol": "VOO",
+                    "flag": false,
+                    "Name": "Vanguard S&P 500 ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "SPY",
+                    "flag": false,
+                    "Name": "SPDR S&P 500 ETF Trust",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/spdr-sandp500-etf-tr.svg"
+                },
+                {
+                    "symbol": "QQQ",
+                    "flag": false,
+                    "Name": "Invesco QQQ Trust",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/invesco.svg"
+                }
+            ],
+            "International & Global ETFs": [
+                {
+                    "symbol": "VT",
+                    "flag": false,
+                    "Name": "Vanguard Total World Stock ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                }
+            ],
+            "Commodity ETFs": [
+                {
+                    "symbol": "GLD",
+                    "flag": false,
+                    "Name": "SPDR Gold Shares",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/spdr-sandp500-etf-tr.svg"
+                },
+                {
+                    "symbol": "IBIT",
+                    "flag": false,
+                    "Name": "iShares Bitcoin Trust",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                }
+            ],
+            "Sector ETFs": [
+                {
+                    "symbol": "XLK",
+                    "flag": false,
+                    "Name": "Technology Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/technology.svg"
+                },
+                {
+                    "symbol": "XLF",
+                    "flag": false,
+                    "Name": "Financial Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/financial.svg"
+                },
+                {
+                    "symbol": "XLV",
+                    "flag": false,
+                    "Name": "Health Care Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/health-care.svg"
+                },
+                {
+                    "symbol": "XLE",
+                    "flag": false,
+                    "Name": "Energy Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/energy.svg"
+                },
+                {
+                    "symbol": "XLY",
+                    "flag": false,
+                    "Name": "Consumer Discretionary Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/consumer-discretionary.svg"
+                },
+                {
+                    "symbol": "XLP",
+                    "flag": false,
+                    "Name": "Consumer Staples Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/consumer-staples.svg"
+                },
+                {
+                    "symbol": "XLI",
+                    "flag": false,
+                    "Name": "Industrial Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/industrial.svg"
+                },
+                {
+                    "symbol": "XLU",
+                    "flag": false,
+                    "Name": "Utilities Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/utilities.svg"
+                },
+                {
+                    "symbol": "XLB",
+                    "flag": false,
+                    "Name": "Materials Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/materials.svg"
+                },
+                {
+                    "symbol": "XLRE",
+                    "flag": false,
+                    "Name": "Real Estate Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/real-estate.svg"
+                },
+                {
+                    "symbol": "XLC",
+                    "flag": false,
+                    "Name": "Communication Services Select Sector SPDR Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/communication-services.svg"
                 }
             ]
         }

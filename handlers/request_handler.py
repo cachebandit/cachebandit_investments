@@ -50,8 +50,10 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             # Create a cache key for this category
             cache_key = f"category_{category}"
             
-            # If this is a refresh request and the first category, start refresh
-            if refresh and is_first:
+            # If this is a refresh request for a single category (like from the ETFs page)
+            # or the first category in a larger refresh cycle, start the refresh process.
+            is_single_category_refresh = refresh and not is_first and not is_last
+            if (refresh and is_first) or is_single_category_refresh:
                 cache.start_refresh()
             
             # Check if we should use cached data or refresh
@@ -60,7 +62,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 
                 # Fetch and return stock data for the specified category
                 try:
-                    category_data = fetch_category_data(category) # This function may raise RateLimitError
+                    category_data = fetch_category_data(category, refresh=True) # Pass refresh flag
                 except RateLimitError as e:
                     logging.warning(f"Rate limit detected while fetching category {category}: {e}")
                     # Return HTTP 429 so clients can react appropriately
@@ -97,8 +99,8 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 # Save to cache
                 cache.set(cache_key, category_data)
                 
-                # If this is the last category in a refresh, commit the changes
-                if refresh and is_last:
+                # If this is the last category in a refresh cycle or a single-category refresh, commit the changes.
+                if (refresh and is_last) or is_single_category_refresh:
                     cache.commit_refresh()
             else:
                 logging.info(f"Using cached data for category: {category}")

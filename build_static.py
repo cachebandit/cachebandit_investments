@@ -23,6 +23,7 @@ ACTIVE_CATEGORIES = [
     "Real Estate",
     "Consumer Staples",
     "Consumer Discretionary",
+    "ETFs",
 ]
 
 def load_cache():

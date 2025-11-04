@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earnings Calendar</title>
+    <title>ETFs</title>
     <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/info_popup_styles.css">
     <link rel="stylesheet" href="css/rate_limit_popup_styles.css">
     <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/calendar-styles.css">
+    <link rel="stylesheet" href="css/watchlist_styles.css">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
         <div class="nav-category">Market Overview</div>
         <a href="watchlist.html">Watchlist</a>
         <a href="market_movers.html">Market Movers</a>
-        <a href="etfs.html">ETFs</a>
+        <a href="etfs.html" class="active">ETFs</a>
         <a href="heatmap.html">Heatmap</a>
         <div class="nav-category">Analysis</div>
         <a href="rsi_analysis.html">RSI Analysis</a>
@@ -40,27 +40,30 @@
                 <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
             </div>
             <div class="header-center">
-                <h1>Earnings Calendar</h1>
+                <h1>ETFs</h1>
             </div>
             <div class="header-controls">
+                <div class="button-container" style="display: none;">
+                    <button id="refresh-button" class="refresh-button">Refresh Data</button>
+                    <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+                </div>
                 <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
 
-        <div class="calendar-controls">
-            <button id="prev-week">Previous Week</button>
-            <h2 id="current-week"></h2>
-            <button id="next-week">Next Week</button>
+        <!-- Main content area for the ETF page -->
+        <div class="content-container">
+            <div class="table-container">
+                <div id="etf-content-container"></div>
+            </div>
         </div>
 
-        <div id="calendar-container"></div>
+        <script type="module" src="./js/nav.js"></script>
+        <script type="module" src="./js/utils.js"></script>
+        <script type="module" src="./js/chart.js"></script>
+        <script type="module" src="./js/popup.js"></script>
+        <script type="module" src="./js/etfs.js"></script>
     </div>
-
-    <script type="module" src="./js/nav.js"></script>
-    <script type="module" src="./js/utils.js"></script>
-    <script type="module" src="./js/chart.js"></script>
-    <script type="module" src="./js/popup.js"></script>
-    <script type="module" src="./js/calendar.js"></script>
 
 </body>
 </html>

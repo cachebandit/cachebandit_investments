@@ -64,10 +64,9 @@ def load_watchlist_data():
 # Global watchlist data, including the dynamically created "Owned" category
 watchlist_data = load_watchlist_data()
 
-def fetch_category_data(category):
+def fetch_category_data(category, refresh=False):
     """Fetch data for a specific category from the watchlist using batch requests."""
-    # Retrieve the category's stocks from the loaded JSON data
-    category_data = watchlist_data.get(category, [])
+    category_data = load_watchlist_data().get(category, [])
     if not category_data:
         return []
 
@@ -119,11 +118,15 @@ def fetch_category_data(category):
             earningsDate = ct_date.strftime('%m-%d-%Y')
             earningsTiming = 'BMO' if ct_date.hour < 12 else 'AMC'
         
+        # For ETFs, yfinance often uses 'totalAssets' instead of 'marketCap'.
+        # We must check for marketCap first, and only if it's missing or None, fall back to totalAssets.
+        market_cap_raw = info.get('marketCap') if info.get('marketCap') is not None else info.get('totalAssets')
+
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
             'Symbol': symbol,
             'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
-            'Market Cap': _clean_value(round(info.get('marketCap', 0) / 1_000_000, 2)) if info.get('marketCap') else 'N/A',
+            'Market Cap': _clean_value(round(market_cap_raw / 1_000_000, 2)) if market_cap_raw else 'N/A',
             'Trailing PE': _clean_value(info.get('trailingPE')),
             'Forward PE': _clean_value(info.get('forwardPE')),
             'dividendYield': _clean_value(info.get('dividendYield')),
@@ -148,6 +151,11 @@ def fetch_category_data(category):
         result_data.append(final_stock)
 
     return result_data
+
+def _get_category_stocks(category, refresh=False):
+    """Helper to get stock list, reloading from file if refreshing."""
+    current_watchlist = load_watchlist_data() if refresh else watchlist_data
+    return current_watchlist.get(category, [])
 
 def fetch_detailed_info(symbols):
     """Fetch detailed info including RSI and price changes for a list of symbols in a batch."""
