@@ -49,15 +49,29 @@
             </div>
         </div>
         <div class="content-container">
-            <!-- Table Container -->
-            <div class="movers-container">
-                <div class="movers-section">
-                    <h2>Top Gainers</h2>
-                    <div id="top-gainers-container"></div>
+            <div class="movers-grid-container">
+                <div class="movers-card">
+                    <div class="movers-card-header">Top Gainers</div>
+                    <div class="movers-table">
+                        <div class="movers-header-row">
+                            <div class="mover-company-head">COMPANY</div>
+                            <div class="mover-rsi-head">RSI</div>
+                            <div class="mover-chg-head">CHG</div>
+                        </div>
+                        <div id="top-gainers-container" class="mover-list"></div>
+                    </div>
                 </div>
-                <div class="movers-section">
-                    <h2>Top Decliners</h2>
-                    <div id="top-decliners-container"></div>
+
+                <div class="movers-card">
+                    <div class="movers-card-header">Top Decliners</div>
+                    <div class="movers-table">
+                        <div class="movers-header-row">
+                            <div class="mover-company-head">COMPANY</div>
+                            <div class="mover-rsi-head">RSI</div>
+                            <div class="mover-chg-head">CHG</div>
+                        </div>
+                        <div id="top-decliners-container" class="mover-list"></div>
+                    </div>
                 </div>
             </div>
         </div>

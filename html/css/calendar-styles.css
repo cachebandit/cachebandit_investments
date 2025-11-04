@@ -167,7 +167,7 @@
 }
 
 .rsi-low {
-    color: #ffd700; /* Yellow for low RSI (31-40) */
+    color: #ffd600; /* Yellow for low RSI (31-40) */
 }
 
 .rsi-neutral {

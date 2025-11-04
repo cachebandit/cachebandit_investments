@@ -78,9 +78,10 @@
     line-height: 1.2;
 }
 
-.rsi-header-row > :nth-child(2) {
-    text-align: center; /* This is the key property to center the text */
+.rsi-header-row > :nth-child(3) {
+    text-align: center; /* Center the "RSI" header text */
 }
+
 
 .rsi-header-sticky {
     position: sticky;
@@ -205,25 +206,6 @@
     white-space: nowrap;
 }
 
-.badge-metric {
-    align-self: start;
-    margin-top: 2px;          /* slight offset to align with ticker baseline */
-    min-width: 56px;
-    height: 24px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.2;
-    padding: 4px 6px;
-    border-radius: 4px;
-    background-color: var(--hover-bg);
-    color: var(--text-primary);
-}
-
-/* Second line: industry */
 .company-subline {
     font-size: 11px;
     font-weight: 500;
@@ -266,28 +248,26 @@
 
 /* RIGHT COLUMN: RSI badge */
 .badge-metric {
-    width: 25px;  /* Set a fixed width */
-    height: 25px; /* Set an equal height to make it a square */
+    align-self: center; /* Vertically center only the badge in its grid cell */
+    margin: 0 auto; /* Center the badge within its table cell */
+    min-width: 56px;
+    height: 30px;
     box-sizing: border-box;
-
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto; /* Center the badge within its table cell */
-
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
-
-    padding: 0; /* Remove padding to rely on fixed size */
-    border-radius: 4px; /* Keep slightly rounded corners for a modern look */
+    padding: 4px 6px;
+    border-radius: 4px;
     background-color: var(--hover-bg);
     color: var(--text-primary);
 }
 
 /* make sure white text shows on hot red */
 .badge-metric[style*="background-color: #FF6347"] {
-    color: #fff;
+    color: #000;
 }
 
 /* scrollbar styling */

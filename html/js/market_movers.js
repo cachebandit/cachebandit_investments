@@ -14,32 +14,12 @@ import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
 import { getCategoryData } from './dataSource.js';
 
-function getRsiColorClass(rsi) {
-    if (rsi === null || rsi === undefined || rsi === 'N/A') return '';
-    const rsiValue = parseFloat(rsi);
-    if (rsiValue >= 70) return 'rsi-deep-overbought';
-    if (rsiValue >= 65) return 'rsi-entering-overbought';
-    if (rsiValue <= 30) return 'rsi-deep-oversold';
-    if (rsiValue <= 35) return 'rsi-entering-oversold';
-    return '';
-}
-
-// Main JavaScript functionality for the Market Movers page
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Initial load - use cache
     fetchMarketMoversData();
 
-    // Setup popup handling for info icons
     document.addEventListener('click', function(event) {
-        if (event.target.closest('.popup')) {
-            return; // Don't close if clicking inside popup
-        }
-        
-        const popups = document.querySelectorAll('.popup');
-        popups.forEach(popup => {
-            popup.style.display = 'none';
-        });
+        if (event.target.closest('.popup')) return;
+        document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
     });
 });
 
@@ -73,146 +53,208 @@ async function fetchMarketMoversData() {
             });
         });
 
-        // Update the last updated timestamp
         if (lastUpdated) {
-            document.getElementById('last-updated').innerText = `Last Updated: ${lastUpdated}`;
+            const ts = document.getElementById('last-updated');
+            if (ts) ts.innerText = `Last Updated: ${lastUpdated}`;
         }
 
-        // Filter and sort stocks
-        const movers = allStocks.filter(s => s['Percent Change'] !== null && s['Percent Change'] !== undefined && !isNaN(s['Percent Change']));
+        // find movers
+        const movers = allStocks.filter(s => 
+            s['Percent Change'] !== null &&
+            s['Percent Change'] !== undefined &&
+            !isNaN(s['Percent Change'])
+        );
+
+        const ROW_LIMIT = 20;
 
         const topGainers = movers
             .filter(s => s['Percent Change'] > 0)
             .sort((a, b) => b['Percent Change'] - a['Percent Change'])
-            .slice(0, 20); // Limit to the top 20
 
         const topDecliners = movers
             .filter(s => s['Percent Change'] < 0)
             .sort((a, b) => a['Percent Change'] - b['Percent Change'])
-            .slice(0, 20); // Limit to the top 20
 
-        // Render the tables
-        renderMoversTable('top-gainers-container', topGainers);
-        renderMoversTable('top-decliners-container', topDecliners);
+        renderMoversTable('top-gainers-container', topGainers.slice(0, ROW_LIMIT));
+        renderMoversTable('top-decliners-container', topDecliners.slice(0, ROW_LIMIT));
+
+        // click delegation for chart/info
+        const gridContainer = document.querySelector('.movers-grid-container');
+        if (gridContainer) {
+            gridContainer.addEventListener('click', function(event) {
+                // info button
+                const infoBtn = event.target.closest('.company-info-btn');
+                if (infoBtn) {
+                    event.stopPropagation();
+                    showInfoPopup(infoBtn);
+                    return;
+                }
+
+                // row click
+                const row = event.target.closest('.mover-row');
+                if (row && row.dataset.symbol) {
+                    showChartPopup(row.dataset.symbol);
+                }
+            });
+        }
 
     } catch (error) {
         console.error('Error fetching market movers data:', error);
     }
 }
 
-function renderMoversTable(containerId, data) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = ''; // Clear previous content
+/**
+ * Returns a CSS class name based on the RSI value for color-coding.
+ */
+function getRsiBadgeClass(rsi) {
+    const rsiValue = Number(rsi);
+    if (isNaN(rsiValue)) return 'rsi-neutral';
+    if (rsiValue <= 30) return 'rsi-low';
+    if (rsiValue <= 35) return 'rsi-weak';
+    if (rsiValue < 65) return 'rsi-neutral';
+    if (rsiValue < 70) return 'rsi-strength';
+    return 'rsi-high';
+}
 
-    if (data.length === 0) {
-        const noDataMessage = document.createElement('p');
-        noDataMessage.textContent = 'No market data available for this category.';
-        noDataMessage.style.textAlign = 'center';
-        noDataMessage.style.marginTop = '20px';
-        noDataMessage.style.padding = '0 20px';
-        container.appendChild(noDataMessage);
+function renderMoversTable(containerId, data) {
+    const listEl = document.getElementById(containerId);
+    if (!listEl) return;
+
+    if (!data || data.length === 0) {
+        listEl.innerHTML = `
+            <div style="padding:12px 16px; color:#6c757d; font-size:13px;">
+                No stocks in this category.
+            </div>`;
         return;
     }
 
-    const listContainer = document.createElement('div');
-    listContainer.className = 'mover-list';
-
-    data.forEach(stock => {
-        const item = document.createElement('div');
-        item.className = 'mover-item';
-        item.setAttribute('data-symbol', stock.Symbol || stock.symbol);
-        
-        const priceChangeColor = getColorForChange(stock['Percent Change']);
-        const changeColorClass = stock['Percent Change'] > 0 ? 'price-up' : (stock['Percent Change'] < 0 ? 'price-down' : '');
-        const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
-        const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
-        const logoUrl = stock.stockUrl;
-
-        const changeValue = stock['Price Change'] !== undefined ? formatChange(stock['Price Change']) : '-';
-        const percentChangeValue = stock['Percent Change'] !== undefined ? formatPercentChange(stock['Percent Change']) : '-';
-
-        const price = stock.Close != null ? formatValue(stock.Close) : '-';
-        const rsi = stock.RSI !== undefined ? formatRsi(stock.RSI) : '-';
-        const rsiColorClass = getRsiColorClass(stock.RSI);
-
-        item.innerHTML = `
-            <div class="mover-item-company chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">
-                <button class="info-icon" 
-                        data-stock-name="${stock.Name || stock.name}"
-                        data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
-                        data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
-                        data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
-                        data-earnings-date="${stock.earningsDate || 'N/A'}"
-                        data-atr-percent="${stock.ATR_Percent || 'N/A'}"
-                        data-beta="${stock.beta || 'N/A'}"
-                        title="${stock.stock_description || 'No description available'}"
-                        data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
-                        data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
-                        data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
-                        data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
-                        data-dividend-yield="${stock.dividendYield || 'N/A'}"
-                        data-total-revenue="${stock.totalRevenue || 'N/A'}"
-                        data-net-income="${stock.netIncomeToCommon || 'N/A'}"
-                        data-profit-margins="${stock.profitMargins || 'N/A'}"
-                        data-trailing-pe-color="${trailingPeColor}"
-                        data-forward-pe-color="${forwardPeColor}"
-                        data-url="${logoUrl}">
-                    <img src="info.png" alt="Info" style="width: 16px; height: 16px; border: none;"/>
-                </button>
-                <img src="${logoUrl}" alt="${stock.Name || stock.name} Logo" onerror="console.log('Failed to load image:', '${logoUrl}'); this.style.display='none'" 
-                    style="width: 20px; height: 20px;"/>
-                <span class="company-text">${stock.Name || stock.name}</span>
-            </div>
-            <div class="mover-item-data">
-                <div class="price-line">
-                    <span class="price">${price}</span>
-                    <span class="change-value ${changeColorClass}">${changeValue} (${percentChangeValue})</span>
-                </div>
-                <div class="rsi-line ${rsiColorClass}">RSI: ${rsi}</div>
-            </div>
-        `;
-
-        listContainer.appendChild(item);
-    });
-
-    container.appendChild(listContainer);
-    
-    // Add event listeners after the section is added to the DOM
-    container.querySelectorAll('.mover-item-company').forEach(clickableCell => {
-        clickableCell.addEventListener('click', function(event) {
-            // Prevent click from triggering on the star or info icon
-            if (event.target.closest('.star-icon') || event.target.closest('.info-icon')) {
-                return;
-            }
-            const symbol = this.dataset.symbol;
-            if (symbol) showChartPopup(symbol);
-        });
-    });
-    
-    container.querySelectorAll('.info-icon').forEach(infoIcon => {
-        infoIcon.addEventListener('click', function(event) {
-            event.stopPropagation();
-            showInfoPopup(this);
-        });
-    });
+    listEl.innerHTML = data.map(renderMoverRow).join('');
 }
 
+function renderMoverRow(stock) {
+    const symbol = stock.Symbol || stock.symbol || '';
+    const name = stock.Name || stock.name || symbol;
+    const industry = stock.industry || '—';
+    const logoUrl = stock.stockUrl || '';
+
+    // price / change
+    const priceNum = stock.Close;
+    const priceText = (priceNum !== null && priceNum !== undefined && !isNaN(priceNum))
+        ? formatValue(priceNum)
+        : '—';
+
+    const rawChange = stock['Price Change'];
+    const rawPct = stock['Percent Change'];
+    const changeText = (rawChange !== undefined && rawChange !== null && !isNaN(rawChange))
+        ? `${formatChange(rawChange)} (${formatPercentChange(rawPct)})`
+        : '—';
+
+    let changeClass = '';
+    if (isFinite(rawPct)) {
+        if (rawPct > 0) changeClass = 'metric-change-up';
+        else if (rawPct < 0) changeClass = 'metric-change-down';
+    }
+
+    // RSI lives under the name now
+    const rsiVal = (stock.RSI !== undefined && stock.RSI !== null)
+        ? formatRsi(stock.RSI)
+        : 'N/A';
+    const rsiBadgeClass = getRsiBadgeClass(stock.RSI);
+
+    // fundamentals for popup
+    const trailingPE = stock['Trailing PE'] || stock.trailingPE || 'N/A';
+    const forwardPE  = stock['Forward PE'] || stock.forwardPE  || 'N/A';
+    const evEbitda   = stock['EV/EBITDA'] || 'N/A';
+    const earningsDate = stock.earningsDate || 'N/A';
+    const high52 = stock.fiftyTwoWeekHigh || 'N/A';
+    const low52  = stock.fiftyTwoWeekLow  || 'N/A';
+    const dividend = stock.dividendYield || 'N/A';
+    const totalRev = stock.totalRevenue || 'N/A';
+    const netInc   = stock.netIncomeToCommon || 'N/A';
+    const margin   = stock.profitMargins || 'N/A';
+    const desc     = stock.stock_description || 'No description available';
+    const marketCap = formatMarketCap(stock['Market Cap'] || stock.marketCap);
+    const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
+    const forwardPeColor  = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
+
+    return `
+        <div class="mover-row" data-symbol="${escapeHtml(symbol)}">
+            <!-- COL 1: company block -->
+            <div class="mover-company-cell">
+                <button class="company-info-btn"
+                        data-stock-name="${escapeHtml(name)}"
+                        data-fifty-two-week-high="${escapeHtml(high52)}"
+                        data-current-price="${priceNum != null && !isNaN(priceNum) ? escapeHtml(priceNum.toFixed(2)) : 'N/A'}"
+                        data-fifty-two-week-low="${escapeHtml(low52)}"
+                        data-earnings-date="${escapeHtml(earningsDate)}"
+                        title="${escapeHtml(desc)}"
+                        data-trailing-pe="${escapeHtml(trailingPE)}"
+                        data-forward-pe="${escapeHtml(forwardPE)}"
+                        data-ev-ebitda="${escapeHtml(evEbitda)}"
+                        data-market-cap="${escapeHtml(marketCap)}"
+                        data-dividend-yield="${escapeHtml(dividend)}"
+                        data-total-revenue="${escapeHtml(totalRev)}"
+                        data-net-income="${escapeHtml(netInc)}"
+                        data-profit-margins="${escapeHtml(margin)}"
+                        data-trailing-pe-color="${escapeHtml(trailingPeColor)}"
+                        data-forward-pe-color="${escapeHtml(forwardPeColor)}"
+                        data-url="${escapeHtml(logoUrl)}">
+                    <img src="info.png" alt="Info">
+                </button>
+
+                <img class="company-logo"
+                        src="${escapeHtml(logoUrl)}"
+                        alt="${escapeHtml(name)} logo"
+                        onerror="this.style.display='none'"/>
+
+                <div class="mover-text-block">
+                    <div class="mover-name-line">
+                        <span class="mover-name-text">${escapeHtml(name)}</span><span class="ticker-chip">${escapeHtml(symbol)}</span>
+                    </div>
+                    <div class="mover-industry-line">
+                        ${escapeHtml(industry)}
+                    </div>
+                </div>
+            </div>
+
+            <!-- COL 2: RSI badge -->
+            <div class="mover-rsi-col">
+                <span class="rsi-badge ${rsiBadgeClass}">RSI: ${escapeHtml(rsiVal)}</span>
+            </div>
+
+            <!-- COL 3: price/change block -->
+            <div class="mover-change-block">
+                <div class="mover-change-delta ${changeClass}">
+                    ${escapeHtml(changeText)}
+                </div>
+                <div class="mover-change-price">
+                    ${escapeHtml(priceText)}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// util to not break HTML
+function escapeHtml(raw) {
+    if (raw === null || raw === undefined) return '';
+    return String(raw)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// we keep importDependencies in case inline popup/chart ever need globals
 function importDependencies() {
     const script = document.createElement('script');
     script.type = 'module';
     script.innerHTML = `
         import { showInfoPopup } from './popup.js';
         import { showChartPopup } from './chart.js';
-        import { 
-            formatMarketCap, formatValue, formatChange, formatPercentChange, formatRsi, 
-            getColorForChange, getTrailingPeColor, getForwardPeColor, getRsiBackgroundStyle
-        } from './utils.js';
-
-        // Expose functions to global scope if needed by inline handlers
         window.showInfoPopup = showInfoPopup;
         window.showChartPopup = showChartPopup;
     `;
     document.head.appendChild(script);
 }
-
 importDependencies();
