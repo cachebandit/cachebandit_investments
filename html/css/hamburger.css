@@ -45,7 +45,8 @@
 }
 
 .sidenav a:hover {
-    background-color: var(--hover-bg);
+    background-color: var(--accent-color);
+    color: #fff;
 }
 
 .sidenav .closebtn {

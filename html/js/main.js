@@ -452,8 +452,8 @@ function filterTable(query) {
                 let isIndustryVisible = false;
 
                 rows.forEach(row => {
-                    const symbol = row.querySelector('.symbol').textContent.toLowerCase();
-                    const name = row.querySelector('.company-name').textContent.toLowerCase();
+                    const name = row.querySelector('.company-name-text')?.textContent.toLowerCase() || '';
+                    const symbol = row.querySelector('.ticker-chip')?.textContent.toLowerCase() || '';
                     
                     if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
                         row.style.display = '';
@@ -474,8 +474,8 @@ function filterTable(query) {
             // Handle "Owned" category
             const rows = section.querySelectorAll('table tbody tr');
             rows.forEach(row => {
-                const symbol = row.querySelector('.symbol').textContent.toLowerCase();
-                const name = row.querySelector('.company-name').textContent.toLowerCase();
+                const name = row.querySelector('.company-name-text')?.textContent.toLowerCase() || '';
+                const symbol = row.querySelector('.ticker-chip')?.textContent.toLowerCase() || '';
                 
                 if (symbol.includes(searchTerm) || name.includes(searchTerm)) {
                     row.style.display = '';

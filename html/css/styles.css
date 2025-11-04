@@ -1,14 +1,14 @@
 /* === Sleek Light Theme Redesign === */
 
 :root {
-    --bg-color: #f8f9fa;
+    --bg-color: #f5f6f5;
     --container-bg: #ffffff;
     --hover-bg: #f1f3f5;
     --text-primary: #212529;
     --text-secondary: #6c757d;
     --border-color: #dee2e6;
-    --accent-color: #007bff;
-    --accent-hover: #0056b3;
+    --accent-color: #155881;
+    --accent-hover: #114668; /* Darker shade for hover */
     --price-up-color: #4CAF50; /* Green for positive */
     --price-down-color: #f44336; /* Red for negative */
 }
@@ -62,6 +62,8 @@ body {
 h1 {
     margin: 0;
     font-weight: 700; /* Bold weight for main titles */
+    text-transform: uppercase;
+    letter-spacing: .5px;
 }
 
 .section {
@@ -78,7 +80,7 @@ h1 {
     font-size: 22px;
     margin: 0;
     padding: 15px 20px;
-    background-color: #f8f9fa;
+    background-color: #f5f6f5;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600; /* SemiBold for section titles */
 }
