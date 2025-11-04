@@ -169,6 +169,8 @@ function renderMoverRow(stock) {
     const high52 = stock.fiftyTwoWeekHigh || 'N/A';
     const low52  = stock.fiftyTwoWeekLow  || 'N/A';
     const dividend = stock.dividendYield || 'N/A';
+    const beta = stock.beta || 'N/A';
+    const atrPercent = stock.ATR_Percent || 'N/A';
     const totalRev = stock.totalRevenue || 'N/A';
     const netInc   = stock.netIncomeToCommon || 'N/A';
     const margin   = stock.profitMargins || 'N/A';
@@ -187,6 +189,8 @@ function renderMoverRow(stock) {
                         data-current-price="${priceNum != null && !isNaN(priceNum) ? escapeHtml(priceNum.toFixed(2)) : 'N/A'}"
                         data-fifty-two-week-low="${escapeHtml(low52)}"
                         data-earnings-date="${escapeHtml(earningsDate)}"
+                        data-beta="${escapeHtml(beta)}"
+                        data-atr-percent="${escapeHtml(atrPercent)}"
                         title="${escapeHtml(desc)}"
                         data-trailing-pe="${escapeHtml(trailingPE)}"
                         data-forward-pe="${escapeHtml(forwardPE)}"
