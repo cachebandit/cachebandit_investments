@@ -1,96 +1,292 @@
-/* Styles for Market Movers page */
-.movers-container {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
+/* ========== PAGE GRID: Gainers / Decliners side by side ========== */
+.movers-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
 }
 
-.movers-section {
-    flex: 1; /* Each section takes up half the space */
+/* make it stack on very narrow screens */
+@media (max-width: 900px) {
+    .movers-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== CARD WRAPPER (each panel) ========== */
+.movers-card {
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    overflow: hidden; /* Hide overflow, as content will be handled internally */
-    min-width: 320px; /* Ensure each section has a minimum width */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
 }
 
-.movers-section h2 {
+/* Card title ("Top Gainers", etc.) */
+.movers-card-header {
+    padding: 12px 16px;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--text-primary);
-    font-size: 22px;
-    margin: 0;
-    padding: 15px 20px;
-    background-color: #f8f9fa;
+    background-color: #f5f6f5;
     border-bottom: 1px solid var(--border-color);
-    font-weight: 600; /* SemiBold for section titles */
 }
 
+/* The scrollable table body inside each card */
+.movers-table {
+    max-height: none !important;
+    overflow: visible !important;
+    position: relative;
+}
+
+/* ===== Header row INSIDE the scrollable part ===== */
+.movers-header-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 76px 120px; /* Company | RSI | CHG */
+    column-gap: 6px;
+
+    background-color: var(--hover-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 16px;
+
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.mover-chg-head { 
+    text-align: right; 
+}
+
+.mover-rsi-head { 
+    text-align: center; 
+}
+
+/* ===== BODY rows ===== */
 .mover-list {
     display: flex;
     flex-direction: column;
 }
 
-.mover-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.2s ease;
-}
+.mover-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 76px 120px; /* Company | RSI | CHG */
+    column-gap: 6px;
+    align-items: start;
 
-.mover-item:last-child {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+.mover-row:last-child {
     border-bottom: none;
 }
-
-.mover-item:hover {
+.mover-row:hover {
     background-color: var(--hover-bg);
 }
 
-.mover-item-company {
+/* ===== LEFT COLUMN (company cell) ===== */
+.mover-company-cell {
+    display: flex; 
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.company-info-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    flex: 1; /* Allow it to take up available space */
-    min-width: 0; /* Important for flex truncation */
+    justify-content: center;
+}
+.company-info-btn img {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+    filter: grayscale(0.2);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.company-info-btn:hover img {
+    transform: scale(1.08);
+    opacity: 1;
+    filter: none;
 }
 
-.mover-item-data {
-    text-align: right;
-    font-weight: 600;
-    flex-shrink: 0; /* Prevent this column from shrinking */
-    padding-left: 15px;
+/* Logo */
+.company-logo {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 6px; /* keep your current radius if different */
+    object-fit: contain;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px var(--border-color);
 }
 
-.price-line {
+/* Text block to the right of logo */
+.mover-text-block {
     display: flex;
-    justify-content: flex-end;
-    align-items: baseline;
-    gap: 8px;
+    flex-direction: column;
+    min-width: 0;
 }
 
-.price-line .price {
-    font-size: 16px;
-    color: var(--text-primary);
-}
-
-.price-line .change-value {
+.mover-name-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;            /* room for the ticker chip */
     font-size: 14px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary);
+    line-height: 1.3;
 }
 
-.rsi-line {
+.mover-industry-line {
     font-size: 12px;
+    font-weight: 500;
     color: var(--text-secondary);
-    margin-top: 4px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
 }
 
-/* --- Color Coordination --- */
-.price-up { color: var(--price-up-color); }
-.price-down { color: var(--price-down-color); }
-.rsi-deep-oversold { color: var(--price-down-color); font-weight: bold; }
-.rsi-entering-oversold { color: #ff9800; }
-.rsi-entering-overbought { color: #e6c300; }
-.rsi-deep-overbought { color: var(--price-up-color); font-weight: bold; }
+/* Line with RSI moved here */
+.mover-rsi-line {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    line-height: 1.3;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+/* RSI Badge under company name */
+.rsi-badge {
+  color: #000;                   /* black font */
+  font-weight: 700;
+  background-color: #d3d3d3;     /* fallback if no color class */
+  border-radius: 6px;            /* square-ish corners instead of pill */
+  padding: 4px 8px;              /* less horizontal padding for square feel */
+  font-size: 12px;
+  line-height: 1.2;
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+ 
+/* RSI Color Bands */
+.rsi-badge.rsi-low {
+    background-color: #f44336; /* Red */
+}
+.rsi-badge.rsi-weak {
+    background-color: #ff9800; /* Orange */
+}
+.rsi-badge.rsi-neutral {
+    background-color: #D3D3D3; /* Grey */
+}
+.rsi-badge.rsi-strength {
+    background-color: #ffd700; /* Yellow */
+}
+.rsi-badge.rsi-high {
+    background-color: #4CAF50; /* Green */
+}
+
+/* ===== MIDDLE COLUMN (RSI) ===== */
+.mover-rsi-col {
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-end;
+}
+
+/* Ticker chip is no longer in its own column */
+.mover-ticker-col {
+    display: none !important; /* no longer a column */
+}
+
+.ticker-chip {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background-color: rgba(21, 88, 129, 0.08);
+    border-radius: 4px;
+    padding: 2px 6px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* ===== RIGHT COLUMN (price/change pill) ===== */
+.mover-change-block {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* first line (price) should feel heavier */
+.mover-change-price {
+  font-size: 14px;
+  font-weight: 600;   /* un-bolded, medium weight */
+  color: var(--text-primary);   /* solid black text */
+  line-height: 1.1;
+  margin-top: 3px;
+}
+
+/* second line (change) picks color */
+.mover-change-delta {
+  font-size: 15px;              /* bump up a bit */
+  font-weight: 600;             /* bold */
+  line-height: 1.1;
+}
+.mover-change-delta.metric-change-up {
+    color: var(--price-up-color);
+}
+.mover-change-delta.metric-change-down {
+    color: var(--price-down-color);
+}
+
+/* scrollbar styling for the scroll area */
+.movers-table::-webkit-scrollbar {
+    width: 6px;
+}
+.movers-table::-webkit-scrollbar-track {
+    background: transparent;
+}
+.movers-table::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.15);
+    border-radius: 3px;
+}
+
+/* Optional: on very narrow phones, drop RSI column to save space */
+@media (max-width: 380px) {
+  .movers-header-row, .mover-row {
+    grid-template-columns: minmax(0,1fr) 120px; /* Company | CHG only */
+  }
+  .mover-rsi-col, .mover-rsi-head { display: none; }
 }

@@ -4,72 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RSI Analysis</title>
+
+    <!-- Fonts / theme -->
     <link rel="preload" href="cachebandit_logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared global styles -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hamburger.css">
+    <link rel="stylesheet" href="css/info_popup_styles.css">
+    <link rel="stylesheet" href="css/rate_limit_popup_styles.css">
+    <link rel="stylesheet" href="css/buttons.css">
+
+    <!-- Page-specific -->
     <link rel="stylesheet" href="css/rsi_analysis_styles.css">
 </head>
 <body>
+    <!-- Side nav -->
+    <div id="sidenav-overlay" class="sidenav-overlay"></div>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" id="closeNav">&times;</a>
+
+        <div class="nav-category">Market Overview</div>
+        <a href="watchlist.html">Watchlist</a>
+        <a href="market_movers.html">Market Movers</a>
+        <a href="heatmap.html">Heatmap</a>
+
+        <div class="nav-category">Analysis</div>
+        <a href="rsi_analysis.html" class="active">RSI Analysis</a>
+        <a href="volatility_analysis.html">Volatility Analysis</a>
+        <a href="pe_analysis.html">P/E Analysis</a>
+
+        <div class="nav-category">Events</div>
+        <a href="earnings_calendar.html">Earnings Calendar</a>
+    </div>
+
+    <!-- Main content container -->
     <div class="container">
+        <!-- Header row (matches Volatility page vibe) -->
         <div class="header-container">
             <div class="header-left">
+                <span class="hamburger-icon" id="openNav">&#9776;</span>
                 <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
             </div>
+
             <div class="header-center">
                 <h1>RSI Analysis</h1>
+                <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-top:4px;">
+                    Monitoring RSI Positioning by Momentum State
+                </div>
             </div>
+
             <div class="header-controls">
                 <div id="last-updated" class="last-updated"></div>
             </div>
         </div>
-        <nav class="navigation">
-            <a href="watchlist.html">Watchlist</a>
-            <a href="market_movers.html">Market Movers</a>
-            <a href="earnings_calendar.html">Earnings Calendar</a>
-            <a href="rsi_analysis.html" class="active">RSI Analysis</a>
-            <a href="pe_analysis.html">P/E Analysis</a>
-            <a href="heatmap.html">Heat Map</a>
-        </nav>
+
+        <!-- Grid of RSI panels -->
         <div class="rsi-grid-container">
 
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Oversold</h2>
+            <!-- Oversold -->
+            <div class="rsi-box">
+                <h2>
+                    <span>Oversold</span>
+                </h2>
+
+                <div class="rsi-table">
+                    <div class="rsi-header-row rsi-header-sticky">
+                        <div>Company</div>
+                        <div> </div>
+                        <div>RSI</div>
+                    </div>
+
                     <div id="oversold-list" class="rsi-list"></div>
                 </div>
             </div>
 
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Entering Oversold</h2>
+            <!-- Entering Oversold -->
+            <div class="rsi-box">
+                <h2>
+                    <span>Entering Oversold</span>
+                </h2>
+
+                <div class="rsi-table">
+                    <div class="rsi-header-row rsi-header-sticky">
+                        <div>Company</div>
+                        <div> </div>
+                        <div>RSI</div>
+                    </div>
+
                     <div id="entering-oversold-list" class="rsi-list"></div>
                 </div>
             </div>
 
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Exiting Oversold</h2>
+            <!-- Exiting Oversold -->
+            <div class="rsi-box">
+                <h2>
+                    <span>Exiting Oversold</span>
+                </h2>
+
+                <div class="rsi-table">
+                    <div class="rsi-header-row rsi-header-sticky">
+                        <div>Company</div>
+                        <div> </div>
+                        <div>RSI</div>
+                    </div>
+
                     <div id="exiting-oversold-list" class="rsi-list"></div>
                 </div>
             </div>
 
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Exiting Overbought</h2>
+            <!-- Exiting Overbought -->
+            <div class="rsi-box">
+                <h2>
+                    <span>Exiting Overbought</span>
+                </h2>
+
+                <div class="rsi-table">
+                    <div class="rsi-header-row rsi-header-sticky">
+                        <div>Company</div>
+                        <div> </div>
+                        <div>RSI</div>
+                    </div>
+
                     <div id="exiting-overbought-list" class="rsi-list"></div>
                 </div>
             </div>
 
-            <div class="rsi-column">
-                <div class="rsi-box">
-                    <h2>Overbought</h2>
+             <!-- Overbought -->
+            <div class="rsi-box">
+                <h2>
+                    <span>Overbought</span>
+                </h2>
+
+                <div class="rsi-table">
+                    <div class="rsi-header-row rsi-header-sticky">
+                        <div>Company</div>
+                        <div> </div>
+                        <div>RSI</div>
+                    </div>
+
                     <div id="overbought-list" class="rsi-list"></div>
                 </div>
             </div>
+
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./js/nav.js"></script>
+    <script type="module" src="./js/utils.js"></script>
+    <script type="module" src="./js/chart.js"></script>
+    <script type="module" src="./js/popup.js"></script>
     <script type="module" src="./js/rsi_analysis.js"></script>
 </body>
 </html>

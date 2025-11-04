@@ -74,7 +74,7 @@ function getForwardPeColor(pe, trailingPe) {
         return '#32CD32';  // Lighter Green
     }
     else if (pe > trailingPe) {
-        return '#FFA500';  // Yellow
+        return '#ffd600';  // Yellow
     }
     else {
         return ''; 
@@ -90,7 +90,7 @@ function getRsiBackgroundStyle(rsi) {
     } else if (rsiValue > 70) {
         return '#98FB98';  // Light Green (RSI above 70)
     } else if (rsiValue > 65) {
-        return '#FFFF00';  // Yellow (RSI above 65)
+        return '#ffd600';  // Yellow (RSI above 65)
     } else {
         return '';  // No background color for RSI between 35 and 65
     }

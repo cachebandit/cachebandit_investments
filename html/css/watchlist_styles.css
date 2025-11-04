@@ -1,0 +1,153 @@
+/* === Styles for the Watchlist Company Cell === */
+
+/* Main container for the cell */
+.company-cell {
+    display: flex;
+    align-items: center;
+    min-width: 0; /* Prevents flex item from overflowing its container */
+    gap: 6px;
+}
+
+/* Info icon button */
+.company-info-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.company-info-btn img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    filter: grayscale(0.2);
+}
+
+.company-info-btn:hover img {
+    transform: scale(1.08);
+    opacity: 1;
+    filter: none;
+}
+
+/* Company Logo */
+.company-logo {
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    object-fit: contain;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px var(--border-color);
+}
+
+/* Text block (name line + industry line) */
+.company-text-block {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* When the subline is removed, this vertically centers the remaining name line */
+.company-text-block:has(.company-subline:empty),
+.company-text-block:not(:has(.company-subline)) {
+    justify-content: center;
+}
+
+/* Grid for name + ticker chip so chip always lines up on same baseline */
+.company-name-line {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Let name take space, chip aligns after */
+    align-items: baseline;
+    column-gap: 6px;
+    min-width: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.company-name-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.company-name-text:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ticker-chip {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background-color: rgba(21, 88, 129, 0.08);
+    border-radius: 4px;
+    padding: 2px 4px;
+    line-height: 1.2;
+    flex-shrink: 0;
+    justify-self: start;
+}
+
+/* Industry line under name */
+.company-subline {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+/* Only strip the box for Market Cap cells */
+td.market-cap .badge-metric {
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  min-width: unset !important;
+  height: auto !important;
+  display: inline !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* RSI badge: keep its inline color, just make it narrower/compact */
+/* === Compact, Proportionally Sized RSI Badge === */
+td.rsi .badge-metric {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 45px;       /* proportional to font size (12→13px scale) */
+  height: 30px;          /* same height ratio as volatility badges */
+  padding: 0 6px;
+  border-radius: 4px;
+  line-height: 1;
+  color: #000;
+}
+
+/* Ensure good text contrast on bright or dark colors */
+.badge-metric[style*="background-color: #FF6347"],
+.badge-metric[style*="background-color: #f44336"] { 
+  color: #fff;
+}
+
+/* === Price Change Colors === */
+.metric-change-up {
+    color: var(--price-up-color);
+}
+
+.metric-change-down {
+    color: var(--price-down-color);
+}

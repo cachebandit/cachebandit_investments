@@ -142,12 +142,6 @@ function renderCalendar(earningsData = {}) {
                 const bmoHeader = document.createElement('div');
                 bmoHeader.className = 'timing-header';
                 bmoHeader.textContent = 'Before Market Open';
-                bmoHeader.style.fontSize = '10px';
-                bmoHeader.style.fontWeight = '600';
-                bmoHeader.style.color = '#6c757d';
-                bmoHeader.style.textTransform = 'uppercase';
-                bmoHeader.style.padding = '4px 0 2px 4px';
-                bmoHeader.style.borderBottom = '1px solid #e9ecef';
                 bmoSection.appendChild(bmoHeader);
                 
                 bmoCompanies.forEach(company => {
@@ -159,17 +153,41 @@ function renderCalendar(earningsData = {}) {
                     companyDiv.title = `${stockSymbol} - Before Hours`;
                     companyDiv.dataset.symbol = stockSymbol;
 
-                    // Data for info popup
-                    const trailingPE = company['Trailing PE'] || company.trailingPE;
-                    const forwardPE = company['Forward PE'] || company.forwardPE;
-                    const trailingPeColor = trailingPE ? getTrailingPeColor(trailingPE) : 'inherit';
-                    const forwardPeColor = forwardPE ? getForwardPeColor(forwardPE, trailingPE) : 'inherit';
+                    // --- Data for info popup ---
                     const stockName = company.name || company.Name;
                     const stockClose = company.close || company.Close;
+                    const trailingPE = company['Trailing PE'] || company.trailingPE;
+                    const forwardPE = company['Forward PE'] || company.forwardPE;
+                    const evEbitda = company['EV/EBITDA'] || 'N/A';
+                    const earningsDate = company.earningsDate || 'N/A';
+                    const high52 = company.fiftyTwoWeekHigh || 'N/A';
+                    const low52 = company.fiftyTwoWeekLow || 'N/A';
+                    const dividend = company.dividendYield || 'N/A';
+                    const beta = company.beta || 'N/A';
+                    const atrPercent = company.ATR_Percent || 'N/A';
+                    const totalRev = company.totalRevenue || 'N/A';
+                    const netInc = company.netIncomeToCommon || 'N/A';
+                    const margin = company.profitMargins || 'N/A';
+                    const desc = company.stock_description || 'No description available';
+                    const marketCap = company['Market Cap'] || company.marketCap;
 
                     companyDiv.innerHTML = `
-                        <img src="${company.stockUrl}" class="earnings-logo" alt="${stockName} logo" onerror="this.style.display='none'"/>
-                        <span>${stockName}</span>
+                        <button class="company-info-btn"
+                                data-stock-name="${escapeHtml(stockName)}"
+                                data-fifty-two-week-high="${escapeHtml(high52)}"
+                                data-current-price="${stockClose != null ? escapeHtml(stockClose.toFixed(2)) : 'N/A'}"
+                                data-fifty-two-week-low="${escapeHtml(low52)}"
+                                data-earnings-date="${escapeHtml(earningsDate)}"
+                                data-beta="${escapeHtml(beta)}"
+                                data-atr-percent="${escapeHtml(atrPercent)}"
+                                title="${escapeHtml(desc)}"
+                                data-trailing-pe="${escapeHtml(trailingPE || 'N/A')}"
+                                data-forward-pe="${escapeHtml(forwardPE || 'N/A')}"
+                                data-market-cap="${escapeHtml(marketCap || 'N/A')}">
+                            <img src="info.png" alt="Info">
+                        </button>
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${escapeHtml(stockName)} logo" onerror="this.style.display='none'"/>
+                        <span>${escapeHtml(stockName)}</span>
                     `;
 
                     const marketDataDiv = document.createElement('div');
@@ -207,12 +225,6 @@ function renderCalendar(earningsData = {}) {
                 const amcHeader = document.createElement('div');
                 amcHeader.className = 'timing-header';
                 amcHeader.textContent = 'After Market Close';
-                amcHeader.style.fontSize = '10px';
-                amcHeader.style.fontWeight = '600';
-                amcHeader.style.color = '#6c757d';
-                amcHeader.style.textTransform = 'uppercase';
-                amcHeader.style.padding = '4px 0 2px 4px';
-                amcHeader.style.borderBottom = '1px solid #e9ecef';
                 amcSection.appendChild(amcHeader);
                 
                 amcCompanies.forEach(company => {
@@ -224,17 +236,41 @@ function renderCalendar(earningsData = {}) {
                     companyDiv.title = `${stockSymbol} - After Hours`;
                     companyDiv.dataset.symbol = stockSymbol;
 
-                    // Data for info popup
-                    const trailingPE = company['Trailing PE'] || company.trailingPE;
-                    const forwardPE = company['Forward PE'] || company.forwardPE;
-                    const trailingPeColor = trailingPE ? getTrailingPeColor(trailingPE) : 'inherit';
-                    const forwardPeColor = forwardPE ? getForwardPeColor(forwardPE, trailingPE) : 'inherit';
+                    // --- Data for info popup ---
                     const stockName = company.name || company.Name;
                     const stockClose = company.close || company.Close;
+                    const trailingPE = company['Trailing PE'] || company.trailingPE;
+                    const forwardPE = company['Forward PE'] || company.forwardPE;
+                    const evEbitda = company['EV/EBITDA'] || 'N/A';
+                    const earningsDate = company.earningsDate || 'N/A';
+                    const high52 = company.fiftyTwoWeekHigh || 'N/A';
+                    const low52 = company.fiftyTwoWeekLow || 'N/A';
+                    const dividend = company.dividendYield || 'N/A';
+                    const beta = company.beta || 'N/A';
+                    const atrPercent = company.ATR_Percent || 'N/A';
+                    const totalRev = company.totalRevenue || 'N/A';
+                    const netInc = company.netIncomeToCommon || 'N/A';
+                    const margin = company.profitMargins || 'N/A';
+                    const desc = company.stock_description || 'No description available';
+                    const marketCap = company['Market Cap'] || company.marketCap;
 
                     companyDiv.innerHTML = `
-                        <img src="${company.stockUrl}" class="earnings-logo" alt="${stockName} logo" onerror="this.style.display='none'"/>
-                        <span>${stockName}</span>
+                        <button class="company-info-btn"
+                                data-stock-name="${escapeHtml(stockName)}"
+                                data-fifty-two-week-high="${escapeHtml(high52)}"
+                                data-current-price="${stockClose != null ? escapeHtml(stockClose.toFixed(2)) : 'N/A'}"
+                                data-fifty-two-week-low="${escapeHtml(low52)}"
+                                data-earnings-date="${escapeHtml(earningsDate)}"
+                                data-beta="${escapeHtml(beta)}"
+                                data-atr-percent="${escapeHtml(atrPercent)}"
+                                title="${escapeHtml(desc)}"
+                                data-trailing-pe="${escapeHtml(trailingPE || 'N/A')}"
+                                data-forward-pe="${escapeHtml(forwardPE || 'N/A')}"
+                                data-market-cap="${escapeHtml(marketCap || 'N/A')}">
+                            <img src="info.png" alt="Info">
+                        </button>
+                        <img src="${company.stockUrl}" class="earnings-logo" alt="${escapeHtml(stockName)} logo" onerror="this.style.display='none'"/>
+                        <span>${escapeHtml(stockName)}</span>
                     `;
 
                     const marketDataDiv = document.createElement('div');
@@ -287,6 +323,13 @@ const calendarContainer = document.getElementById('calendar-container');
 if (calendarContainer) {
     calendarContainer.addEventListener('click', function(event) {
         const earningsItem = event.target.closest('.earnings-item');
+        const infoBtn = event.target.closest('.company-info-btn');
+
+        if (infoBtn) {
+            event.stopPropagation();
+            showInfoPopup(infoBtn);
+            return;
+        }
         if (earningsItem && earningsItem.dataset.symbol) {
             showChartPopup(earningsItem.dataset.symbol);
         }
@@ -332,3 +375,12 @@ async function updateCalendar() {
 
 // Initial calendar render
 updateCalendar();
+
+function escapeHtml(raw) {
+    if (raw === null || raw === undefined) return '';
+    return String(raw)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
