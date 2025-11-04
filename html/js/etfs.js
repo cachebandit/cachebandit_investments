@@ -1,14 +1,25 @@
 import {
     formatMarketCap,
     formatValue,
-    formatChange,
-    formatPercentChange,
+    formatChange, 
+    formatPercentChange, 
     formatRsi,
     getRsiBackgroundStyle
 } from './utils.js';
 import { getCategoryData } from './dataSource.js';
 import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
+
+function changeBg(pctChange) {
+  if (pctChange === null || pctChange === undefined || !isFinite(pctChange)) {
+    return "var(--hover-bg)";
+  }
+  const abs = Math.abs(pctChange);
+  const green = ["#d4edda", "#a5d6a7", "#81c784", "#388e3c"];
+  const red   = ["#ffe3e0", "#ffb3ad", "#ff7961", "#d74444"];
+  const idx = abs < 1 ? 0 : abs < 3 ? 1 : abs < 6 ? 2 : 3;
+  return pctChange >= 0 ? green[idx] : red[idx];
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const isLocal = () => ["localhost", "127.0.0.1"].includes(location.hostname);
@@ -134,7 +145,6 @@ function renderEtfRow(etf) {
     const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
         ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
         : 'N/A';
-    const changeClass = pctChangeNum > 0 ? 'metric-change-up' : (pctChangeNum < 0 ? 'metric-change-down' : '');
 
     const rsiColor = getRsiBackgroundStyle(etf.RSI);
 
@@ -156,7 +166,11 @@ function renderEtfRow(etf) {
             <td class="high">${etf.High != null ? formatValue(etf.High) : '-'}</td>
             <td class="low">${etf.Low != null ? formatValue(etf.Low) : '-'}</td>
             <td class="close">${etf.Close != null ? formatValue(etf.Close) : '-'}</td>
-            <td class="change"><div class="metric-main ${changeClass}">${changeText}</div></td>
+            <td class="change">
+              <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
+                ${changeText}
+              </div>
+            </td>
             <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div></td>
         </tr>
     `;
