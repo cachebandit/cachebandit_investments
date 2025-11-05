@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         buttonContainer.style.display = 'flex'; // Show the button only on localhost
         refreshButton.addEventListener('click', function() {
             this.setAttribute('data-refreshing', 'true'); // Set the refreshing flag
-            fetchWatchlistData(); // Call the function to fetch data
+            fetchWatchlistData({ refresh: true, scope: 'watchlist' }); // Call the function to fetch data
         });
     }
     
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-async function fetchWatchlistData() {
+async function fetchWatchlistData(opts = {}) {
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.style.display = 'inline-block';
 
@@ -98,11 +98,10 @@ async function fetchWatchlistData() {
 
     try {
         let lastUpdated = '';
-        const refreshButton = document.getElementById('refresh-button');
-        const isRefreshing = document.getElementById('refresh-button').getAttribute('data-refreshing') === 'true';
+        const isRefreshing = opts.refresh || false;
 
         for (const [index, category] of categories.entries()) {
-            const responseData = await getCategoryData(category, { refresh: isRefreshing });
+            const responseData = await getCategoryData(category, { refresh: isRefreshing, scope: 'watchlist' });
 
             // Extract the data and last_updated timestamp
             // Handle both local server format (data, last_updated) and static build format (items, updated_at)
@@ -120,6 +119,7 @@ async function fetchWatchlistData() {
         }
         
         // Reset the refreshing flag
+        const refreshButton = document.getElementById('refresh-button');
         if (refreshButton) {
             refreshButton.setAttribute('data-refreshing', 'false');
         }

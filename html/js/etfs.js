@@ -36,6 +36,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     loadEtfData(); // Initial load
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.expand-toggle');
+      if (!btn) return;
+      e.stopPropagation();
+
+      const row = btn.closest('tr');
+      const expandRow = row && row.nextElementSibling;
+      if (!expandRow || !expandRow.classList.contains('expand-row')) return;
+
+      const icon = btn.querySelector('img');
+      const isOpen = expandRow.style.display !== 'none';
+
+      expandRow.style.display = isOpen ? 'none' : '';
+      btn.classList.toggle('is-open', !isOpen);
+      if (icon) {
+          icon.src = isOpen ? 'plus.png' : 'minus.png';
+      }
+    });
 });
 
 async function loadEtfData() {
@@ -149,29 +168,54 @@ function renderEtfRow(etf) {
     const rsiColor = getRsiBackgroundStyle(etf.RSI);
 
     return `
-        <tr data-symbol="${symbol}">
-            <td class="company-name">
-                <div class="company-cell">
-                    <img class="company-logo chart-clickable" src="${logoUrl}" alt="${name} logo" onerror="this.style.display='none'" data-symbol="${symbol}">
-                    <div class="company-text-block">
-                        <div class="company-name-line">
-                            <span class="company-name-text chart-clickable" data-symbol="${symbol}">${name}</span>
-                            <span class="ticker-chip">${symbol}</span>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td class="market-cap">${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</td>
-            <td class="open">${etf.Open != null ? formatValue(etf.Open) : '-'}</td>
-            <td class="high">${etf.High != null ? formatValue(etf.High) : '-'}</td>
-            <td class="low">${etf.Low != null ? formatValue(etf.Low) : '-'}</td>
-            <td class="close">${etf.Close != null ? formatValue(etf.Close) : '-'}</td>
-            <td class="change">
-              <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
-                ${changeText}
-              </div>
-            </td>
-            <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div></td>
-        </tr>
-    `;
+  <tr data-symbol="${symbol}">
+    <td class="company-name">
+      <div class="company-cell">
+        <button class="expand-toggle" aria-label="Expand/Collapse">
+          <img src="plus.png" alt="+">
+        </button>
+        <img class="company-logo chart-clickable" src="${logoUrl}" alt="${name} logo" onerror="this.style.display='none'" data-symbol="${symbol}">
+        <div class="company-text-block">
+          <div class="company-name-line">
+            <span class="company-name-text chart-clickable" data-symbol="${symbol}">${name}</span>
+            <span class="ticker-chip">${symbol}</span>
+          </div>
+        </div>
+      </div>
+    </td>
+    <td class="market-cap">${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</td>
+    <td class="open">${etf.Open != null ? formatValue(etf.Open) : '-'}</td>
+    <td class="high">${etf.High != null ? formatValue(etf.High) : '-'}</td>
+    <td class="low">${etf.Low != null ? formatValue(etf.Low) : '-'}</td>
+    <td class="close">${etf.Close != null ? formatValue(etf.Close) : '-'}</td>
+    <td class="change">
+      <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
+        ${changeText}
+      </div>
+    </td>
+    <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div></td>
+  </tr>
+  <tr class="expand-row" data-symbol="${symbol}" style="display:none;">
+    <td colspan="8">
+      <div class="expand-panel">
+        <div class="expand-item">
+          <span class="label">OHLC</span>
+          <div>O: ${etf.Open != null ? formatValue(etf.Open) : '-'} | H: ${etf.High != null ? formatValue(etf.High) : '-'} | L: ${etf.Low != null ? formatValue(etf.Low) : '-'} | C: ${etf.Close != null ? formatValue(etf.Close) : '-'}</div>
+        </div>
+        <div class="expand-item">
+          <span class="label">Market Cap</span>
+          <div>${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</div>
+        </div>
+        <div class="expand-item">
+          <span class="label">Change</span>
+          <div>${changeText}</div>
+        </div>
+        <div class="expand-item">
+          <span class="label">RSI</span>
+          <div>${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+`;
 }
