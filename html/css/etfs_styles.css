@@ -1,0 +1,12 @@
+.holdings-wrap { display: block; width: 100%; }
+.holdings-title { font-weight: 600; margin-bottom: 8px; }
+.holdings-table { width: 100%; border-collapse: collapse; }
+.holdings-table th, .holdings-table td { 
+  padding: 6px 8px; 
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  font-size: 13px;
+}
+.holdings-table th { color: var(--text-secondary); font-weight: 600; }
+.h-wt { text-align: right; white-space: nowrap; }
+.empty-note { color: var(--text-secondary); font-style: italic; }

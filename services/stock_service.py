@@ -16,6 +16,56 @@ class RateLimitError(Exception):
 # Initialize cache
 cache = StockCache()
 
+def _to_pct(num):
+    try:
+        # yfinance often gives 0.0795 for 7.95% (VOO sample you posted).
+        # Show as 7.95 with 2dp on the FE.
+        return float(num) * 100.0
+    except Exception:
+        return None
+
+def fetch_etf_top_holdings(symbol: str):
+    """
+    Always returns list[ {symbol,name,weight(float%)} ] or []
+    """
+    try:
+        t = yf.Ticker(symbol)
+
+        # Newer API: funds_data.top_holdings (DataFrame)
+        fd = getattr(t, "funds_data", None)
+        th = getattr(fd, "top_holdings", None) if fd is not None else None
+        if th is not None and hasattr(th, "iterrows"):
+            out = []
+            for idx, row in th.iterrows():
+                out.append({
+                    "symbol": str(idx),
+                    "name": str(row.get("Name", "")),
+                    "weight": _to_pct(row.get("Holding Percent"))
+                })
+            if out:
+                return out
+
+        # Fallbacks seen across yfinance versions
+        for attr in ("fund_holdings", "fund_holding"):
+            fh = getattr(t, attr, None)
+            if isinstance(fh, list):
+                return [{
+                    "symbol": (h.get("symbol") or h.get("ticker") or ""),
+                    "name":   (h.get("shortName") or h.get("longName") or h.get("name") or ""),
+                    "weight": _to_pct(h.get("holdingPercent") or h.get("weight") or h.get("heldPercent")),
+                } for h in fh]
+            if isinstance(fh, dict) and "holdings" in fh:
+                return [{
+                    "symbol": (h.get("symbol") or h.get("ticker") or ""),
+                    "name":   (h.get("shortName") or h.get("longName") or h.get("name") or ""),
+                    "weight": _to_pct(h.get("holdingPercent") or h.get("weight") or h.get("heldPercent")),
+                } for h in fh["holdings"]]
+
+    except Exception:
+        # swallow and return empty; server must not 500
+        pass
+    return []
+
 def _clean_value(value):
     """Converts NaN to None, otherwise returns value."""
     # Check for NaN, which can be a float. math.isnan() will fail on non-floats.
@@ -63,6 +113,27 @@ def load_watchlist_data():
 
 # Global watchlist data, including the dynamically created "Owned" category
 watchlist_data = load_watchlist_data()
+
+def _is_etf_category(c: str) -> bool:
+    return (c or "").strip().lower() in ("etf", "etfs")
+
+def _etf_holdings_cache_key(sym):
+    return f"etf_holdings::{sym.upper()}"
+
+def _add_holdings_to_etfs(items):
+    for item in items:
+        sym = item.get("Symbol") or item.get("symbol")
+        if not sym:
+            item["holdings"] = []
+            continue
+
+        key = _etf_holdings_cache_key(sym)
+        holdings = cache.get(key)
+        if holdings is None:
+            holdings = fetch_etf_top_holdings(sym)
+            cache.set(key, holdings, timeout=60*60*24)  # 24h TTL
+        item["holdings"] = holdings
+    return items
 
 def fetch_category_data(category, refresh=False):
     """Fetch data for a specific category from the watchlist using batch requests."""

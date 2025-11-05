@@ -10,6 +10,29 @@ import { getCategoryData } from './dataSource.js';
 import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
 
+// etfs.js — add near top-level helpers
+function renderHoldingsTable(holdings = []) {
+  if (!Array.isArray(holdings) || holdings.length === 0) {
+    return `<div class="empty-note">No holdings available.</div>`;
+  }
+  const rows = holdings.map(h => `
+    <tr>
+      <td class="h-sym">${h.symbol || '-'}</td>
+      <td class="h-name">${h.name || '-'}</td>
+      <td class="h-wt">${(h.weight != null && isFinite(h.weight)) ? h.weight.toFixed(2) + '%' : '-'}</td>
+    </tr>
+  `).join('');
+  return `
+    <div class="holdings-wrap">
+      <div class="holdings-title">Top Holdings</div>
+      <table class="holdings-table">
+        <thead><tr><th>Symbol</th><th>Name</th><th>Weight</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
 function changeBg(pctChange) {
   if (pctChange === null || pctChange === undefined || !isFinite(pctChange)) {
     return "var(--hover-bg)";
@@ -195,25 +218,12 @@ function renderEtfRow(etf) {
     </td>
     <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div></td>
   </tr>
+
+  <!-- REPLACED CONTENT: the expander now ONLY shows holdings -->
   <tr class="expand-row" data-symbol="${symbol}" style="display:none;">
     <td colspan="8">
       <div class="expand-panel">
-        <div class="expand-item">
-          <span class="label">OHLC</span>
-          <div>O: ${etf.Open != null ? formatValue(etf.Open) : '-'} | H: ${etf.High != null ? formatValue(etf.High) : '-'} | L: ${etf.Low != null ? formatValue(etf.Low) : '-'} | C: ${etf.Close != null ? formatValue(etf.Close) : '-'}</div>
-        </div>
-        <div class="expand-item">
-          <span class="label">Market Cap</span>
-          <div>${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</div>
-        </div>
-        <div class="expand-item">
-          <span class="label">Change</span>
-          <div>${changeText}</div>
-        </div>
-        <div class="expand-item">
-          <span class="label">RSI</span>
-          <div>${etf.RSI !== undefined ? formatRsi(etf.RSI) : '-'}</div>
-        </div>
+        ${renderHoldingsTable(etf.holdings)}
       </div>
     </td>
   </tr>
