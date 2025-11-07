@@ -16,6 +16,77 @@ class RateLimitError(Exception):
 # Initialize cache
 cache = StockCache()
 
+def _first(*vals):
+    for v in vals:
+        if v is not None:
+            return v
+    return None
+
+def _num(x):
+    try:
+        return float(x)
+    except Exception:
+        return None
+
+def _pct_num(x):
+    """Accept decimal (0.0145) or percentage (1.45) and normalize to percent."""
+    v = _num(x)
+    if v is None:
+        return None
+    # yfinance can return 0.09 for 0.09% or 0.0009 for 0.09%.
+    # If the value is already > 1, it's likely a mis-scaled percentage (e.g., 9.45 for 0.0945%).
+    # We will treat any value > 1 as needing division by 100.
+    if v > 1:
+        return v / 100.0
+    else: # if it's a decimal like 0.0009, convert to percent
+        return v * 100.0
+
+def _expense_ratio_pct(x):
+    """
+    Expense ratio is often returned as a percentage (e.g., 0.03 for 0.03%).
+    We only need to scale it if it's returned as a whole number.
+    """
+    v = _num(x)
+    if v is None:
+        return None
+    return v / 100.0 if v > 1.0 else v
+
+def _load_info_safe(t):
+    info = {}
+    try:
+        # yfinance>=0.2 fast_info is cheap
+        fi = getattr(t, "fast_info", None)
+        if fi:
+            try:
+                info.update(dict(fi))
+            except Exception:
+                pass
+        # fall back to full info for ETF fields
+        try:
+            base = t.info or {}
+            if isinstance(base, dict):
+                info.update(base)
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return info
+
+def get_etf_fund_stats(ticker_obj):
+    info = _load_info_safe(ticker_obj)
+
+    return {
+        "price": _first(_num(info.get("last_price")), _num(info.get("regularMarketPrice"))),
+        "netAssets": _first(_num(info.get("totalAssets")), _num(info.get("totalAssetsUSD")), _num(info.get("netAssets"))),
+        "nav": _first(_num(info.get("navPrice")), _num(info.get("nav"))),
+        "sharesOutstanding": _num(info.get("sharesOutstanding")),
+        "expenseRatioAnnual": _expense_ratio_pct(info.get("netExpenseRatio")),
+        "dividendYieldTTM": _pct_num(_first(info.get('trailingAnnualDividendYield'), info.get('yield'))),
+        "ytdReturnPct": _pct_num(info.get("ytdReturn")),
+        "fiftyTwoWeekLow": _num(info.get("fiftyTwoWeekLow")),
+        "fiftyTwoWeekHigh": _num(info.get("fiftyTwoWeekHigh"))
+    }
+
 def _to_pct(num):
     try:
         # yfinance often gives 0.0795 for 7.95% (VOO sample you posted).
@@ -169,7 +240,8 @@ def fetch_category_data(category, refresh=False):
 
         try:
             # Then, try to get the company info, which can sometimes fail
-            info = tickers.tickers[symbol].info
+            ticker_obj = tickers.tickers.get(symbol)
+            info = ticker_obj.info if ticker_obj else {}
         except Exception as e:
             # If this error is a rate-limit, propagate a RateLimitError so the handler returns 429
             msg = str(e)
@@ -177,6 +249,7 @@ def fetch_category_data(category, refresh=False):
                 raise RateLimitError(msg)
             logging.warning(f"Could not fetch .info for {symbol}: {e}. Using fallback.")
             info = {} # Use an empty dict if info fails, but we still have market_data
+            ticker_obj = None
 
         # Get earnings timestamp
         earnings_timestamp = info.get('earningsTimestamp')
@@ -190,8 +263,11 @@ def fetch_category_data(category, refresh=False):
             earningsTiming = 'BMO' if ct_date.hour < 12 else 'AMC'
         
         # For ETFs, yfinance often uses 'totalAssets' instead of 'marketCap'.
-        # We must check for marketCap first, and only if it's missing or None, fall back to totalAssets.
-        market_cap_raw = info.get('marketCap') if info.get('marketCap') is not None else info.get('totalAssets')
+        # We will prioritize 'netAssets', then 'totalAssets', and finally 'marketCap'.
+        if _is_etf_category(category):
+            market_cap_raw = info.get('netAssets') or info.get('totalAssets')
+        else:
+            market_cap_raw = info.get('marketCap')
 
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
@@ -220,6 +296,10 @@ def fetch_category_data(category, refresh=False):
             **market_data 
         }
         result_data.append(final_stock)
+        
+        # Attach fund stats for ETFs
+        if _is_etf_category(category) and ticker_obj:
+            final_stock["fund_stats"] = get_etf_fund_stats(ticker_obj)
 
     return result_data
 

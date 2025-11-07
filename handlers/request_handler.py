@@ -5,6 +5,7 @@ import traceback
 from urllib.parse import urlparse, parse_qs
 import logging
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
 from services.stock_service import fetch_category_data, fetch_detailed_info, cache as _cache, update_stock_flag, fetch_earnings_data, RateLimitError, watchlist_data, _is_etf_category, fetch_etf_top_holdings
@@ -135,7 +136,12 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
 
             set_cache_safe(cache_key, data, ttl_seconds=3600)
             
-            response_payload = {"data": data, "last_updated": datetime.utcnow().isoformat() + "Z"}
+            # Format the timestamp consistently with the cache
+            utc_now = datetime.now(ZoneInfo("UTC"))
+            ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
+            last_updated_str = ct_time.strftime('%m/%d %I:%M %p CT')
+            
+            response_payload = {"data": data, "last_updated": last_updated_str}
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()

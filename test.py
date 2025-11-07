@@ -3,9 +3,10 @@ import json
 
 # Define the ticker symbol you want to inspect
 # Using AAPL as an example because it has a rich set of data.
-etf = yf.Ticker("VOO")
+etf = yf.Ticker("voo")
 holdings = etf.funds_data
 print(holdings.top_holdings)
+print(etf.info)
 # Create a Ticker object
 #ticker = yf.Ticker(ticker_symbol)
 
