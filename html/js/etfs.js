@@ -165,7 +165,7 @@ function renderFundStats(stats = {}) {
     <div class="fund-stats-flat">
         <table class="fund-stats-table">
           <tbody>
-            <tr><td>PRICE</td><td>${price(p)}</td></tr>
+            <tr><td>Price</td><td>${price(p)}</td></tr>
             <tr><td>Net Assets</td><td>${money(netAssets)}</td></tr>
             <tr><td>NAV</td><td>${price(nav)}</td></tr>
             <tr><td>Shares Outstanding</td><td>${n(sharesOutstanding)==null ? '—' : n(sharesOutstanding).toLocaleString('en-US')}</td></tr>
@@ -373,7 +373,7 @@ function renderEtfTable(etfs) {
             <thead>
                 <tr>
                     <th class="company-name">Name</th>
-                    <th class="market-cap">Market Cap</th>
+                    <th class="market-cap">Net Assets</th>
                     <th class="open">Open</th>
                     <th class="high">High</th>
                     <th class="low">Low</th>
