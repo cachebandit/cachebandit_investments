@@ -82,7 +82,7 @@ def get_etf_fund_stats(ticker_obj):
         "sharesOutstanding": _num(info.get("sharesOutstanding")),
         "expenseRatioAnnual": _expense_ratio_pct(info.get("netExpenseRatio")),
         "dividendYieldTTM": _pct_num(_first(info.get('trailingAnnualDividendYield'), info.get('yield'))),
-        "ytdReturnPct": _pct_num(info.get("ytdReturn")),
+        "ytdReturnPct": _num(info.get("ytdReturn")),
         "fiftyTwoWeekLow": _num(info.get("fiftyTwoWeekLow")),
         "fiftyTwoWeekHigh": _num(info.get("fiftyTwoWeekHigh"))
     }

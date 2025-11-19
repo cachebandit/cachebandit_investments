@@ -75,7 +75,7 @@ function getLogoForSymbol(sym) {
 function syncChartHeight(symbol) {
   const chartBox = document.getElementById(`tv-adv-${symbol}`);
   if (!chartBox) return 0;
-  const target = 620;   // pick 600–660 if you prefer
+  const target = 640;   // pick 600–660 if you prefer
   chartBox.style.height = `${target}px`;
   return target;
 }
@@ -105,7 +105,7 @@ function ensureAdvChart(symbol) {
     s.src  = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
     s.async = true;
     s.text = JSON.stringify({
-      autosize: false,     // <-- important
+      autosize: false,     // <- important
       width:  w,
       height: h,
       symbol: symbol,
@@ -148,35 +148,36 @@ function ensureAdvChart(symbol) {
 }
 
 function renderFundStats(stats = {}) {
-  const n = (v) => (v == null || !isFinite(v)) ? null : Number(v);
-  const money = (v) => (n(v) == null) ? '—' : '$' + n(v).toLocaleString('en-US', { maximumFractionDigits: 2 });
-  const price = (v) => (n(v) == null) ? '—' : '$' + n(v).toFixed(2);
-  const pct   = (v) => (n(v) == null) ? '—' : n(v).toFixed(2) + '%';
-  const range = (lo, hi) => (n(lo) == null || n(hi) == null) ? '—' : `$${n(lo).toFixed(2)} → $${n(hi).toFixed(2)}`;
+    const n = (v) => (v == null || !isFinite(v)) ? null : Number(v);
+    const money = (v) => (n(v) == null) ? '—' : '$' + n(v).toLocaleString('en-US', { maximumFractionDigits: 2 });
+    const price = (v) => (n(v) == null) ? '—' : '$' + n(v).toFixed(2);
+    const pct   = (v) => (n(v) == null) ? '—' : n(v).toFixed(2) + '%';
+    const range = (lo, hi) => (n(lo) == null || n(hi) == null) ? '—' : `$${n(lo).toFixed(2)} → $${n(hi).toFixed(2)}`;
 
-  const {
-    price: p,
-    netAssets, nav, sharesOutstanding,
-    expenseRatioAnnual, dividendYieldTTM, ytdReturnPct,
-    fiftyTwoWeekLow, fiftyTwoWeekHigh
-  } = stats || {};
+    const {
+        price: p,
+        netAssets, nav, sharesOutstanding,
+        expenseRatioAnnual, dividendYieldTTM, ytdReturnPct,
+        fiftyTwoWeekLow, fiftyTwoWeekHigh
+    } = stats || {};
 
-  return `
-    <div class="fund-stats-flat">
-        <table class="fund-stats-table">
-          <tbody>
-            <tr><td>Price</td><td>${price(p)}</td></tr>
-            <tr><td>Net Assets</td><td>${money(netAssets)}</td></tr>
-            <tr><td>NAV</td><td>${price(nav)}</td></tr>
-            <tr><td>Shares Outstanding</td><td>${n(sharesOutstanding)==null ? '—' : n(sharesOutstanding).toLocaleString('en-US')}</td></tr>
-            <tr><td>Expense Ratio</td><td>${pct(expenseRatioAnnual)}</td></tr>
-            <tr><td>Dividend Yield (TTM)</td><td>${pct(dividendYieldTTM)}</td></tr>
-            <tr><td>YTD Return</td><td>${pct(ytdReturnPct)}</td></tr>
-            <tr><td>52-Week Range</td><td>${range(fiftyTwoWeekLow, fiftyTwoWeekHigh)}</td></tr>
-          </tbody>
-        </table>
-    </div>
-  `;
+    const rows = [
+        ['Price', price(p)],
+        ['Net Assets', money(netAssets)],
+        ['NAV', price(nav)],
+        ['Shares Outstanding', (n(sharesOutstanding)==null ? '—' : n(sharesOutstanding).toLocaleString('en-US'))],
+        ['Expense Ratio', pct(expenseRatioAnnual)],
+        ['Dividend Yield (TTM)', pct(dividendYieldTTM)],
+        ['YTD Return', pct(ytdReturnPct)],
+        ['52-Week Range', range(fiftyTwoWeekLow, fiftyTwoWeekHigh)],
+    ].map(([k,v]) => `<div class="fund-stats-label">${k}</div><div class="fund-stats-value">${v}</div>`).join('');
+
+    return `
+        <div class="fund-stats-flat">
+            <div class="holdings-title" style="margin:0 0 8px; text-align:left;">Fund Stats</div>
+            <div class="fund-stats-grid">${rows}</div>
+        </div>
+    `;
 }
 
 function renderHoldingsTable(holdings = [], stats = {}, parentSymbol = "") {

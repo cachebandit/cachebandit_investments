@@ -1,146 +1,183 @@
-/* Expand panel becomes a 2-col grid: holdings (left) + chart (right) */
-/* Full-width block inside the table cell */
-.expand-row > td {
-  padding: 0 12px 16px;
-  overflow: visible;               /* prevent clipping inside the cell */
+/* ===== ETF Page Dropdown Layout & Styles (FINAL) ===== */
+
+:root{
+  --etfExpandHeight: 640px; /* change this to make BOTH sides taller/shorter */
 }
 
-.expand-panel {
+/* spacing from header row so dropdown doesn't touch it */
+.expand-row > td { padding: 16px 12px 16px; }
+
+/* two columns: left info + right chart (tight middle gap) */
+.expand-panel{
   display: flex;
-  gap: 12px;
+  gap: 8px;                 /* tighter center whitespace */
   width: 100%;
-  align-items: stretch;            /* stretch both columns */
-  min-height: 620px;               /* match JS */
+  align-items: stretch;     /* same overall height */
+  min-height: var(--etfExpandHeight);
+  height: var(--etfExpandHeight);
 }
 
-/* Left: holdings table fixed-ish width */
-.holdings-wrap { flex: 0 0 520px; min-width: 320px; }
-/* Use flex to define a 1/4 width ratio */
-.holdings-wrap { flex: 1 1 25%; min-width: 320px; }
+/* ensure visible content starts at the same Y on both sides */
+.holdings-wrap,
+.tv-adv { box-sizing: border-box; }
+
+/* Ensure both panels stretch to full height */
+.holdings-wrap,
+.tv-adv {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 30% left, 70% right */
+.holdings-wrap {
+  flex: 0 0 30%;
+}
 
 .tv-adv {
-  flex: 3 1 75%;
-  min-width: 0;
-  height: 620px;                   /* fallback; JS sets too */
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #fff;
-  overflow: hidden;
+  flex: 0 0 70%;
 }
 
-/* Ensure the embed fills its box */
-.tradingview-widget-container,
-.tradingview-widget-container__widget,
-.tradingview-widget-container__widget iframe {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
+/* ---------- LEFT PANEL: Top Holdings + Fund Stats ---------- */
+/* 3-row grid: [title] [table grows] [stats at bottom] */
+.holdings-wrap{
+  background:#fff;
+  border:1px solid var(--border-color);
+  border-radius:10px;
+  padding:8px 12px 10px;
+  min-width:320px;
+  margin-top:4px;
+
+  height:var(--etfExpandHeight);
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  overflow:hidden;
 }
 
-/* stack on small screens */
-@media (max-width: 1100px) {
-  .expand-panel { flex-direction: column; }
-  .holdings-wrap { flex: 0 0 auto; width: 100%; }
-  .tv-adv { height: 420px; }
+/* section title */
+.holdings-title{
+  grid-row:1;
+  margin:0 0 8px;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--text-secondary);
 }
 
-/* Compact themed holdings table (no dead space) */
-.holdings-title {
-  font-weight: 600;
-  font-size: 14px;
-  margin: 12px 0 12px;
-  text-align: center;
+/* Top Holdings table fills remaining space */
+.holdings-table{
+  grid-row:2;
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  overflow:auto;                  /* lets table grow without leaving big bottom gap */
 }
 
-.holdings-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-family: inherit;
-}
+/* COMPACT rows (no font-size change) */
+.holdings-table thead th { padding:5px 8px; }
+.holdings-table tbody td { padding:6px 8px; line-height:1.2; }
 
 .holdings-table th,
-.holdings-table td {
-  border-bottom: 1px solid var(--border-color);
-  font-size: 13px;
-  padding: 6px 8px;
+.holdings-table td{
+  font-size:12px;
+  border-bottom:1px solid var(--border-color);
+}
+.holdings-table thead th{
+  color:var(--text-secondary);
+  font-weight:600;
+}
+.holdings-table tbody td{
+  color:var(--text-primary, #111); /* company text black */
+  font-weight:500;
+}
+.holdings-table tbody tr:last-child td{ border-bottom:none; }
+.holdings-table tbody tr:hover{ background:var(--hover-bg); }
+
+/* columns */
+.symbol-badge{
+  min-width:44px;                 /* was 48; slightly tighter */
+  text-align:center;
+  background:var(--hover-bg);
+  color:var(--text-secondary);
+  font-weight:600;
+  font-size:11px;
+  padding:2px 6px;
+  border-radius:6px;
+  line-height:1;
+}
+.h-col-symbol{ width:80px; }      /* was 86 */
+.h-col-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-left:8px; }
+.h-col-weight{ width:86px; }      /* was 92 */
+.h-wt{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* Fund Stats at the bottom of the card */
+.fund-stats-flat{
+  grid-row:3;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--border-color);
+  background:transparent;
 }
 
-.holdings-table th {
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 12px;
+/* tidy two-column list (label | value) */
+.fund-stats-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  row-gap:8px;
+  column-gap:12px;
+  align-items:center;
+}
+.fund-stats-label{
+  color:var(--text-secondary);
+  font-size:12px;
+}
+.fund-stats-value{
+  text-align:right;
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 
-.holdings-table tbody tr:hover {
-  background-color: var(--hover-bg);
+/* on wide screens, show two pairs per row */
+@media (min-width:1100px){
+  .fund-stats-grid{
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;
+  }
 }
 
-/* Company + ticker chip */
-.holdings-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px; /* smaller gap for compactness */
-  min-width: 0;
+/* ---------- RIGHT PANEL: TradingView chart ---------- */
+.tv-adv{
+  border:1px solid var(--border-color);
+  border-radius:10px;
+  background:#fff;
+  padding:8px 8px 8px;
+  height:var(--etfExpandHeight);
+  min-width:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
-/* Symbol badge */
-.symbol-badge {
-  display: inline-block;
-  background: var(--hover-bg);
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 8px;
-  line-height: 1;
-  white-space: nowrap;
+/* Make the TradingView embed fill its container */
+.tradingview-widget-container,
+.tradingview-widget-container__widget,
+.tradingview-widget-container__widget iframe{
+  width:100% !important;
+  height:100% !important;
+  display:block;
 }
 
-/* Kill right-side whitespace in table by fixing weight column */
-.h-col-symbol { width: 80px; }
-.h-col-name { width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.h-col-weight  { width: 90px; } /* tight */
-.h-wt {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-/* Remove padding between symbol and name for a tight look */
-.holdings-table .h-col-symbol {
-  padding-right: 0;
-}
-.holdings-table .h-col-name {
-  padding-left: 6px;
-}
-
-.fund-stats-flat {
-  margin-top: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #fff;
-  padding: 8px;
-}
-
-.fund-stats-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-family: inherit;
-  font-size: 12px;
-}
-
-.fund-stats-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.fund-stats-table tr:last-child td {
-  border-bottom: none;
-}
-
-.fund-stats-table td:first-child {
-  color: var(--text-secondary);
-  width: 50%;
+/* ---------- Mobile: stack ---------- */
+@media (max-width:1100px){
+  .expand-panel{ flex-direction:column; }
+  .holdings-wrap{
+    flex:0 0 auto;
+    width:100%;
+    max-width:none;
+    height:auto;
+    display:block;
+    padding:12px;
+  }
+  .tv-adv{ height:420px; padding:8px; }
 }

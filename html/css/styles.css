@@ -109,6 +109,16 @@ th, td {
     white-space: nowrap;
 }
 
+/* Remove ellipsis from badge cells and center them */
+th.change, td.change,
+th.rsi, td.rsi {
+    overflow: visible;
+    text-overflow: clip;
+    text-align: center;
+    padding: 14px 12px;
+    white-space: normal;
+}
+
 tbody tr {
     transition: background-color 0.2s ease;
 }
@@ -154,9 +164,9 @@ th.open, td.open,
 th.high, td.high,
 th.low, td.low,
 th.close, td.close { width: 8%; }
-th.change, td.change { width: 8%; }
+th.change, td.change { width: 12%; }
 th.percent-change, td.percent-change { width: 9%; }
-th.rsi, td.rsi { width: 8%; }
+th.rsi, td.rsi { width: 12%; }
 
 th.change, td.change,
 th.percent-change, td.percent-change,

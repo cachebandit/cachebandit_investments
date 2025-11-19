@@ -135,12 +135,23 @@ td.rsi .badge-metric {
   border-radius: 4px;
   line-height: 1;
   color: #000;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Ensure good text contrast on bright or dark colors */
 .badge-metric[style*="background-color: #FF6347"],
 .badge-metric[style*="background-color: #f44336"] { 
   color: #fff;
+}
+
+/* RSI column stays right-aligned */
+td.rsi {
+  text-align: center;
+  overflow: visible;
+  padding-right: 12px;
+  padding-left: 12px;
+  white-space: normal;
 }
 
 /* === Change Badge (shaded by percent change) === */
@@ -157,10 +168,16 @@ td.rsi .badge-metric {
   line-height: 1;
   color: #000; /* black text */
   box-sizing: border-box;
-  margin: 0 auto; /* center in cell */
+  margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Center the badge in the Change column */
 td.change { 
-  text-align: center; 
+  text-align: center;
+  overflow: visible;
+  padding-right: 12px;
+  padding-left: 12px;
+  white-space: normal;
 }
