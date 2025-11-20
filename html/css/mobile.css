@@ -19,6 +19,7 @@
     align-items: center;
     text-align: center;
     gap: 12px;
+    box-sizing: border-box; /* Ensure padding is included in the width */
     position: relative;
   }
 
@@ -426,6 +427,45 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
+  
+  /* Override card view for ETF holdings table on mobile */
+  .holdings-table {
+    display: table !important;
+  }
+
+  .holdings-table thead {
+    display: table-header-group !important;
+  }
+
+  /* Ensure the header row itself is also a table-row */
+  .holdings-table thead tr {
+    display: table-row !important;
+    border: none !important; /* Remove any card-like borders */
+  }
+
+  .holdings-table tbody {
+    display: table-row-group !important;
+  }
+
+  .holdings-table tbody tr {
+    display: table-row !important;
+    border: none !important; /* Remove card border */
+  }
+
+  /* Remove the unwanted bottom border from cells inside the holdings table */
+  .holdings-table td {
+    border-bottom: none !important;
+  }
+
+  /* Also remove the border from the header cells, which is causing the line */
+  .holdings-table th {
+    border-bottom: none !important;
+  }
+
+  /* Ensure the holdings table headers are visible on mobile */
+  .holdings-table th {
+    display: table-cell !important;
+  }
 
   .tv-adv {
     flex: 1 1 auto !important;
@@ -476,5 +516,9 @@
 
   .chart-label {
     width: 70px !important;
+  }
+  .info-popup div[style*="flex-grow: 1;"] {
+    font-size: 14px !important;
+    overflow: hidden !important;
   }
 }

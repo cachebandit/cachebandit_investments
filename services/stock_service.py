@@ -300,6 +300,7 @@ def fetch_category_data(category, refresh=False):
         # Attach fund stats for ETFs
         if _is_etf_category(category) and ticker_obj:
             final_stock["fund_stats"] = get_etf_fund_stats(ticker_obj)
+            final_stock["stock_description"] = info.get('longBusinessSummary')
 
     return result_data
 

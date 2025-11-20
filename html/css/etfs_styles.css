@@ -1,7 +1,7 @@
 /* ===== ETF Page Dropdown Layout & Styles (FINAL) ===== */
 
 :root{
-  --etfExpandHeight: 640px; /* change this to make BOTH sides taller/shorter */
+  --etfExpandHeight: 600px; /* change this to make BOTH sides taller/shorter */
 }
 
 /* spacing from header row so dropdown doesn't touch it */
@@ -12,45 +12,80 @@
   display: flex;
   gap: 8px;                 /* tighter center whitespace */
   width: 100%;
-  align-items: stretch;     /* same overall height */
-  min-height: var(--etfExpandHeight);
-  height: var(--etfExpandHeight);
+  align-items: flex-start;  /* Allow columns to have different heights */
 }
 
-/* ensure visible content starts at the same Y on both sides */
-.holdings-wrap,
-.tv-adv { box-sizing: border-box; }
+/* New: Column for the left-side cards */
+.left-panel-column {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between the cards */
+  min-width: 320px;
+  min-height: 0; /* Allow flex shrinking */
+  padding-top: 6px;
+}
 
-/* Ensure both panels stretch to full height */
-.holdings-wrap,
-.tv-adv {
+/* New: Style for each individual card */
+.holdings-card {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 8px 12px 10px;
   display: flex;
   flex-direction: column;
 }
 
-/* 30% left, 70% right */
-.holdings-wrap {
-  flex: 0 0 30%;
+/* Specific cards can have different flex behaviors */
+.holdings-card:nth-of-type(1) { flex-shrink: 0; } /* Fund Overview */
+.holdings-card:nth-of-type(2) { flex: 1 1 auto; min-height: 0; } /* Top Holdings card will grow and shrink */
+.holdings-card:nth-of-type(3) { flex-shrink: 0; } /* Fund Stats */
+
+.holdings-card .holdings-table { 
+  overflow-y: auto; /* Make the table body scrollable if needed */
 }
 
 .tv-adv {
-  flex: 0 0 70%;
+  flex: 0 0 69%;
+  height: var(--etfExpandHeight); /* Keep chart height fixed */
 }
 
-/* ---------- LEFT PANEL: Top Holdings + Fund Stats ---------- */
-/* 3-row grid: [title] [table grows] [stats at bottom] */
-.holdings-wrap{
-  background:#fff;
-  border:1px solid var(--border-color);
-  border-radius:10px;
-  padding:8px 12px 10px;
-  min-width:320px;
-  margin-top:4px;
+/* ETF Description above holdings */
+.etf-description-wrap {
+  padding-bottom: 8px;
+  overflow: hidden;
+}
+.etf-description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  /* Clamp to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Ensure text wraps */
+}
 
-  height:var(--etfExpandHeight);
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  overflow:hidden;
+.etf-description.expanded {
+  -webkit-line-clamp: unset; /* Remove line limit when expanded */
+  max-height: none; /* Allow the container to grow to its full content height */
+  overflow-y: visible; /* No scrollbar needed */
+}
+
+.expand-description-btn {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: linear-gradient(to right, transparent, #fff 20%, #fff);
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 0 2px 12px;
+  display: none; /* Hidden by default */
 }
 
 /* section title */
@@ -67,7 +102,6 @@
 
 /* Top Holdings table fills remaining space */
 .holdings-table{
-  grid-row:2;
   width:100%;
   border-collapse:collapse;
   table-layout:fixed;
@@ -78,12 +112,11 @@
 .holdings-table thead th { padding:5px 8px; }
 .holdings-table tbody td { padding:6px 8px; line-height:1.2; }
 
-.holdings-table th,
 .holdings-table td{
   font-size:12px;
-  border-bottom:1px solid var(--border-color);
 }
 .holdings-table thead th{
+  font-size:12px;
   color:var(--text-secondary);
   font-weight:600;
 }
@@ -91,7 +124,6 @@
   color:var(--text-primary, #111); /* company text black */
   font-weight:500;
 }
-.holdings-table tbody tr:last-child td{ border-bottom:none; }
 .holdings-table tbody tr:hover{ background:var(--hover-bg); }
 
 /* columns */
@@ -134,10 +166,6 @@
 
 /* Fund Stats at the bottom of the card */
 .fund-stats-flat{
-  grid-row:3;
-  margin-top:12px;
-  padding-top:12px;
-  border-top:1px solid var(--border-color);
   background:transparent;
 }
 
@@ -191,14 +219,12 @@
 
 /* ---------- Mobile: stack ---------- */
 @media (max-width:1100px){
-  .expand-panel{ flex-direction:column; }
-  .holdings-wrap{
+  .expand-panel { flex-direction: column; height: auto; min-height: 0; }
+  .left-panel-column, .tv-adv {
     flex:0 0 auto;
     width:100%;
     max-width:none;
     height:auto;
-    display:block;
-    padding:12px;
+    min-height: 0;
   }
-  .tv-adv{ height:420px; padding:8px; }
 }

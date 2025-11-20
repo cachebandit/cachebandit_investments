@@ -75,7 +75,7 @@ function getLogoForSymbol(sym) {
 function syncChartHeight(symbol) {
   const chartBox = document.getElementById(`tv-adv-${symbol}`);
   if (!chartBox) return 0;
-  const target = 640;   // pick 600–660 if you prefer
+  const target = 600;   // pick 600–660 if you prefer
   chartBox.style.height = `${target}px`;
   return target;
 }
@@ -174,19 +174,31 @@ function renderFundStats(stats = {}) {
 
     return `
         <div class="fund-stats-flat">
-            <div class="holdings-title" style="margin:0 0 8px; text-align:left;">Fund Stats</div>
+            <div class="holdings-title">Fund Stats</div>
             <div class="fund-stats-grid">${rows}</div>
         </div>
     `;
 }
 
-function renderHoldingsTable(holdings = [], stats = {}, parentSymbol = "") {
-  if (!Array.isArray(holdings) || holdings.length === 0) {
+function renderFundOverview(description = "") {
+  if (!description) return '';
+  return `
+    <div class="holdings-card">
+      <div class="holdings-title">Fund Overview</div>
+      <div style="position: relative;">
+        <div class="etf-description">${description}</div>
+        <button class="expand-description-btn" style="display: none;">More ▼</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderHoldingsCard(holdings = []) {
+  if (!holdings || holdings.length === 0) {
     return `
-      <div class="holdings-wrap">
+      <div class="holdings-card">
         <div class="holdings-title">Top Holdings</div>
         <div class="empty-note">No holdings available.</div>
-        ${renderFundStats(stats)}
       </div>`;
   }
 
@@ -205,7 +217,7 @@ function renderHoldingsTable(holdings = [], stats = {}, parentSymbol = "") {
   }).join('');
 
   return `
-    <div class="holdings-wrap">
+    <div class="holdings-card">
       <div class="holdings-title">Top Holdings</div>
       <table class="holdings-table">
         <thead>
@@ -217,9 +229,13 @@ function renderHoldingsTable(holdings = [], stats = {}, parentSymbol = "") {
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      ${renderFundStats(stats)}
     </div>
   `;
+}
+
+function renderFundStatsCard(stats = {}) {
+  if (Object.keys(stats).length === 0) return '';
+  return `<div class="holdings-card">${renderFundStats(stats)}</div>`;
 }
 
 function changeBg(pctChange) {
@@ -271,6 +287,35 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       if (!isOpen) {
         const sym = row?.dataset?.symbol || row.getAttribute('data-symbol');
+
+        // --- Expandable description logic ---
+        const descriptionContainer = expandRow.querySelector('.holdings-card:first-child');
+        if (descriptionContainer) {
+            const descriptionElement = descriptionContainer.querySelector('.etf-description');
+            const expandBtn = descriptionContainer.querySelector('.expand-description-btn');
+
+            if (descriptionElement && expandBtn) {
+                // Use a timeout to allow the browser to render and calculate element heights
+                setTimeout(() => {
+                    const isOverflowing = descriptionElement.scrollHeight > descriptionElement.clientHeight;
+                    
+                    if (isOverflowing) {
+                        expandBtn.style.display = 'block';
+
+                        // Add listener only once
+                        if (!expandBtn.dataset.listenerAttached) {
+                            expandBtn.addEventListener('click', () => {
+                                const isExpanded = descriptionElement.classList.toggle('expanded');
+                                expandBtn.innerHTML = isExpanded ? 'Less ▲' : 'More ▼';
+                            });
+                            expandBtn.dataset.listenerAttached = 'true';
+                        }
+                    } else {
+                        expandBtn.style.display = 'none';
+                    }
+                }, 100); // Delay to ensure rendering is complete
+            }
+        }
 
         // Wait for layout to apply, then mount, then nudge autosize.
         requestAnimationFrame(() => {
@@ -451,7 +496,11 @@ function renderEtfRow(etf) {
   <tr class="expand-row" data-symbol="${symbol}" style="display:none;">
     <td colspan="8">
       <div class="expand-panel">
-        ${renderHoldingsTable(etf.holdings, etf.fund_stats)}
+        <div class="left-panel-column">
+          ${renderFundOverview(etf.stock_description)}
+          ${renderHoldingsCard(etf.holdings)}
+          ${renderFundStatsCard(etf.fund_stats)}
+        </div>
         <div class="tv-adv tradingview-widget-container" id="tv-adv-${symbol}">
           <div class="tradingview-widget-container__widget"></div>
         </div>
