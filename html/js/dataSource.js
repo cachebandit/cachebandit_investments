@@ -28,16 +28,33 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
         return res.json();
     }
 
-    // --- Deployed environment logic ---
+    // --- Deployed environment logic (GitHub Pages) ---
     const cache = await fetchStaticCache();
-    let categoryKey;
+    const root = cache.data || cache || {};
+    const trimmed = category.trim();
 
-    if (category === 'ETFs') {
-        categoryKey = 'etfs:saved_stock_info:v2';
+    let key;
+
+    if (trimmed === 'ETFs') {
+        // Prefer new ETF key if present, otherwise fallback to category_ETFs
+        if ('etfs:saved_stock_info:v2' in root) {
+            key = 'etfs:saved_stock_info:v2';
+        } else {
+            key = 'category_ETFs';
+        }
     } else {
-        categoryKey = `stocks:saved_stock_info:${category.trim()}`;
+        // Try new-style key first
+        const kNew = `stocks:saved_stock_info:${trimmed}`;
+        const kOld = `category_${trimmed}`;
+        if (kNew in root) {
+            key = kNew;
+        } else {
+            key = kOld;
+        }
     }
 
-    const data = cache.data[categoryKey] || [];
-    return { data: data, last_updated: cache.last_updated };
+    const data = (root && root[key]) || [];
+    const lastUpdated = cache.last_updated || cache.updated_at || 'N/A';
+
+    return { data, last_updated: lastUpdated };
 }
