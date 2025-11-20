@@ -112,6 +112,12 @@ def main():
     version_str = datetime.now().strftime("%Y%m%d%H%M%S")
     add_cache_buster(version_str)
 
+    # 5) Copy the fresh cache file into the build output LAST
+    source_cache_dir = Path("cache")
+    dest_cache_dir = HTML_DIR / "cache"
+    if source_cache_dir.is_dir():
+        shutil.copytree(source_cache_dir, dest_cache_dir, dirs_exist_ok=True)
+
     # 4) Make sure a simple redirect index exists (optional nicety)
     idx = SITE_ROOT / "index.html"
     if not idx.exists():
