@@ -34,7 +34,7 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
     const trimmed = category.trim();
 
     let key;
- 
+
     if (trimmed === 'ETFs') {
         // Prefer the runtime-style key if it exists, otherwise fall back to the static-style key
         if ('etfs:saved_stock_info:v2' in root) {
@@ -45,10 +45,18 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
             key = null;
         }
     } else {
-        // Try new-style key first
         const kNew = `stocks:saved_stock_info:${trimmed}`;
         const kOld = `category_${trimmed}`;
-        if (kNew in root) {
+        if (kNew in root) key = kNew;
+        else if (kOld in root) key = kOld;
+        else key = null;
+    }
+
+    const data = key ? (root[key] || []) : [];
+    const lastUpdated = cache.last_updated || cache.updated_at || 'N/A';
+
+    return { data, last_updated: lastUpdated };
+}
             key = kNew;
         } else if (kOld in root) {
             key = kOld;

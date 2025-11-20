@@ -90,7 +90,15 @@ def main():
 
     # 3) Build each category JSON
     for cat in ACTIVE_CATEGORIES:
-        items = cached_categories.get(f"category_{cat}", [])
+        # Try new-style keys first, then fall back to old static build keys
+        if cat == "ETFs":
+            key_new = "etfs:saved_stock_info:v2"
+            key_old = "category_ETFs"
+        else:
+            key_new = f"stocks:saved_stock_info:{cat}"
+            key_old = f"category_{cat}"
+        
+        items = cached_categories.get(key_new, cached_categories.get(key_old, []))
 
         if cat == "Owned":
             # alphabetical by symbol
