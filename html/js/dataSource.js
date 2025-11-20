@@ -34,13 +34,15 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
     const trimmed = category.trim();
 
     let key;
-
+ 
     if (trimmed === 'ETFs') {
-        // Prefer new ETF key if present, otherwise fallback to category_ETFs
+        // Prefer the runtime-style key if it exists, otherwise fall back to the static-style key
         if ('etfs:saved_stock_info:v2' in root) {
             key = 'etfs:saved_stock_info:v2';
-        } else {
+        } else if ('category_ETFs' in root) {
             key = 'category_ETFs';
+        } else {
+            key = null;
         }
     } else {
         // Try new-style key first
@@ -48,12 +50,14 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
         const kOld = `category_${trimmed}`;
         if (kNew in root) {
             key = kNew;
-        } else {
+        } else if (kOld in root) {
             key = kOld;
+        } else {
+            key = null;
         }
     }
 
-    const data = (root && root[key]) || [];
+    const data = key ? (root[key] || []) : [];
     const lastUpdated = cache.last_updated || cache.updated_at || 'N/A';
 
     return { data, last_updated: lastUpdated };
