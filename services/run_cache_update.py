@@ -1,4 +1,4 @@
-from .stock_service import fetch_category_data, cache
+from .stock_service import fetch_category_data, cache, _is_etf_category
 
 # These categories must match the ones used by the UI and build_static.py
 ACTIVE_CATEGORIES = [
@@ -12,6 +12,7 @@ ACTIVE_CATEGORIES = [
     "Real Estate",
     "Consumer Staples",
     "Consumer Discretionary",
+    "ETFs",
 ]
 
 def main():
@@ -24,8 +25,13 @@ def main():
     for category in ACTIVE_CATEGORIES:
         print(f"  - Fetching data for: {category}")
         data = fetch_category_data(category)
-        # This will add the fresh data to the temporary cache storage
-        cache.set(f"category_{category}", data)
+        
+        # Use the correct cache key format
+        if _is_etf_category(category):
+            key = "etfs:saved_stock_info:v2"
+        else:
+            key = f"stocks:saved_stock_info:{category.strip()}"
+        cache.set(key, data)
 
     # Commit the refresh. This replaces the old cache data with the new data
     # and saves the entire file once with an updated timestamp.
