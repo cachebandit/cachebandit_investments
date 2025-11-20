@@ -1,0 +1,524 @@
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Hide market cap/net assets on desktop view - only show on mobile */
+.market-cap-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    margin: 10px auto;
+  }
+
+  .header-container {
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    box-sizing: border-box; /* Ensure padding is included in the width */
+    position: relative;
+  }
+
+  .header-left {
+    order: 1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hamburger-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .header-logo {
+    height: 80px;
+    width: auto;
+  }
+
+  .header-center {
+    order: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .header-center h1 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .header-controls {
+    order: 3;
+    min-width: 100px;
+    font-size: 11px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section {
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+
+  .section h2 {
+    font-size: 16px;
+    padding: 12px 15px;
+  }
+
+  .industry-section h3 {
+    font-size: 13px;
+    padding-left: 15px;
+    margin: 15px 0 10px 0;
+  }
+
+  /* MOBILE TABLE LAYOUT - Switch to card view */
+  table {
+    display: block;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--container-bg);
+    padding: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:last-child {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:hover {
+    background-color: var(--hover-bg);
+  }
+
+  /* Company name - full width row */
+  td.company-name {
+    display: flex !important;
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    text-align: left;
+    margin-bottom: 0 !important;
+    align-items: center;
+    order: -10;
+    flex-basis: 100%;
+  }
+
+  /* Hide market cap table cell - shown inside company row instead */
+  td.market-cap {
+    display: none !important;
+  }
+
+  /* Market cap displayed after company name on mobile */
+  .market-cap-mobile {
+    display: none;
+  }
+
+  /* Show market cap on mobile - display inline on right of company cell */
+  .company-cell .market-cap-mobile {
+    display: block !important;
+    font-size: 9px;
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Data row - all on one horizontal line, filling space evenly */
+  tbody tr > td.open,
+  tbody tr > td.high,
+  tbody tr > td.low,
+  tbody tr > td.close,
+  tbody tr > td.change,
+  tbody tr > td.percent-change,
+  tbody tr > td.rsi {
+    display: inline-flex !important;
+    flex: 1 1 auto !important;
+    padding: 8px 2px !important;
+    margin: 0 !important;
+    font-size: 9px;
+    border: none !important;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: static !important;
+    float: none !important;
+    clear: none !important;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Hide table headers on mobile */
+  th {
+    display: none;
+  }
+
+  /* Add data labels - full names */
+  td.open::before { content: "Open"; }
+  td.high::before { content: "High"; }
+  td.low::before { content: "Low"; }
+  td.close::before { content: "Close"; }
+  td.change::before { content: "Change"; }
+  td.percent-change::before { display: none; }
+  td.rsi::before { content: "RSI"; }
+
+  /* Style all data cell labels - display as block so they appear above values */
+  td::before {
+    display: block;
+    font-size: 8px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 2px;
+    line-height: 1;
+  }
+
+  /* Compact badges */
+  td.change .badge-change {
+    min-width: auto;
+    width: 100%;
+    height: auto;
+    padding: 2px 3px;
+    font-size: 7px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  td.rsi .badge-metric {
+    min-width: auto;
+    width: 90%;
+    height: 16px;
+    padding: 1px 3px;
+    font-size: 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Company cell - flex layout for logo + name + ticker + market cap */
+  .company-cell {
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .company-logo {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .company-info-btn {
+    flex-shrink: 0;
+  }
+
+  .company-info-btn img {
+    width: 13px;
+    height: 13px;
+  }
+
+  .company-text-block {
+    min-width: 0;
+  }
+
+  .company-name-line {
+    font-size: 12px;
+    font-weight: 600;
+    gap: 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-chip {
+    font-size: 9px;
+    padding: 2px 4px;
+    flex-shrink: 0;
+  }
+
+  .expand-panel {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .expand-item {
+    font-size: 12px;
+  }
+
+  /* Search styling */
+  .search-container {
+    margin-bottom: 15px;
+  }
+
+  .search-wrapper {
+    padding: 8px 12px;
+  }
+
+  /* Expand row mobile styling */
+  .expand-row td {
+    padding: 12px !important;
+  }
+
+  /* Remove expand button from taking space */
+  .expand-toggle {
+    width: 18px;
+    height: 18px;
+  }
+
+  .expand-toggle img {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Earnings Calendar Mobile Styling - Stack days vertically */
+  #calendar-container {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .day-header {
+    display: none !important;
+  }
+
+  .calendar-day {
+    min-height: auto !important;
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .earnings-container {
+    overflow: visible !important;
+    margin-top: 8px !important;
+    flex-grow: 1;
+  }
+
+  .day-number {
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .day-of-week {
+    display: inline !important;
+    margin-right: 4px;
+  }
+
+  .day-date {
+    display: inline;
+  }
+
+  .timing-header {
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .earnings-item {
+    font-size: 13px !important;
+    padding: 3px 4px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  .earnings-logo {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .company-info-btn img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .market-data {
+    font-size: 11px !important;
+    padding: 2px 4px !important;
+  }
+
+  #current-week {
+    font-size: 14px !important;
+    min-width: auto !important;
+  }
+
+  .calendar-controls {
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .calendar-controls button {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* ETF Page Mobile - Holdings Table */
+  .expand-panel {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .holdings-wrap {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 12px !important;
+    grid-template-rows: auto auto 1fr !important;
+  }
+
+  .holdings-table {
+    font-size: 11px !important;
+  }
+
+  .holdings-table thead th {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .holdings-table tbody td {
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .symbol-badge {
+    min-width: 35px !important;
+    font-size: 10px !important;
+  }
+
+  .h-col-name {
+    max-width: 80px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Override card view for ETF holdings table on mobile */
+  .holdings-table {
+    display: table !important;
+  }
+
+  .holdings-table thead {
+    display: table-header-group !important;
+  }
+
+  /* Ensure the header row itself is also a table-row */
+  .holdings-table thead tr {
+    display: table-row !important;
+    border: none !important; /* Remove any card-like borders */
+  }
+
+  .holdings-table tbody {
+    display: table-row-group !important;
+  }
+
+  .holdings-table tbody tr {
+    display: table-row !important;
+    border: none !important; /* Remove card border */
+  }
+
+  /* Remove the unwanted bottom border from cells inside the holdings table */
+  .holdings-table td {
+    border-bottom: none !important;
+  }
+
+  /* Also remove the border from the header cells, which is causing the line */
+  .holdings-table th {
+    border-bottom: none !important;
+  }
+
+  /* Ensure the holdings table headers are visible on mobile */
+  .holdings-table th {
+    display: table-cell !important;
+  }
+
+  .tv-adv {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .tv-adv .tradingview-widget-container {
+    height: 300px !important;
+  }
+
+  /* Info popup mobile styles */
+  .info-popup {
+    width: 90% !important;
+    max-width: 95vw !important;
+    padding: 12px !important;
+    font-size: 12px !important;
+  }
+
+  .info-popup h3 {
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .info-popup div[style*="font-size: 14px"] {
+    font-size: 10.5px !important;
+    white-space: nowrap !important; /* Prevent wrapping */
+    overflow-x: hidden;
+    display: flex;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important; /* Align items to the start */
+    gap: 12px !important; /* Control space between items */
+  }
+
+  .info-popup div[style*="font-size: 14px"] span {
+    flex: 0 1 auto !important; /* Allow items to shrink but not grow */
+    min-width: 0 !important; /* Remove minimum width constraint */
+    margin-left: 0 !important; /* Override inline margin */
+  }
+
+  .popup-description {
+    font-size: 12px !important;
+  }
+
+  .popup-chart {
+    font-size: 11px !important;
+  }
+
+  .chart-label {
+    width: 70px !important;
+  }
+  .info-popup div[style*="flex-grow: 1;"] {
+    font-size: 14px !important;
+    overflow: hidden !important;
+  }
+}

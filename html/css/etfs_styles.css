@@ -1,0 +1,230 @@
+/* ===== ETF Page Dropdown Layout & Styles (FINAL) ===== */
+
+:root{
+  --etfExpandHeight: 600px; /* change this to make BOTH sides taller/shorter */
+}
+
+/* spacing from header row so dropdown doesn't touch it */
+.expand-row > td { padding: 16px 12px 16px; }
+
+/* two columns: left info + right chart (tight middle gap) */
+.expand-panel{
+  display: flex;
+  gap: 8px;                 /* tighter center whitespace */
+  width: 100%;
+  align-items: flex-start;  /* Allow columns to have different heights */
+}
+
+/* New: Column for the left-side cards */
+.left-panel-column {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between the cards */
+  min-width: 320px;
+  min-height: 0; /* Allow flex shrinking */
+  padding-top: 6px;
+}
+
+/* New: Style for each individual card */
+.holdings-card {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 8px 12px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Specific cards can have different flex behaviors */
+.holdings-card:nth-of-type(1) { flex-shrink: 0; } /* Fund Overview */
+.holdings-card:nth-of-type(2) { flex: 1 1 auto; min-height: 0; } /* Top Holdings card will grow and shrink */
+.holdings-card:nth-of-type(3) { flex-shrink: 0; } /* Fund Stats */
+
+.holdings-card .holdings-table { 
+  overflow-y: auto; /* Make the table body scrollable if needed */
+}
+
+.tv-adv {
+  flex: 0 0 69%;
+  height: var(--etfExpandHeight); /* Keep chart height fixed */
+}
+
+/* ETF Description above holdings */
+.etf-description-wrap {
+  padding-bottom: 8px;
+  overflow: hidden;
+}
+.etf-description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  /* Clamp to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Ensure text wraps */
+}
+
+.etf-description.expanded {
+  -webkit-line-clamp: unset; /* Remove line limit when expanded */
+  max-height: none; /* Allow the container to grow to its full content height */
+  overflow-y: visible; /* No scrollbar needed */
+}
+
+.expand-description-btn {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: linear-gradient(to right, transparent, #fff 20%, #fff);
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 0 2px 12px;
+  display: none; /* Hidden by default */
+}
+
+/* section title */
+.holdings-title{
+  grid-row:1;
+  margin:0 0 8px;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--text-secondary);
+}
+
+/* Top Holdings table fills remaining space */
+.holdings-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  overflow:auto;                  /* lets table grow without leaving big bottom gap */
+}
+
+/* COMPACT rows (no font-size change) */
+.holdings-table thead th { padding:5px 8px; }
+.holdings-table tbody td { padding:6px 8px; line-height:1.2; }
+
+.holdings-table td{
+  font-size:12px;
+}
+.holdings-table thead th{
+  font-size:12px;
+  color:var(--text-secondary);
+  font-weight:600;
+}
+.holdings-table tbody td{
+  color:var(--text-primary, #111); /* company text black */
+  font-weight:500;
+}
+.holdings-table tbody tr:hover{ background:var(--hover-bg); }
+
+/* columns */
+.symbol-badge{
+  min-width:44px;                 /* was 48; slightly tighter */
+  text-align:center;
+  background:var(--hover-bg);
+  color:var(--text-secondary);
+  font-weight:600;
+  font-size:11px;
+  padding:2px 6px;
+  border-radius:6px;
+  line-height:1;
+}
+.h-col-symbol{ 
+  width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.h-col-name{ 
+  overflow:hidden; 
+  text-overflow:ellipsis; 
+  white-space:nowrap; 
+  padding-left:8px;
+  flex: 1;
+  min-width: 0;
+}
+.h-col-weight{ 
+  flex: 1;
+  text-align: right;
+  padding-right: 8px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.h-wt{ 
+  text-align: right; 
+  font-variant-numeric: tabular-nums; 
+  white-space: nowrap;
+}
+
+/* Fund Stats at the bottom of the card */
+.fund-stats-flat{
+  background:transparent;
+}
+
+/* tidy two-column list (label | value) */
+.fund-stats-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  row-gap:8px;
+  column-gap:12px;
+  align-items:center;
+}
+.fund-stats-label{
+  color:var(--text-secondary);
+  font-size:12px;
+}
+.fund-stats-value{
+  text-align:right;
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* on wide screens, show two pairs per row */
+@media (min-width:1100px){
+  .fund-stats-grid{
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;
+  }
+}
+
+/* ---------- RIGHT PANEL: TradingView chart ---------- */
+.tv-adv{
+  border:1px solid var(--border-color);
+  border-radius:10px;
+  background:#fff;
+  padding:8px 8px 8px;
+  height:var(--etfExpandHeight);
+  min-width:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Make the TradingView embed fill its container */
+.tradingview-widget-container,
+.tradingview-widget-container__widget,
+.tradingview-widget-container__widget iframe{
+  width:100% !important;
+  height:100% !important;
+  display:block;
+}
+
+/* ---------- Mobile: stack ---------- */
+@media (max-width:1100px){
+  .expand-panel { flex-direction: column; height: auto; min-height: 0; }
+  .left-panel-column, .tv-adv {
+    flex:0 0 auto;
+    width:100%;
+    max-width:none;
+    height:auto;
+    min-height: 0;
+  }
+}

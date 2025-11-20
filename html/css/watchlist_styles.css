@@ -135,6 +135,8 @@ td.rsi .badge-metric {
   border-radius: 4px;
   line-height: 1;
   color: #000;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Ensure good text contrast on bright or dark colors */
@@ -143,11 +145,39 @@ td.rsi .badge-metric {
   color: #fff;
 }
 
-/* === Price Change Colors === */
-.metric-change-up {
-    color: var(--price-up-color);
+/* RSI column stays right-aligned */
+td.rsi {
+  text-align: center;
+  overflow: visible;
+  padding-right: 12px;
+  padding-left: 12px;
+  white-space: normal;
 }
 
-.metric-change-down {
-    color: var(--price-down-color);
+/* === Change Badge (shaded by percent change) === */
+.badge-change {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  color: #000; /* black text */
+  box-sizing: border-box;
+  margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Center the badge in the Change column */
+td.change { 
+  text-align: center;
+  overflow: visible;
+  padding-right: 12px;
+  padding-left: 12px;
+  white-space: normal;
 }

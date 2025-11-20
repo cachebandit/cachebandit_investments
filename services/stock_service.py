@@ -16,6 +16,127 @@ class RateLimitError(Exception):
 # Initialize cache
 cache = StockCache()
 
+def _first(*vals):
+    for v in vals:
+        if v is not None:
+            return v
+    return None
+
+def _num(x):
+    try:
+        return float(x)
+    except Exception:
+        return None
+
+def _pct_num(x):
+    """Accept decimal (0.0145) or percentage (1.45) and normalize to percent."""
+    v = _num(x)
+    if v is None:
+        return None
+    # yfinance can return 0.09 for 0.09% or 0.0009 for 0.09%.
+    # If the value is already > 1, it's likely a mis-scaled percentage (e.g., 9.45 for 0.0945%).
+    # We will treat any value > 1 as needing division by 100.
+    if v > 1:
+        return v / 100.0
+    else: # if it's a decimal like 0.0009, convert to percent
+        return v * 100.0
+
+def _expense_ratio_pct(x):
+    """
+    Expense ratio is often returned as a percentage (e.g., 0.03 for 0.03%).
+    We only need to scale it if it's returned as a whole number.
+    """
+    v = _num(x)
+    if v is None:
+        return None
+    return v / 100.0 if v > 1.0 else v
+
+def _load_info_safe(t):
+    info = {}
+    try:
+        # yfinance>=0.2 fast_info is cheap
+        fi = getattr(t, "fast_info", None)
+        if fi:
+            try:
+                info.update(dict(fi))
+            except Exception:
+                pass
+        # fall back to full info for ETF fields
+        try:
+            base = t.info or {}
+            if isinstance(base, dict):
+                info.update(base)
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return info
+
+def get_etf_fund_stats(ticker_obj):
+    info = _load_info_safe(ticker_obj)
+
+    return {
+        "price": _first(_num(info.get("last_price")), _num(info.get("regularMarketPrice"))),
+        "netAssets": _first(_num(info.get("totalAssets")), _num(info.get("totalAssetsUSD")), _num(info.get("netAssets"))),
+        "nav": _first(_num(info.get("navPrice")), _num(info.get("nav"))),
+        "sharesOutstanding": _num(info.get("sharesOutstanding")),
+        "expenseRatioAnnual": _expense_ratio_pct(info.get("netExpenseRatio")),
+        "dividendYieldTTM": _pct_num(_first(info.get('trailingAnnualDividendYield'), info.get('yield'))),
+        "ytdReturnPct": _num(info.get("ytdReturn")),
+        "fiftyTwoWeekLow": _num(info.get("fiftyTwoWeekLow")),
+        "fiftyTwoWeekHigh": _num(info.get("fiftyTwoWeekHigh"))
+    }
+
+def _to_pct(num):
+    try:
+        # yfinance often gives 0.0795 for 7.95% (VOO sample you posted).
+        # Show as 7.95 with 2dp on the FE.
+        return float(num) * 100.0
+    except Exception:
+        return None
+
+def fetch_etf_top_holdings(symbol: str):
+    """
+    Always returns list[ {symbol,name,weight(float%)} ] or []
+    """
+    try:
+        t = yf.Ticker(symbol)
+
+        # Newer API: funds_data.top_holdings (DataFrame)
+        fd = getattr(t, "funds_data", None)
+        th = getattr(fd, "top_holdings", None) if fd is not None else None
+        if th is not None and hasattr(th, "iterrows"):
+            out = []
+            for idx, row in th.iterrows():
+                out.append({
+                    "symbol": str(idx),
+                    "name": str(row.get("Name", "")),
+                    "weight": _to_pct(row.get("Holding Percent"))
+                })
+            if out:
+                return out
+
+        # Fallbacks seen across yfinance versions
+        for attr in ("fund_holdings", "fund_holding"):
+            fh = getattr(t, attr, None)
+            if isinstance(fh, list):
+                return [{
+                    "symbol": (h.get("symbol") or h.get("ticker") or ""),
+                    "name":   (h.get("shortName") or h.get("longName") or h.get("name") or ""),
+                    "weight": _to_pct(h.get("holdingPercent") or h.get("weight") or h.get("heldPercent")),
+                } for h in fh]
+            if isinstance(fh, dict) and "holdings" in fh:
+                return [{
+                    "symbol": (h.get("symbol") or h.get("ticker") or ""),
+                    "name":   (h.get("shortName") or h.get("longName") or h.get("name") or ""),
+                    "weight": _to_pct(h.get("holdingPercent") or h.get("weight") or h.get("heldPercent")),
+                } for h in fh["holdings"]]
+
+    except Exception:
+        # swallow and return empty; server must not 500
+        pass
+    return []
+
 def _clean_value(value):
     """Converts NaN to None, otherwise returns value."""
     # Check for NaN, which can be a float. math.isnan() will fail on non-floats.
@@ -64,10 +185,30 @@ def load_watchlist_data():
 # Global watchlist data, including the dynamically created "Owned" category
 watchlist_data = load_watchlist_data()
 
-def fetch_category_data(category):
+def _is_etf_category(c: str) -> bool:
+    return (c or "").strip().lower() in ("etf", "etfs")
+
+def _etf_holdings_cache_key(sym):
+    return f"etf_holdings::{sym.upper()}"
+
+def _add_holdings_to_etfs(items):
+    for item in items:
+        sym = item.get("Symbol") or item.get("symbol")
+        if not sym:
+            item["holdings"] = []
+            continue
+
+        key = _etf_holdings_cache_key(sym)
+        holdings = cache.get(key)
+        if holdings is None:
+            holdings = fetch_etf_top_holdings(sym)
+            cache.set(key, holdings, timeout=60*60*24)  # 24h TTL
+        item["holdings"] = holdings
+    return items
+
+def fetch_category_data(category, refresh=False):
     """Fetch data for a specific category from the watchlist using batch requests."""
-    # Retrieve the category's stocks from the loaded JSON data
-    category_data = watchlist_data.get(category, [])
+    category_data = load_watchlist_data().get(category, [])
     if not category_data:
         return []
 
@@ -99,7 +240,8 @@ def fetch_category_data(category):
 
         try:
             # Then, try to get the company info, which can sometimes fail
-            info = tickers.tickers[symbol].info
+            ticker_obj = tickers.tickers.get(symbol)
+            info = ticker_obj.info if ticker_obj else {}
         except Exception as e:
             # If this error is a rate-limit, propagate a RateLimitError so the handler returns 429
             msg = str(e)
@@ -107,6 +249,7 @@ def fetch_category_data(category):
                 raise RateLimitError(msg)
             logging.warning(f"Could not fetch .info for {symbol}: {e}. Using fallback.")
             info = {} # Use an empty dict if info fails, but we still have market_data
+            ticker_obj = None
 
         # Get earnings timestamp
         earnings_timestamp = info.get('earningsTimestamp')
@@ -119,11 +262,18 @@ def fetch_category_data(category):
             earningsDate = ct_date.strftime('%m-%d-%Y')
             earningsTiming = 'BMO' if ct_date.hour < 12 else 'AMC'
         
+        # For ETFs, yfinance often uses 'totalAssets' instead of 'marketCap'.
+        # We will prioritize 'netAssets', then 'totalAssets', and finally 'marketCap'.
+        if _is_etf_category(category):
+            market_cap_raw = info.get('netAssets') or info.get('totalAssets')
+        else:
+            market_cap_raw = info.get('marketCap')
+
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
             'Symbol': symbol,
             'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
-            'Market Cap': _clean_value(round(info.get('marketCap', 0) / 1_000_000, 2)) if info.get('marketCap') else 'N/A',
+            'Market Cap': _clean_value(round(market_cap_raw / 1_000_000, 2)) if market_cap_raw else 'N/A',
             'Trailing PE': _clean_value(info.get('trailingPE')),
             'Forward PE': _clean_value(info.get('forwardPE')),
             'dividendYield': _clean_value(info.get('dividendYield')),
@@ -146,8 +296,18 @@ def fetch_category_data(category):
             **market_data 
         }
         result_data.append(final_stock)
+        
+        # Attach fund stats for ETFs
+        if _is_etf_category(category) and ticker_obj:
+            final_stock["fund_stats"] = get_etf_fund_stats(ticker_obj)
+            final_stock["stock_description"] = info.get('longBusinessSummary')
 
     return result_data
+
+def _get_category_stocks(category, refresh=False):
+    """Helper to get stock list, reloading from file if refreshing."""
+    current_watchlist = load_watchlist_data() if refresh else watchlist_data
+    return current_watchlist.get(category, [])
 
 def fetch_detailed_info(symbols):
     """Fetch detailed info including RSI and price changes for a list of symbols in a batch."""

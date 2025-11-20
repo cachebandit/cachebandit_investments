@@ -109,6 +109,16 @@ th, td {
     white-space: nowrap;
 }
 
+/* Remove ellipsis from badge cells and center them */
+th.change, td.change,
+th.rsi, td.rsi {
+    overflow: visible;
+    text-overflow: clip;
+    text-align: center;
+    padding: 14px 12px;
+    white-space: normal;
+}
+
 tbody tr {
     transition: background-color 0.2s ease;
 }
@@ -154,9 +164,9 @@ th.open, td.open,
 th.high, td.high,
 th.low, td.low,
 th.close, td.close { width: 8%; }
-th.change, td.change { width: 8%; }
+th.change, td.change { width: 12%; }
 th.percent-change, td.percent-change { width: 9%; }
-th.rsi, td.rsi { width: 8%; }
+th.rsi, td.rsi { width: 12%; }
 
 th.change, td.change,
 th.percent-change, td.percent-change,
@@ -259,4 +269,166 @@ td.close {
     background-color: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+}
+
+/* === Row Expander === */
+.expand-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.expand-toggle img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.85;
+  transition: transform 0.18s ease, opacity 0.15s ease;
+}
+
+.expand-toggle:hover img { opacity: 1; }
+
+/* Full-width dropdown row */
+.expand-row td {
+  background: #fafbfc;
+  border-top: 1px solid var(--border-color);
+  padding: 14px 20px;
+}
+
+.expand-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 10px 20px;
+  align-items: start;
+}
+
+.expand-item {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.expand-item .label {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-size: 11px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* === Row Expander === */
+.expand-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.expand-toggle img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.85;
+  transition: transform 0.18s ease, opacity 0.15s ease;
+}
+
+.expand-toggle:hover img { opacity: 1; }
+
+/* Full-width dropdown row */
+.expand-row td {
+  background: #fafbfc;
+  border-top: 1px solid var(--border-color);
+  padding: 14px 20px;
+}
+
+.expand-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 10px 20px;
+  align-items: start;
+}
+
+.expand-item {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.expand-item .label {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-size: 11px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* === Row Expander === */
+.expand-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.expand-toggle img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.85;
+  transition: transform 0.18s ease, opacity 0.15s ease;
+}
+
+.expand-toggle:hover img { opacity: 1; }
+
+/* When open, scale down the minus icon slightly to match the plus icon's visual weight */
+.expand-toggle.is-open img {
+  transform: scale(0.85); /* Adjust this value as needed */
+  opacity: 1; /* Keep it fully opaque when open */
+}
+
+/* Full-width dropdown row */
+.expand-row td {
+  background: #fafbfc;
+  border-top: 1px solid var(--border-color);
+  padding: 14px 20px;
+}
+
+.expand-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 10px 20px;
+  align-items: start;
+}
+
+.expand-item {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.expand-item .label {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-size: 11px;
+  display: block;
+  margin-bottom: 4px;
 }

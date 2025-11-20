@@ -1,12 +1,74 @@
 from http.server import SimpleHTTPRequestHandler
 import json
 import os
+import traceback
 from urllib.parse import urlparse, parse_qs
 import logging
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
-from services.stock_service import fetch_category_data, fetch_detailed_info, cache, update_stock_flag, fetch_earnings_data, RateLimitError, watchlist_data
+from services.stock_service import fetch_category_data, fetch_detailed_info, cache as _cache, update_stock_flag, fetch_earnings_data, RateLimitError, watchlist_data, _is_etf_category, fetch_etf_top_holdings
+
+log = logging.getLogger(__name__)
+
+DEFAULT_TTL = 60 * 60 * 24  # 24h
+
+def get_cache(key):
+    try:
+        return _cache.get(key)
+    except Exception:
+        log.exception("get_cache failed for key=%s", key)
+        return None
+
+def set_cache_safe(key, value, ttl_seconds=DEFAULT_TTL):
+    """
+    Calls your underlying StockCache.set(...) without using unsupported kwargs.
+    Tries common signatures; NEVER passes 'timeout=' (your cache rejects it).
+    """
+    # 1) (key, value, ttl_seconds) positional
+    try:
+        return _cache.set(key, value, ttl_seconds)
+    except TypeError:
+        pass
+    # 2) (key, value) only
+    try:
+        return _cache.set(key, value)
+    except TypeError:
+        pass
+    # 3) Last resort – swallow (don’t crash the endpoint)
+    log.error("set_cache_safe: unable to call StockCache.set for key=%s", key)
+    return None
+
+def _etf_holdings_cache_key(sym: str) -> str:
+    return f"etf_holdings::{(sym or '').upper()}"
+
+def _add_holdings_to_etfs(items, fetch_func):
+    """Add top-holdings into each ETF item; never raise."""
+    out = []
+    for item in items or []:
+        try:
+            sym = item.get("Symbol") or item.get("symbol")
+            if not sym:
+                out.append(item); continue
+
+            key = _etf_holdings_cache_key(sym)
+            cached = get_cache(key)
+            if cached is None:
+                try:
+                    holdings = fetch_func(sym)  # list[ {symbol,name,weight} ]
+                    set_cache_safe(key, holdings, ttl_seconds=DEFAULT_TTL)
+                except Exception:
+                    log.exception("fetch_etf_top_holdings failed for %s", sym)
+                    holdings = []
+            else:
+                holdings = cached
+            item["holdings"] = holdings
+        except Exception:
+            log.exception("enrich holdings failed for item=%s", item.get("Symbol"))
+        finally:
+            out.append(item)
+    return out
 
 class ChartRequestHandler(SimpleHTTPRequestHandler):
     """HTTP request handler for stock chart and data requests"""
@@ -46,21 +108,91 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         is_first = query_params.get('first', ['false'])[0].lower() == 'true'
         is_last = query_params.get('last', ['false'])[0].lower() == 'true'
 
-        if category:
-            # Create a cache key for this category
-            cache_key = f"category_{category}"
+        try:
+            # Use separate cache namespaces for ETFs vs stocks
+            if _is_etf_category(category):
+                cache_key = "etfs:saved_stock_info:v2"
+            else:
+                cache_key = f"stocks:saved_stock_info:{category.strip()}"
+
+            # Try to serve from cache first if not a refresh request
+            if not refresh:
+                cached_data = get_cache(cache_key)
+                if cached_data:
+                    logging.info(f"Using cached data for category: {category}")
+                    response_data = { 'data': cached_data, 'last_updated': _cache.last_updated }
+                    self.send_response(200)
+                    self.send_header('Content-type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps(response_data).encode())
+                    return
+
+            # If refreshing or cache is empty, fetch data
+            logging.info(f"Fetching fresh data for category: {category}")
+            data = fetch_category_data(category, refresh=refresh)
+
+            if _is_etf_category(category):
+                data = _add_holdings_to_etfs(data, fetch_etf_top_holdings)
+
+            # Sort the "Owned" category alphabetically by stock symbol
+            if category == "Owned":
+                data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
+            else:
+                # Sort other categories by market cap
+                try:
+                    data.sort(key=lambda x: (float(x.get('Market Cap', 0)) if x.get('Market Cap') != 'N/A' else 0), reverse=True)
+                except (ValueError, TypeError):
+                    # If sorting by market cap fails, sort by symbol as a fallback
+                    data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
+
+            set_cache_safe(cache_key, data, ttl_seconds=3600)
             
-            # If this is a refresh request and the first category, start refresh
-            if refresh and is_first:
-                cache.start_refresh()
+            # Format the timestamp consistently with the cache
+            utc_now = datetime.now(ZoneInfo("UTC"))
+            ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
+            last_updated_str = ct_time.strftime('%m/%d %I:%M %p CT')
+            
+            response_payload = {"data": data, "last_updated": last_updated_str}
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(response_payload).encode())
+
+        except Exception as e:
+            log.exception("handle_saved_stock_info failed")
+            self.send_response(500)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(f"load_items failed: {e}".encode())
+
+        return # End of the original _handle_stock_info logic
+
+        if category:
+            # Use separate cache namespaces for ETFs vs stocks
+            if _is_etf_category(category):
+                cache_key = "etfs:saved_stock_info:v2"
+            else:
+                cache_key = f"stocks:saved_stock_info:{category.strip()}"
+
+            # Try to serve from cache first if not a refresh request
+            if not refresh and get_cache(cache_key):
+                category_data = get_cache(cache_key)
+            else:
+                category_data = None
+            
+            # If this is a refresh request for a single category (like from the ETFs page)
+            # or the first category in a larger refresh cycle, start the refresh process.
+            is_single_category_refresh = refresh and not is_first and not is_last
+            if (refresh and is_first) or is_single_category_refresh:
+                _cache.start_refresh()
             
             # Check if we should use cached data or refresh
-            if refresh or cache.get(cache_key) is None:
+            if refresh or category_data is None:
                 logging.info(f"Fetching fresh data for category: {category}")
                 
                 # Fetch and return stock data for the specified category
                 try:
-                    category_data = fetch_category_data(category) # This function may raise RateLimitError
+                    category_data = fetch_category_data(category, refresh=True) # Pass refresh flag
                 except RateLimitError as e:
                     logging.warning(f"Rate limit detected while fetching category {category}: {e}")
                     # Return HTTP 429 so clients can react appropriately
@@ -69,7 +201,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                     self.end_headers()
                     resp = {
                         'data': [],
-                        'last_updated': cache.last_updated,
+                        'last_updated': _cache.last_updated,
                         'error': 'rate_limit',
                         'message': str(e)
                     }
@@ -95,19 +227,18 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                         category_data.sort(key=lambda x: x['Symbol'].strip().lower())
                 
                 # Save to cache
-                cache.set(cache_key, category_data)
+                set_cache_safe(cache_key, category_data)
                 
-                # If this is the last category in a refresh, commit the changes
-                if refresh and is_last:
-                    cache.commit_refresh()
+                # If this is the last category in a refresh cycle or a single-category refresh, commit the changes.
+                if (refresh and is_last) or is_single_category_refresh:
+                    _cache.commit_refresh()
             else:
                 logging.info(f"Using cached data for category: {category}")
-                category_data = cache.get(cache_key)
 
             # Include the last_updated timestamp in the response
             response_data = {
                 'data': category_data,
-                'last_updated': cache.last_updated
+                'last_updated': _cache.last_updated
             }
             # Include how many symbols the static watchlist expects for this category
             try:
@@ -125,7 +256,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
 
     def _handle_commit_refresh(self):
         """Handle commit refresh requests"""
-        success = cache.commit_refresh()
+        success = _cache.commit_refresh()
         
         self.send_response(200)
         self.send_header('Content-type', 'application/json')

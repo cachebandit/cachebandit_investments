@@ -122,7 +122,8 @@ function renderCalendar(earningsData = {}) {
         // Add day number
         const dayNumber = document.createElement('div');
         dayNumber.className = 'day-number';
-        dayNumber.textContent = currentDay.getDate();
+        const dayOfWeek = currentDay.toLocaleDateString('en-US', { weekday: 'short' });
+        dayNumber.innerHTML = `<span class="day-of-week">${dayOfWeek}</span><span class="day-date">${currentDay.getDate()}</span>`;
         cell.appendChild(dayNumber);
 
         // Add earnings information if available for this date

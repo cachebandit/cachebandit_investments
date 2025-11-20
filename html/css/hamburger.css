@@ -49,6 +49,11 @@
     color: #fff;
 }
 
+.sidenav .closebtn:hover {
+    background-color: transparent; /* Remove background on hover */
+    color: var(--text-primary);    /* Keep original text color */
+}
+
 .sidenav .closebtn {
     position: absolute;
     top: 0;

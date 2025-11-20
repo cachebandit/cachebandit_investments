@@ -16,6 +16,18 @@ import { getCategoryData } from './dataSource.js';
 
 // Main JavaScript functionality
 
+function changeBg(pctChange) {
+  if (pctChange === null || pctChange === undefined || !isFinite(pctChange)) {
+    return "var(--hover-bg)";
+  }
+  const abs = Math.abs(pctChange);
+  // Buckets: <1%, 1–3%, 3–6%, >=6%
+  const green = ["#d4edda", "#a5d6a7", "#81c784", "#388e3c"];
+  const red   = ["#ffe3e0", "#ffb3ad", "#ff7961", "#d74444"];
+  const idx = abs < 1 ? 0 : abs < 3 ? 1 : abs < 6 ? 2 : 3;
+  return pctChange >= 0 ? green[idx] : red[idx];
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const isLocal = () => ["localhost","127.0.0.1"].includes(location.hostname);
 
@@ -28,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         buttonContainer.style.display = 'flex'; // Show the button only on localhost
         refreshButton.addEventListener('click', function() {
             this.setAttribute('data-refreshing', 'true'); // Set the refreshing flag
-            fetchWatchlistData(); // Call the function to fetch data
+            fetchWatchlistData({ refresh: true, scope: 'watchlist' }); // Call the function to fetch data
         });
     }
     
@@ -67,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-async function fetchWatchlistData() {
+async function fetchWatchlistData(opts = {}) {
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.style.display = 'inline-block';
 
@@ -86,11 +98,10 @@ async function fetchWatchlistData() {
 
     try {
         let lastUpdated = '';
-        const refreshButton = document.getElementById('refresh-button');
-        const isRefreshing = document.getElementById('refresh-button').getAttribute('data-refreshing') === 'true';
+        const isRefreshing = opts.refresh || false;
 
         for (const [index, category] of categories.entries()) {
-            const responseData = await getCategoryData(category, { refresh: isRefreshing });
+            const responseData = await getCategoryData(category, { refresh: isRefreshing, scope: 'watchlist' });
 
             // Extract the data and last_updated timestamp
             // Handle both local server format (data, last_updated) and static build format (items, updated_at)
@@ -108,6 +119,7 @@ async function fetchWatchlistData() {
         }
         
         // Reset the refreshing flag
+        const refreshButton = document.getElementById('refresh-button');
         if (refreshButton) {
             refreshButton.setAttribute('data-refreshing', 'false');
         }
@@ -242,7 +254,6 @@ function renderCategory(category, data) {
             const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
                 ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
                 : 'N/A';
-            const changeClass = pctChangeNum > 0 ? 'metric-change-up' : (pctChangeNum < 0 ? 'metric-change-down' : '');
 
             row.innerHTML = `
                 <td class="company-name">
@@ -276,6 +287,7 @@ function renderCategory(category, data) {
                             </div>
                             <div class="company-subline">${industry}</div>
                         </div>
+                        <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
                     </div>
                 </td>
                 <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
@@ -283,7 +295,11 @@ function renderCategory(category, data) {
                 <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
                 <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
                 <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-                <td class="change"><div class="metric-main ${changeClass}">${changeText}</div></td>
+                <td class="change">
+                  <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
+                    ${changeText}
+                  </div>
+                </td>
                 <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
             `;
 
@@ -353,7 +369,6 @@ function renderCategory(category, data) {
                 const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
                     ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
                     : 'N/A';
-                const changeClass = pctChangeNum > 0 ? 'metric-change-up' : (pctChangeNum < 0 ? 'metric-change-down' : '');
 
                 row.innerHTML = `
                     <td class="company-name">
@@ -386,6 +401,7 @@ function renderCategory(category, data) {
                                     <span class="ticker-chip">${stock.Symbol || stock.symbol}</span>
                                 </div>
                             </div>
+                            <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
                         </div>
                     </td>
                     <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
@@ -393,7 +409,11 @@ function renderCategory(category, data) {
                     <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
                     <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
                     <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-                    <td class="change"><div class="metric-main ${changeClass}">${changeText}</div></td>
+                    <td class="change">
+                      <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
+                        ${changeText}
+                      </div>
+                    </td>
                     <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
                 `;
 
