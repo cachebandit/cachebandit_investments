@@ -134,6 +134,17 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             if _is_etf_category(category):
                 data = _add_holdings_to_etfs(data, fetch_etf_top_holdings)
 
+            # Sort the "Owned" category alphabetically by stock symbol
+            if category == "Owned":
+                data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
+            else:
+                # Sort other categories by market cap
+                try:
+                    data.sort(key=lambda x: (float(x.get('Market Cap', 0)) if x.get('Market Cap') != 'N/A' else 0), reverse=True)
+                except (ValueError, TypeError):
+                    # If sorting by market cap fails, sort by symbol as a fallback
+                    data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
+
             set_cache_safe(cache_key, data, ttl_seconds=3600)
             
             # Format the timestamp consistently with the cache

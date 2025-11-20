@@ -451,18 +451,19 @@
   }
 
   .info-popup div[style*="font-size: 14px"] {
-    font-size: 11px !important;
+    font-size: 10.5px !important;
     white-space: nowrap !important; /* Prevent wrapping */
     overflow-x: hidden;
     display: flex;
-    flex-wrap: nowrap !important; /* Ensure items stay on one line */
-    justify-content: space-between; /* Distribute items evenly */
-    gap: 10px !important; /* Set a smaller, fixed gap */
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important; /* Align items to the start */
+    gap: 12px !important; /* Control space between items */
   }
 
   .info-popup div[style*="font-size: 14px"] span {
     flex: 0 1 auto !important; /* Allow items to shrink but not grow */
     min-width: 0 !important; /* Remove minimum width constraint */
+    margin-left: 0 !important; /* Override inline margin */
   }
 
   .popup-description {

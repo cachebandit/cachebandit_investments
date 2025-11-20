@@ -1395,6 +1395,30 @@
                     "flag": false,
                     "Name": "Invesco QQQ Trust",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/invesco.svg"
+                },
+                {
+                    "symbol": "VTI",
+                    "flag": false,
+                    "Name": "Vanguard Total Stock Market ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "ITOT",
+                    "flag": false,
+                    "Name": "iShares Core S&P Total U.S. Stock Market ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "VO",
+                    "flag": false,
+                    "Name": "Vanguard Mid-Cap ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "VB",
+                    "flag": false,
+                    "Name": "Vanguard Small-Cap ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
                 }
             ],
             "International & Global ETFs": [
@@ -1403,6 +1427,84 @@
                     "flag": false,
                     "Name": "Vanguard Total World Stock ETF",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "VXUS",
+                    "flag": false,
+                    "Name": "Vanguard Total International Stock ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "VEA",
+                    "flag": false,
+                    "Name": "Vanguard FTSE Developed Markets ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "VWO",
+                    "flag": false,
+                    "Name": "Vanguard FTSE Emerging Markets ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "IEFA",
+                    "flag": false,
+                    "Name": "iShares Core MSCI EAFE ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EEM",
+                    "flag": false,
+                    "Name": "iShares MSCI Emerging Markets ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWJ",
+                    "flag": false,
+                    "Name": "iShares MSCI Japan ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "FXI",
+                    "flag": false,
+                    "Name": "iShares China Large-Cap ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWU",
+                    "flag": false,
+                    "Name": "iShares MSCI United Kingdom ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWG",
+                    "flag": false,
+                    "Name": "iShares MSCI Germany ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWQ",
+                    "flag": false,
+                    "Name": "iShares MSCI France ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "INDA",
+                    "flag": false,
+                    "Name": "iShares MSCI India ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWZ",
+                    "flag": false,
+                    "Name": "iShares MSCI Brazil ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "EWC",
+                    "flag": false,
+                    "Name": "iShares MSCI Canada ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
                 }
             ],
             "Commodity ETFs": [
@@ -1411,6 +1513,42 @@
                     "flag": false,
                     "Name": "SPDR Gold Shares",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/spdr-sandp500-etf-tr.svg"
+                },
+                {
+                    "symbol": "SLV",
+                    "flag": false,
+                    "Name": "iShares Silver Trust",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "CPER",
+                    "flag": false,
+                    "Name": "United States Copper Index Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/united-states-commodity-funds-llc.svg"
+                },
+                {
+                    "symbol": "OILK",
+                    "flag": false,
+                    "Name": "ProShares K-1 Free Crude Oil Strategy ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/proshares.svg"
+                },
+                {
+                    "symbol": "UNG",
+                    "flag": false,
+                    "Name": "United States Natural Gas Fund",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/uscf-fund.svg"
+                },
+                {
+                    "symbol": "PALL",
+                    "flag": false,
+                    "Name": "Aberdeen Standard Physical Palladium Shares ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/abrdn.svg"
+                },
+                {
+                    "symbol": "PLTM",
+                    "flag": false,
+                    "Name": "GraniteShares Platinum Trust",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/uscf-fund.svg"
                 },
                 {
                     "symbol": "IBIT",
@@ -1485,6 +1623,134 @@
                     "flag": false,
                     "Name": "Communication Services Select Sector SPDR Fund",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/sector/communication-services.svg"
+                }
+            ],
+            "Specialized ETFs": [
+                {
+                    "symbol": "SOXX",
+                    "flag": false,
+                    "Name": "iShares Semiconductor ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "SMH",
+                    "flag": false,
+                    "Name": "VanEck Semiconductor ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vaneck.svg"
+                },
+                {
+                    "symbol": "MAGS",
+                    "flag": false,
+                    "Name": "Roundhill Magnificent Seven ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/roundhmetave-aeoa.svg"
+                },
+                {
+                    "symbol": "BOTZ",
+                    "flag": false,
+                    "Name": "Global X Robotics & Artificial Intelligence ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/global-x.svg"
+                },
+                {
+                    "symbol": "HACK",
+                    "flag": false,
+                    "Name": "Amplify Cyber Security ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/amplify.svg"
+                },
+                {
+                    "symbol": "LIT",
+                    "flag": false,
+                    "Name": "Global X Lithium & Battery Tech ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/global-x.svg"
+                },
+                {
+                    "symbol": "TAN",
+                    "flag": false,
+                    "Name": "Invesco Solar ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/invesco.svg"
+                },
+                {
+                    "symbol": "ARKK",
+                    "flag": false,
+                    "Name": "ARK Innovation ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ark-etf-tr.svg"
+                },
+                {
+                    "symbol": "IBB",
+                    "flag": false,
+                    "Name": "iShares Biotechnology ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                }
+            ],
+            "Bond ETFs": [
+                {
+                    "symbol": "BND",
+                    "flag": false,
+                    "Name": "Vanguard Total Bond Market ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "AGG",
+                    "flag": false,
+                    "Name": "iShares Core U.S. Aggregate Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "TLT",
+                    "flag": false,
+                    "Name": "iShares 20+ Year Treasury Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "IEF",
+                    "flag": false,
+                    "Name": "iShares 7\u201310 Year Treasury Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "SHY",
+                    "flag": false,
+                    "Name": "iShares 1\u20133 Year Treasury Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "HYG",
+                    "flag": false,
+                    "Name": "iShares iBoxx High Yield Corporate Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                },
+                {
+                    "symbol": "LQD",
+                    "flag": false,
+                    "Name": "iShares Investment Grade Corporate Bond ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/ishares.svg"
+                }
+            ],
+            "Real Estate ETFs": [
+                {
+                    "symbol": "VNQ",
+                    "flag": false,
+                    "Name": "Vanguard Real Estate ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "SCHH",
+                    "flag": false,
+                    "Name": "Schwab U.S. REIT ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/schwab.svg"
+                }
+            ],
+            "Dividend ETFs": [
+                {
+                    "symbol": "VYM",
+                    "flag": false,
+                    "Name": "Vanguard High Dividend Yield ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vanguard.svg"
+                },
+                {
+                    "symbol": "SCHD",
+                    "flag": false,
+                    "Name": "Schwab U.S. Dividend Equity ETF",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/schwab.svg"
                 }
             ]
         }
