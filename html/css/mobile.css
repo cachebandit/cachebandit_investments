@@ -1,0 +1,270 @@
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Hide market cap/net assets on desktop view - only show on mobile */
+.market-cap-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    margin: 10px auto;
+  }
+
+  .header-container {
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+
+  .header-logo {
+    height: 50px;
+  }
+
+  .header-center h1 {
+    font-size: 18px;
+  }
+
+  .header-controls {
+    min-width: 100px;
+    font-size: 11px;
+  }
+
+  .section {
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+
+  .section h2 {
+    font-size: 16px;
+    padding: 12px 15px;
+  }
+
+  .industry-section h3 {
+    font-size: 13px;
+    padding-left: 15px;
+    margin: 15px 0 10px 0;
+  }
+
+  /* MOBILE TABLE LAYOUT - Switch to card view */
+  table {
+    display: block;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--container-bg);
+    padding: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:last-child {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:hover {
+    background-color: var(--hover-bg);
+  }
+
+  /* Company name - full width row */
+  td.company-name {
+    display: flex !important;
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    text-align: left;
+    margin-bottom: 0 !important;
+    align-items: center;
+    order: -10;
+    flex-basis: 100%;
+  }
+
+  /* Hide market cap table cell - shown inside company row instead */
+  td.market-cap {
+    display: none !important;
+  }
+
+  /* Market cap displayed after company name on mobile */
+  .market-cap-mobile {
+    display: none;
+  }
+
+  /* Show market cap on mobile - display inline on right of company cell */
+  .company-cell .market-cap-mobile {
+    display: block !important;
+    font-size: 9px;
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Data row - all on one horizontal line, filling space evenly */
+  tbody tr > td.open,
+  tbody tr > td.high,
+  tbody tr > td.low,
+  tbody tr > td.close,
+  tbody tr > td.change,
+  tbody tr > td.percent-change,
+  tbody tr > td.rsi {
+    display: inline-flex !important;
+    flex: 1 1 auto !important;
+    padding: 8px 2px !important;
+    margin: 0 !important;
+    font-size: 9px;
+    border: none !important;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: static !important;
+    float: none !important;
+    clear: none !important;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Hide table headers on mobile */
+  th {
+    display: none;
+  }
+
+  /* Add data labels - full names */
+  td.open::before { content: "Open"; }
+  td.high::before { content: "High"; }
+  td.low::before { content: "Low"; }
+  td.close::before { content: "Close"; }
+  td.change::before { content: "Change"; }
+  td.percent-change::before { display: none; }
+  td.rsi::before { content: "RSI"; }
+
+  /* Style all data cell labels - display as block so they appear above values */
+  td::before {
+    display: block;
+    font-size: 8px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 2px;
+    line-height: 1;
+  }
+
+  /* Compact badges */
+  td.change .badge-change {
+    min-width: auto;
+    width: 100%;
+    height: auto;
+    padding: 2px 3px;
+    font-size: 7px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  td.rsi .badge-metric {
+    min-width: auto;
+    width: 90%;
+    height: 16px;
+    padding: 1px 3px;
+    font-size: 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Company cell - flex layout for logo + name + ticker + market cap */
+  .company-cell {
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .company-logo {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .company-info-btn {
+    flex-shrink: 0;
+  }
+
+  .company-info-btn img {
+    width: 13px;
+    height: 13px;
+  }
+
+  .company-text-block {
+    min-width: 0;
+  }
+
+  .company-name-line {
+    font-size: 12px;
+    font-weight: 600;
+    gap: 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-chip {
+    font-size: 9px;
+    padding: 2px 4px;
+    flex-shrink: 0;
+  }
+
+  .expand-panel {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .expand-item {
+    font-size: 12px;
+  }
+
+  /* Search styling */
+  .search-container {
+    margin-bottom: 15px;
+  }
+
+  .search-wrapper {
+    padding: 8px 12px;
+  }
+
+  /* Expand row mobile styling */
+  .expand-row td {
+    padding: 12px !important;
+  }
+
+  /* Remove expand button from taking space */
+  .expand-toggle {
+    width: 18px;
+    height: 18px;
+  }
+
+  .expand-toggle img {
+    width: 12px;
+    height: 12px;
+  }
+}

@@ -431,6 +431,7 @@ function renderEtfRow(etf) {
             <span class="ticker-chip">${symbol}</span>
           </div>
         </div>
+        <div class="market-cap-mobile">Net Assets: ${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</div>
       </div>
     </td>
     <td class="market-cap">${formatMarketCap(etf['Market Cap'] || etf.marketCap)}</td>

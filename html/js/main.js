@@ -287,6 +287,7 @@ function renderCategory(category, data) {
                             </div>
                             <div class="company-subline">${industry}</div>
                         </div>
+                        <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
                     </div>
                 </td>
                 <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
@@ -400,6 +401,7 @@ function renderCategory(category, data) {
                                     <span class="ticker-chip">${stock.Symbol || stock.symbol}</span>
                                 </div>
                             </div>
+                            <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
                         </div>
                     </td>
                     <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
