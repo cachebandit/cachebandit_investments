@@ -6,7 +6,7 @@ let staticCache = null;
 async function fetchStaticCache() {
     if (staticCache) return staticCache;
     try {
-        const res = await fetch('/cache/stock_data.json');
+        const res = await fetch('cache/stock_data.json');
         if (!res.ok) throw new Error(`Failed to fetch static cache: ${res.status}`);
         staticCache = await res.json();
         return staticCache;
