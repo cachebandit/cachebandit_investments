@@ -78,6 +78,14 @@
     color: var(--text-secondary);
 }
 
+.day-of-week {
+    display: none;
+}
+
+.day-date {
+    display: inline;
+}
+
 .timing-section {
     margin-bottom: 10px;
 }

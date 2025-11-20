@@ -15,19 +15,52 @@
     flex-wrap: wrap;
     margin-bottom: 15px;
     padding-bottom: 15px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    position: relative;
+  }
+
+  .header-left {
+    order: 1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hamburger-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .header-logo {
-    height: 50px;
+    height: 80px;
+    width: auto;
+  }
+
+  .header-center {
+    order: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 12px;
   }
 
   .header-center h1 {
     font-size: 18px;
+    margin: 0;
   }
 
   .header-controls {
+    order: 3;
     min-width: 100px;
     font-size: 11px;
+    width: 100%;
+    justify-content: center;
   }
 
   .section {
@@ -266,5 +299,181 @@
   .expand-toggle img {
     width: 12px;
     height: 12px;
+  }
+
+  /* Earnings Calendar Mobile Styling - Stack days vertically */
+  #calendar-container {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .day-header {
+    display: none !important;
+  }
+
+  .calendar-day {
+    min-height: auto !important;
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .earnings-container {
+    overflow: visible !important;
+    margin-top: 8px !important;
+    flex-grow: 1;
+  }
+
+  .day-number {
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .day-of-week {
+    display: inline !important;
+    margin-right: 4px;
+  }
+
+  .day-date {
+    display: inline;
+  }
+
+  .timing-header {
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .earnings-item {
+    font-size: 13px !important;
+    padding: 3px 4px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  .earnings-logo {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .company-info-btn img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .market-data {
+    font-size: 11px !important;
+    padding: 2px 4px !important;
+  }
+
+  #current-week {
+    font-size: 14px !important;
+    min-width: auto !important;
+  }
+
+  .calendar-controls {
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .calendar-controls button {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* ETF Page Mobile - Holdings Table */
+  .expand-panel {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .holdings-wrap {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 12px !important;
+    grid-template-rows: auto auto 1fr !important;
+  }
+
+  .holdings-table {
+    font-size: 11px !important;
+  }
+
+  .holdings-table thead th {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .holdings-table tbody td {
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .symbol-badge {
+    min-width: 35px !important;
+    font-size: 10px !important;
+  }
+
+  .h-col-name {
+    max-width: 80px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .tv-adv {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .tv-adv .tradingview-widget-container {
+    height: 300px !important;
+  }
+
+  /* Info popup mobile styles */
+  .info-popup {
+    width: 90% !important;
+    max-width: 95vw !important;
+    padding: 12px !important;
+    font-size: 12px !important;
+  }
+
+  .info-popup h3 {
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .info-popup div[style*="font-size: 14px"] {
+    font-size: 11px !important;
+    white-space: nowrap !important; /* Prevent wrapping */
+    overflow-x: hidden;
+    display: flex;
+    flex-wrap: nowrap !important; /* Ensure items stay on one line */
+    justify-content: space-between; /* Distribute items evenly */
+    gap: 10px !important; /* Set a smaller, fixed gap */
+  }
+
+  .info-popup div[style*="font-size: 14px"] span {
+    flex: 0 1 auto !important; /* Allow items to shrink but not grow */
+    min-width: 0 !important; /* Remove minimum width constraint */
+  }
+
+  .popup-description {
+    font-size: 12px !important;
+  }
+
+  .popup-chart {
+    font-size: 11px !important;
+  }
+
+  .chart-label {
+    width: 70px !important;
   }
 }

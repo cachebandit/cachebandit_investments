@@ -106,10 +106,31 @@
   border-radius:6px;
   line-height:1;
 }
-.h-col-symbol{ width:80px; }      /* was 86 */
-.h-col-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-left:8px; }
-.h-col-weight{ width:86px; }      /* was 92 */
-.h-wt{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.h-col-symbol{ 
+  width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.h-col-name{ 
+  overflow:hidden; 
+  text-overflow:ellipsis; 
+  white-space:nowrap; 
+  padding-left:8px;
+  flex: 1;
+  min-width: 0;
+}
+.h-col-weight{ 
+  flex: 1;
+  text-align: right;
+  padding-right: 8px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.h-wt{ 
+  text-align: right; 
+  font-variant-numeric: tabular-nums; 
+  white-space: nowrap;
+}
 
 /* Fund Stats at the bottom of the card */
 .fund-stats-flat{
