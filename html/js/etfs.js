@@ -364,8 +364,8 @@ async function loadEtfData(opts = {}) {
         const lastUpdated = response.updated_at || response.last_updated;
         const ts = document.getElementById('last-updated');
         if (ts && lastUpdated) ts.textContent = `Last Updated: ${formatCT(lastUpdated)}`;
-
-        const etfs = response.items || response.data || [];
+        
+        const etfs = response.data || [];
         renderEtfTable(etfs);
 
     } catch (error) {
