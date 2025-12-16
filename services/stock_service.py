@@ -202,7 +202,7 @@ def _add_holdings_to_etfs(items):
         holdings = cache.get(key)
         if holdings is None:
             holdings = fetch_etf_top_holdings(sym)
-            cache.set(key, holdings, timeout=60*60*24)  # 24h TTL
+            cache.set(key, holdings)  # 24h TTL
         item["holdings"] = holdings
     return items
 
