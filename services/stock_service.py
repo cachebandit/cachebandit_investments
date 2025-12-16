@@ -327,37 +327,61 @@ def fetch_detailed_info(symbols):
         hist_data_hourly = yf.download(symbols, period="3mo", interval="1h", progress=False, group_by='ticker')
 
         for symbol in symbols:
-            # Access the DataFrames for the specific symbol
-            symbol_hist_daily = hist_data_daily.get(symbol)
-            symbol_hist_hourly = hist_data_hourly.get(symbol)
-            
-            # Check for valid data
-            if symbol_hist_daily is None or symbol_hist_daily.empty or symbol_hist_daily['Close'].isnull().all():
-                logging.warning(f"No valid historical data for {symbol}, skipping detailed info.")
+            try:
+                # Access the DataFrames for the specific symbol
+                # yfinance returns a dict-like object when group_by='ticker'
+                symbol_hist_daily = hist_data_daily[symbol] if symbol in hist_data_daily else None
+                symbol_hist_hourly = hist_data_hourly[symbol] if symbol in hist_data_hourly else None
+                
+                # Check for valid data
+                if symbol_hist_daily is None or symbol_hist_daily.empty or symbol_hist_daily['Close'].isnull().all():
+                    logging.warning(f"No valid historical data for {symbol}, skipping detailed info.")
+                    continue
+
+                # Find the last valid (non-NaN) Close price
+                valid_indices = symbol_hist_daily.index[symbol_hist_daily['Close'].notna()]
+                if len(valid_indices) < 2:
+                    logging.warning(f"Insufficient valid data for {symbol} (need at least 2 valid prices)")
+                    continue
+                
+                # Get the latest valid row
+                latest_idx = valid_indices[-1]
+                latest_data = symbol_hist_daily.loc[latest_idx]
+                
+                # Get the previous valid Close price (yesterday's close)
+                prev_idx = valid_indices[-2]
+                previous_close = symbol_hist_daily.loc[prev_idx, 'Close']
+
+                # Calculate price changes with validation
+                current_close = latest_data['Close']
+                
+                if pd.notna(current_close) and pd.notna(previous_close):
+                    price_change = float(current_close - previous_close)
+                    percent_change = float((price_change / previous_close * 100)) if previous_close != 0 else None
+                else:
+                    price_change = None
+                    percent_change = None
+                
+                # Calculate volatility signals using the new service
+                signal_fields = get_vol_signal_fields(symbol_hist_daily, symbol_hist_hourly)
+
+                detailed_data[symbol] = {
+                    'Open': _clean_value(latest_data.get('Open')),
+                    'Close': _clean_value(current_close),
+                    'High': _clean_value(latest_data.get('High')),
+                    'Low': _clean_value(latest_data.get('Low')),
+                    'Price Change': _clean_value(price_change),
+                    'Percent Change': _clean_value(percent_change),
+                    'ATR': signal_fields.get('atr'),
+                    'ATR_Percent': signal_fields.get('atr_percent'),
+                    'RSI1H': signal_fields.get('RSI1H'),
+                    'RSI': calculate_rsi(symbol_hist_daily),
+                    'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
+                }
+            except Exception as e:
+                logging.error(f"Error processing symbol {symbol}: {e}", exc_info=True)
                 continue
 
-            latest_data = symbol_hist_daily.iloc[-1]
-            previous_close = symbol_hist_daily.iloc[-2]['Close'] if len(symbol_hist_daily) > 1 else None
-
-            price_change = (latest_data['Close'] - previous_close) if previous_close is not None else None
-            percent_change = (price_change / previous_close * 100) if price_change is not None and previous_close != 0 else None
-            
-            # Calculate volatility signals using the new service
-            signal_fields = get_vol_signal_fields(symbol_hist_daily, symbol_hist_hourly)
-
-            detailed_data[symbol] = {
-                'Open': _clean_value(latest_data['Open']),
-                'Close': _clean_value(latest_data['Close']),
-                'High': _clean_value(latest_data['High']),
-                'Low': _clean_value(latest_data['Low']),
-                'Price Change': _clean_value(price_change),
-                'Percent Change': _clean_value(percent_change),
-                'ATR': signal_fields.get('atr'),
-                'ATR_Percent': signal_fields.get('atr_percent'),
-                'RSI1H': signal_fields.get('RSI1H'),
-                'RSI': calculate_rsi(symbol_hist_daily),
-                'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
-            }
     except Exception as e:
         # If yfinance or the upstream HTTP client responds with a rate-limit 429, bubble up a RateLimitError
         msg = str(e)

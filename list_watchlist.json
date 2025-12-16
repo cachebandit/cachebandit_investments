@@ -128,7 +128,7 @@
                 },
                 {
                     "symbol": "MSFT",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Microsoft Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/microsoft.svg"
                 }
@@ -136,7 +136,7 @@
             "Cybersecurity": [
                 {
                     "symbol": "PANW",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Palo Alto Networks, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/palo-alto-networks.svg"
                 },
@@ -370,7 +370,7 @@
                 },
                 {
                     "symbol": "BA",
-                    "flag": false,
+                    "flag": true,
                     "Name": "The Boeing Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/boeing.svg"
                 },
@@ -998,7 +998,7 @@
                 },
                 {
                     "symbol": "NFLX",
-                    "flag": false,
+                    "flag": true,
                     "Name": "Netflix, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/netflix.svg"
                 },

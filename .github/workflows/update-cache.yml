@@ -3,10 +3,10 @@ name: Update Stock Cache
 on:
   workflow_dispatch: # Allows manual runs from the Actions tab
   schedule:
-    # Note: Times are in UTC. (CDT is UTC-5). Runs are offset by 10 mins.
-    - cron: '20,50 13 * * 1-5'      # 8:20, 8:50 AM CDT
-    - cron: '20,50 14-20 * * 1-5'  # Every 30 mins from 9:20 AM to 2:50 PM CDT
-    - cron: '10 20 * * 1-5'        # Final run at 3:10 PM CDT
+    # Note: Times are in UTC. (CST is UTC-6, CDT is UTC-5). Adjust accordingly.
+    - cron: '20,50 14 * * 1-5'      # 8:20, 8:50 AM CST
+    - cron: '20,50 15-20 * * 1-5'  # Every 30 mins from 9:20 AM to 2:50 PM CST
+    - cron: '10 21 * * 1-5'        # Final run at 3:10 PM CST
 
 permissions:
   contents: read # Read-only access to checkout the repo
