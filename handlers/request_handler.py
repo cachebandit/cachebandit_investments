@@ -134,17 +134,6 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             if _is_etf_category(category):
                 data = _add_holdings_to_etfs(data, fetch_etf_top_holdings)
 
-            # Sort the "Owned" category alphabetically by stock symbol
-            if category == "Owned":
-                data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
-            else:
-                # Sort other categories by market cap
-                try:
-                    data.sort(key=lambda x: (float(x.get('Market Cap', 0)) if x.get('Market Cap') != 'N/A' else 0), reverse=True)
-                except (ValueError, TypeError):
-                    # If sorting by market cap fails, sort by symbol as a fallback
-                    data.sort(key=lambda x: x.get('Symbol', '').strip().lower())
-
             set_cache_safe(cache_key, data, ttl_seconds=3600)
             
             # Format the timestamp consistently with the cache
@@ -164,95 +153,6 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             self.wfile.write(f"load_items failed: {e}".encode())
-
-        return # End of the original _handle_stock_info logic
-
-        if category:
-            # Use separate cache namespaces for ETFs vs stocks
-            if _is_etf_category(category):
-                cache_key = "etfs:saved_stock_info:v2"
-            else:
-                cache_key = f"stocks:saved_stock_info:{category.strip()}"
-
-            # Try to serve from cache first if not a refresh request
-            if not refresh and get_cache(cache_key):
-                category_data = get_cache(cache_key)
-            else:
-                category_data = None
-            
-            # If this is a refresh request for a single category (like from the ETFs page)
-            # or the first category in a larger refresh cycle, start the refresh process.
-            is_single_category_refresh = refresh and not is_first and not is_last
-            if (refresh and is_first) or is_single_category_refresh:
-                _cache.start_refresh()
-            
-            # Check if we should use cached data or refresh
-            if refresh or category_data is None:
-                logging.info(f"Fetching fresh data for category: {category}")
-                
-                # Fetch and return stock data for the specified category
-                try:
-                    category_data = fetch_category_data(category, refresh=True) # Pass refresh flag
-                except RateLimitError as e:
-                    logging.warning(f"Rate limit detected while fetching category {category}: {e}")
-                    # Return HTTP 429 so clients can react appropriately
-                    self.send_response(429)
-                    self.send_header('Content-type', 'application/json')
-                    self.end_headers()
-                    resp = {
-                        'data': [],
-                        'last_updated': _cache.last_updated,
-                        'error': 'rate_limit',
-                        'message': str(e)
-                    }
-                    self.wfile.write(json.dumps(resp).encode())
-                    return
-                except Exception as e:
-                    logging.error(f"Error fetching category {category}: {e}")
-                    self.send_response(500)
-                    self.send_header('Content-type', 'application/json')
-                    self.end_headers()
-                    self.wfile.write(json.dumps({'error': str(e)}).encode())
-                    return
-
-                # Sort the "Owned" category alphabetically by stock symbol
-                if category == "Owned":
-                    category_data.sort(key=lambda x: x['Symbol'].strip().lower())
-                else:
-                    # Sort other categories by market cap
-                    try:
-                        category_data.sort(key=lambda x: (float(x['Market Cap']) if x['Market Cap'] != 'N/A' else 0), reverse=True)
-                    except (ValueError, TypeError):
-                        # If sorting by market cap fails, sort by symbol
-                        category_data.sort(key=lambda x: x['Symbol'].strip().lower())
-                
-                # Save to cache
-                set_cache_safe(cache_key, category_data)
-                
-                # If this is the last category in a refresh cycle or a single-category refresh, commit the changes.
-                if (refresh and is_last) or is_single_category_refresh:
-                    _cache.commit_refresh()
-            else:
-                logging.info(f"Using cached data for category: {category}")
-
-            # Include the last_updated timestamp in the response
-            response_data = {
-                'data': category_data,
-                'last_updated': _cache.last_updated
-            }
-            # Include how many symbols the static watchlist expects for this category
-            try:
-                response_data['expected_count'] = len(watchlist_data.get(category, []))
-            except Exception:
-                response_data['expected_count'] = 0
-
-            # Normal successful response
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps(response_data).encode())
-        else:
-            self.send_error(400, "Category not provided")
 
     def _handle_commit_refresh(self):
         """Handle commit refresh requests"""
