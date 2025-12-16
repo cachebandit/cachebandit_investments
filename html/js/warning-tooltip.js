@@ -23,10 +23,24 @@ function initWarningTooltip() {
             `;
             document.body.appendChild(tooltip);
             
-            // Position tooltip near cursor
+            // Position tooltip, checking if it would go off-screen
             const rect = e.target.getBoundingClientRect();
-            tooltip.style.left = (rect.left - tooltip.offsetWidth / 2) + 'px';
-            tooltip.style.top = (rect.top - 30) + 'px';
+            let left = rect.left - tooltip.offsetWidth / 2;
+            let top = rect.top - 30;
+            
+            // If tooltip would go off left side, position to the right of icon instead
+            if (left < 10) {
+                left = rect.right + 8;
+                top = rect.top - tooltip.offsetHeight / 2;
+            }
+            // If tooltip would go off right side, position to the left
+            else if (left + tooltip.offsetWidth > window.innerWidth - 10) {
+                left = rect.left - tooltip.offsetWidth - 8;
+                top = rect.top - tooltip.offsetHeight / 2;
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
         }
     });
     

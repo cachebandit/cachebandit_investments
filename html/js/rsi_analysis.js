@@ -201,26 +201,29 @@ function renderRowHtml(stock) {
     <div class="rsi-row" data-symbol="${escapeHtml(symbol)}">
         <!-- COL 1: company block -->
         <div class="company-cell">
-            <button class="company-info-btn"
-                    data-stock-name="${escapeHtml(name)}"
-                    data-fifty-two-week-high="${escapeHtml(high52)}"
-                    data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
-                    data-fifty-two-week-low="${escapeHtml(low52)}"
-                    data-earnings-date="${escapeHtml(earningsDate)}"
-                    data-beta="${escapeHtml(beta)}"
-                    data-atr-percent="${escapeHtml(atrPercent)}"
-                    title="${escapeHtml(desc)}"
-                    data-trailing-pe="${escapeHtml(trailingPE)}"
-                    data-forward-pe="${escapeHtml(forwardPE)}"
-                    data-ev-ebitda="${escapeHtml(evEbitda)}"
-                    data-market-cap="${escapeHtml(marketCap)}"
-                    data-dividend-yield="${escapeHtml(dividend)}"
-                    data-total-revenue="${escapeHtml(totalRev)}"
-                    data-net-income="${escapeHtml(netInc)}"
-                    data-profit-margins="${escapeHtml(margin)}"
-                    data-url="${escapeHtml(logoUrl)}">
-                <img src="info.png" alt="Info">
-            </button>
+            <div style="position: relative;">
+                <button class="company-info-btn"
+                        data-stock-name="${escapeHtml(name)}"
+                        data-fifty-two-week-high="${escapeHtml(high52)}"
+                        data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
+                        data-fifty-two-week-low="${escapeHtml(low52)}"
+                        data-earnings-date="${escapeHtml(earningsDate)}"
+                        data-beta="${escapeHtml(beta)}"
+                        data-atr-percent="${escapeHtml(atrPercent)}"
+                        title="${escapeHtml(desc)}"
+                        data-trailing-pe="${escapeHtml(trailingPE)}"
+                        data-forward-pe="${escapeHtml(forwardPE)}"
+                        data-ev-ebitda="${escapeHtml(evEbitda)}"
+                        data-market-cap="${escapeHtml(marketCap)}"
+                        data-dividend-yield="${escapeHtml(dividend)}"
+                        data-total-revenue="${escapeHtml(totalRev)}"
+                        data-net-income="${escapeHtml(netInc)}"
+                        data-profit-margins="${escapeHtml(margin)}"
+                        data-url="${escapeHtml(logoUrl)}">
+                    <img src="info.png" alt="Info">
+                </button>
+                ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; cursor: pointer;">` : ''}
+            </div>
 
             <img class="company-logo"
                  src="${escapeHtml(logoUrl)}"
