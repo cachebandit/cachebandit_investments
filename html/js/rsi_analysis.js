@@ -168,9 +168,14 @@ function renderRowHtml(stock) {
 
     const priceText = isFinite(closeNum) ? `$${closeNum.toFixed(2)}` : 'N/A';
 
-    const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
-        ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
-        : 'N/A';
+    let changeText;
+    if (stock['Percent Change'] === "yfinance Missing Data") {
+        changeText = "(yfinance Missing Data)";
+    } else if (isFinite(changeNum) && isFinite(pctChangeNum)) {
+        changeText = `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`;
+    } else {
+        changeText = 'N/A';
+    }
 
     let changeClass = '';
     if (isFinite(pctChangeNum)) {
