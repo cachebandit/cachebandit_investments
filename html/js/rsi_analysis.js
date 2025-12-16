@@ -170,7 +170,7 @@ function renderRowHtml(stock) {
 
     let changeText;
     if (stock['Percent Change'] === "yfinance Missing Data") {
-        changeText = "(yfinance Missing Data)";
+        changeText = "[ yfinance Missing Data ]";
     } else if (isFinite(changeNum) && isFinite(pctChangeNum)) {
         changeText = `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`;
     } else {
