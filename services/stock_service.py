@@ -356,22 +356,44 @@ def fetch_detailed_info(symbols):
                 latest_idx = valid_indices[-1]
                 latest_data = symbol_hist_daily.loc[latest_idx]
                 
-                # Get the previous valid Close price (yesterday's close)
-                prev_idx = valid_indices[-2]
-                previous_close = symbol_hist_daily.loc[prev_idx, 'Close']
+                # Get the previous close (the row immediately before the latest, whether it has data or not)
+                # This ensures we compare consecutive trading days even if there are gaps
+                latest_position = symbol_hist_daily.index.get_loc(latest_idx)
+                if latest_position > 0:
+                    previous_idx = symbol_hist_daily.index[latest_position - 1]
+                    previous_close = symbol_hist_daily.loc[previous_idx, 'Close']
+                    # If the immediate previous row is NaN, skip back until we find a valid close
+                    rows_skipped = 0
+                    while pd.isna(previous_close) and latest_position > 1:
+                        rows_skipped += 1
+                        latest_position -= 1
+                        previous_idx = symbol_hist_daily.index[latest_position - 1]
+                        previous_close = symbol_hist_daily.loc[previous_idx, 'Close']
+                else:
+                    logging.warning(f"No previous data point for {symbol}")
+                    continue
 
                 # Calculate price changes with validation
                 current_close = latest_data['Close']
                 
                 if pd.notna(current_close) and pd.notna(previous_close):
                     price_change = float(current_close - previous_close)
-                    percent_change = float((price_change / previous_close * 100)) if previous_close != 0 else None
+                    
+                    # If we skipped any rows (NaN values), it means there are missing trading days
+                    if rows_skipped > 0:
+                        percent_change = "yfinance Missing Data"
+                        logging.warning(f"{symbol} missing data - skipped {rows_skipped} rows between {previous_idx.strftime('%Y-%m-%d')} and {latest_idx.strftime('%Y-%m-%d')}")
+                    else:
+                        percent_change = float((price_change / previous_close * 100)) if previous_close != 0 else None
                 else:
                     price_change = None
                     percent_change = None
                 
                 # Calculate volatility signals using the new service
                 signal_fields = get_vol_signal_fields(symbol_hist_daily, symbol_hist_hourly)
+                
+                # Check for missing data points (NaN values in Close column)
+                missing_data = symbol_hist_daily['Close'].isna().sum() > 0
 
                 detailed_data[symbol] = {
                     'Open': _clean_value(latest_data.get('Open')),
@@ -384,6 +406,7 @@ def fetch_detailed_info(symbols):
                     'ATR_Percent': signal_fields.get('atr_percent'),
                     'RSI1H': signal_fields.get('RSI1H'),
                     'RSI': calculate_rsi(symbol_hist_daily),
+                    'RSI_has_missing_data': bool(missing_data),
                     'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
                 }
             except Exception as e:

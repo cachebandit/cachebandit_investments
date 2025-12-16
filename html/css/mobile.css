@@ -207,16 +207,17 @@
     padding: 2px 3px;
     font-size: 7px;
     box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    text-align: center;
     line-height: 1.2;
-    word-break: break-word;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   td.rsi .badge-metric {
     min-width: auto;
-    width: 90%;
+    width: auto;
     height: 16px;
     padding: 1px 3px;
     font-size: 8px;
@@ -224,6 +225,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* Warning icon on mobile */
+  td.rsi img[data-tooltip] {
+    position: static !important;
+    margin-left: 2px;
+    width: 10px !important;
+    height: 10px !important;
   }
 
   /* Company cell - flex layout for logo + name + ticker + market cap */

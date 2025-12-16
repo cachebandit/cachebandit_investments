@@ -250,8 +250,13 @@ function renderCategory(category, data) {
 
             // Combine Change and % Change
             const changeNum = parseFloat(stock['Price Change']);
-            const pctChangeNum = parseFloat(stock['Percent Change']);
-            const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
+            const pctChange = stock['Percent Change'];
+            const pctChangeNum = parseFloat(pctChange);
+            
+            // Check if pctChange is a string message (like "yfinance Missing Data")
+            const changeText = (typeof pctChange === 'string' && isNaN(pctChangeNum))
+                ? pctChange
+                : (isFinite(changeNum) && isFinite(pctChangeNum))
                 ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
                 : 'N/A';
 
@@ -300,7 +305,12 @@ function renderCategory(category, data) {
                     ${changeText}
                   </div>
                 </td>
-                <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
+                <td class="rsi">
+                  <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 30px;">
+                    <div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div>
+                    ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; left: 4px; width: 14px; height: 14px; cursor: pointer;">` : ''}
+                  </div>
+                </td>
             `;
 
             tbody.appendChild(row);
@@ -365,8 +375,13 @@ function renderCategory(category, data) {
 
                 // Combine Change and % Change
                 const changeNum = parseFloat(stock['Price Change']);
-                const pctChangeNum = parseFloat(stock['Percent Change']);
-                const changeText = (isFinite(changeNum) && isFinite(pctChangeNum))
+                const pctChange = stock['Percent Change'];
+                const pctChangeNum = parseFloat(pctChange);
+                
+                // Check if pctChange is a string message (like "yfinance Missing Data")
+                const changeText = (typeof pctChange === 'string' && isNaN(pctChangeNum))
+                    ? pctChange
+                    : (isFinite(changeNum) && isFinite(pctChangeNum))
                     ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
                     : 'N/A';
 
@@ -414,7 +429,12 @@ function renderCategory(category, data) {
                         ${changeText}
                       </div>
                     </td>
-                    <td class="rsi"><div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div></td>
+                    <td class="rsi">
+                      <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 30px;">
+                        <div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div>
+                        ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; left: 4px; width: 14px; height: 14px; cursor: pointer;">` : ''}
+                      </div>
+                    </td>
                 `;
 
                 tbody.appendChild(row);
