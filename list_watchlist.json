@@ -250,7 +250,7 @@
                 },
                 {
                     "symbol": "LIN",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Linde plc",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/linde.svg"
                 }
@@ -382,7 +382,7 @@
                 },
                 {
                     "symbol": "HON",
-                    "flag": true,
+                    "flag": false,
                     "Name": "Honeywell International Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/honeywell.svg"
                 }
