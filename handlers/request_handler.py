@@ -73,6 +73,12 @@ def _add_holdings_to_etfs(items, fetch_func):
 class ChartRequestHandler(SimpleHTTPRequestHandler):
     """HTTP request handler for stock chart and data requests"""
     
+    def _set_no_cache_headers(self):
+        """Set headers to prevent browser caching on dynamic content"""
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', '0')
+    
     def do_GET(self):
         """Handle GET requests"""
         parsed_path = urlparse(self.path)
@@ -123,6 +129,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                     response_data = { 'data': cached_data, 'last_updated': _cache.last_updated }
                     self.send_response(200)
                     self.send_header('Content-type', 'application/json')
+                    self._set_no_cache_headers()
                     self.end_headers()
                     self.wfile.write(json.dumps(response_data).encode())
                     return
@@ -144,6 +151,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             response_payload = {"data": data, "last_updated": last_updated_str}
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
+            self._set_no_cache_headers()
             self.end_headers()
             self.wfile.write(json.dumps(response_payload).encode())
 
@@ -151,6 +159,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             log.exception("handle_saved_stock_info failed")
             self.send_response(500)
             self.send_header('Content-type', 'text/plain')
+            self._set_no_cache_headers()
             self.end_headers()
             self.wfile.write(f"load_items failed: {e}".encode())
 
@@ -160,6 +169,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
+        self._set_no_cache_headers()
         self.end_headers()
         self.wfile.write(json.dumps({"success": success}).encode())
 
@@ -170,11 +180,13 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             with open(cache_path, 'rb') as f:
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
+                self._set_no_cache_headers()
                 self.end_headers()
                 self.wfile.write(f.read())
         except FileNotFoundError:
             self.send_response(404)
             self.send_header('Content-type', 'application/json')
+            self._set_no_cache_headers()
             self.end_headers()
             error_message = {'error': 'Cache file not found. Please refresh data on the Watchlist page first.'}
             self.wfile.write(json.dumps(error_message).encode())
@@ -192,6 +204,7 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
+            self._set_no_cache_headers()
             self.end_headers()
             self.wfile.write(json.dumps(earnings_data).encode())
         except Exception as e:
@@ -204,6 +217,8 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             if file_path.endswith('.html'):
                 self.send_header('Content-type', 'text/html')
+                # HTML files should always be fresh to pick up new data
+                self._set_no_cache_headers()
             elif file_path.endswith('.js'):
                 self.send_header('Content-type', 'application/javascript')
             elif file_path.endswith('.css'):
@@ -239,12 +254,14 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
                 
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
+                self._set_no_cache_headers()
                 self.end_headers()
                 self.wfile.write(json.dumps({'success': success}).encode())
             except Exception as e:
                 logging.error(f"Error updating flag: {e}")
                 self.send_response(400)
                 self.send_header('Content-type', 'application/json')
+                self._set_no_cache_headers()
                 self.end_headers()
                 self.wfile.write(json.dumps({
                     'success': False,

@@ -40,7 +40,8 @@ async function loadLogoMap() {
   if (_logoMap) return _logoMap;
   _logoMap = new Map();
   try {
-    const res = await fetch("/list_watchlist.json", { cache: "no-store" });
+    const ts = Date.now();
+    const res = await fetch(`/list_watchlist.json?ts=${ts}`, { cache: "no-store" });
     if (res.ok) {
       const j = await res.json();
       const cats = j?.Categories || {};

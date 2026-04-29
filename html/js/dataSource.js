@@ -6,7 +6,8 @@ let staticCache = null;
 async function fetchStaticCache() {
     if (staticCache) return staticCache;
     try {
-        const res = await fetch('cache/stock_data.json'); // or './cache/stock_data.json'
+        const ts = Date.now();
+        const res = await fetch(`cache/stock_data.json?ts=${ts}`, { cache: "no-store" });
         if (!res.ok) throw new Error(`Failed to fetch static cache: ${res.status}`);
         staticCache = await res.json();
         return staticCache;
@@ -21,7 +22,9 @@ export async function getCategoryData(category, { refresh = false, scope } = {})
     if (isLocal()) {
         // If you changed STOCK_INFO_ENDPOINT in config.py,
         // update this path to match it.
-        const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${refresh}`;
+        // Add timestamp to cache-bust the URL itself for extra safety
+        const ts = Date.now();
+        const url = `/saved_stock_info?category=${encodeURIComponent(category)}&refresh=${refresh}&ts=${ts}`;
         const res = await fetch(url, { cache: "no-store" });
         if (!res.ok) {
             let body = "";
