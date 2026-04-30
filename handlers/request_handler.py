@@ -8,7 +8,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from config import STOCK_INFO_ENDPOINT, COMMIT_REFRESH_ENDPOINT
-from services.stock_service import fetch_category_data, fetch_detailed_info, cache as _cache, update_stock_flag, fetch_earnings_data, RateLimitError, watchlist_data, _is_etf_category, fetch_etf_top_holdings
+from services.stock_service import fetch_category_data, fetch_detailed_info, cache as _cache, fetch_earnings_data, RateLimitError, watchlist_data, _is_etf_category, fetch_etf_top_holdings
 
 log = logging.getLogger(__name__)
 
@@ -238,34 +238,4 @@ class ChartRequestHandler(SimpleHTTPRequestHandler):
         """Handle POST requests"""
         parsed_path = urlparse(self.path)
         
-        if parsed_path.path == '/api/update_flag':
-            try:
-                content_length = int(self.headers['Content-Length'])
-                post_data = self.rfile.read(content_length)
-                data = json.loads(post_data)
-                
-                symbol = data.get('symbol')
-                new_flag = data.get('flag')
-                
-                if symbol is None or new_flag is None:
-                    raise ValueError("Missing symbol or flag parameter")
-                    
-                success = update_stock_flag(symbol, new_flag)
-                
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self._set_no_cache_headers()
-                self.end_headers()
-                self.wfile.write(json.dumps({'success': success}).encode())
-            except Exception as e:
-                logging.error(f"Error updating flag: {e}")
-                self.send_response(400)
-                self.send_header('Content-type', 'application/json')
-                self._set_no_cache_headers()
-                self.end_headers()
-                self.wfile.write(json.dumps({
-                    'success': False,
-                    'error': str(e)
-                }).encode())
-        else:
-            self.send_error(404, "Endpoint not found")
+        self.send_error(404, "Endpoint not found")

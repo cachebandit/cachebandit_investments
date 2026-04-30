@@ -19,9 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadChartData() {
     try {
-        // Include "Owned" so we can merge its stocks into their true categories/industries.
         const categoriesToFetch = [
-            'Owned',
             'Information Technology', 'Industrials', 'Energy & Utilities',
             'Financial Services', 'Healthcare', 'Communication Services',
             'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
@@ -44,13 +42,9 @@ async function loadChartData() {
             const requestedCat = categoriesToFetch[idx];
             const items = (responseData.items || responseData.data || []).filter(Boolean);
 
-            // IMPORTANT: If we requested "Owned", force the bucket to be named "Owned"
-            // so we can merge it later. Do not infer from the items.
-            let categoryName = responseData.category;
-            if (requestedCat === 'Owned') {
-                categoryName = 'Owned';
-            } else if (!categoryName) {
-                // For non-Owned, try to infer from the first item, else fall back to requested name.
+            // Infer category from response or use requested name
+            let categoryName = responseData.category || requestedCat;
+            if (!categoryName) {
                 const inferred = items.length > 0 ? items[0].category : null;
                 categoryName = inferred || requestedCat;
             }
@@ -58,17 +52,6 @@ async function loadChartData() {
             if (!combinedData[categoryName]) combinedData[categoryName] = [];
             combinedData[categoryName].push(...items);
         });
-
-        // ---- Merge "Owned" into real categories/industries, then remove it ----
-        if (combinedData['Owned']) {
-            const ownedItems = combinedData['Owned'];
-            for (const stk of ownedItems) {
-                const cat = stk.category || 'Uncategorized';
-                if (!combinedData[cat]) combinedData[cat] = [];
-                combinedData[cat].push(stk);
-            }
-            delete combinedData['Owned'];
-        }
 
         // Update the "Last Updated" UI
         const el = document.getElementById('last-updated');
@@ -84,7 +67,7 @@ function prepareChartData(categoryData) {
     const negativePeStocks = [];
     const processedSymbols = new Set();
 
-    // Single source of truth for charted categories (Owned intentionally excluded)
+    // Single source of truth for charted categories
     const activeCategories = [
         'Information Technology',
         'Financial Services',

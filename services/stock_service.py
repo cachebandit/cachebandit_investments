@@ -145,19 +145,18 @@ def _clean_value(value):
     return value
 
 def load_watchlist_data():
-    """Load watchlist data from JSON file and create the 'Owned' category"""
+    """Load watchlist data from JSON file. All stocks returned to their original categories."""
     try:
         with open('list_watchlist.json', 'r') as file:
             data = json.load(file)
             categories = data.get("Categories", {})
 
-            owned_stocks = []
             # This will hold the final structure: { "CategoryName": [stocks] }
             api_categories = {}
 
             # Process each category and its industries
             for category_name, industries in categories.items():
-                non_owned_stocks_in_category = []
+                category_stocks = []
                 for industry_name, stocks in industries.items():
                     for stock in stocks:
                         # Add context to each stock object
@@ -166,16 +165,11 @@ def load_watchlist_data():
                             'category': category_name,
                             'industry': industry_name
                         }
-                        if stock.get("flag", False):
-                            owned_stocks.append(stock_with_context)
-                        else:
-                            non_owned_stocks_in_category.append(stock_with_context)
+                        category_stocks.append(stock_with_context)
                 
-                if non_owned_stocks_in_category:
-                    api_categories[category_name] = non_owned_stocks_in_category
+                if category_stocks:
+                    api_categories[category_name] = category_stocks
 
-            # Add the "Owned" category to the filtered categories
-            api_categories["Owned"] = owned_stocks
             return api_categories
 
     except Exception as e:
@@ -306,13 +300,8 @@ def fetch_category_data(category, refresh=False):
     if _is_etf_category(category):
         result_data = _add_holdings_to_etfs(result_data)
 
-    # Sort based on category type
-    if category == "Owned":
-        # Sort "Owned" category alphabetically by ticker
-        _sort_by_symbol(result_data)
-    else:
-        # Sort other categories by market cap (descending)
-        _sort_by_market_cap(result_data)
+    # Sort by market cap (descending) for all categories
+    _sort_by_market_cap(result_data)
 
     return result_data
 
@@ -468,76 +457,6 @@ def _sort_by_symbol(stock_list):
 def _sort_by_market_cap(stock_list):
     """Sorts a list of stocks by market cap in descending order."""
     stock_list.sort(key=lambda x: (float(x.get('Market Cap', 0)) if x.get('Market Cap') != 'N/A' else 0), reverse=True)
-
-def update_stock_flag(symbol, new_flag):
-    """Update the flag in list_watchlist.json and intelligently update the in-memory cache."""
-    try:
-        with open('list_watchlist.json', 'r') as f:
-            data = json.load(f)
-
-        original_category = None
-        stock_found = False
-        # Find the stock, get its original category, and update its flag
-        for category_name, industries in data.get('Categories', {}).items():
-            for industry_name, stocks in industries.items():
-                for stock in stocks:
-                    if stock.get('symbol') == symbol:
-                        original_category = category_name
-                        stock['flag'] = new_flag
-                        stock_found = True
-                        break
-                if stock_found: break
-            if stock_found: break
-        
-        if not stock_found:
-            logging.warning(f"Could not find symbol {symbol} to update flag in list_watchlist.json.")
-            return False
-
-        with open('list_watchlist.json', 'w') as f:
-            json.dump(data, f, indent=4)
-
-        # --- Now, update the live cache without re-fetching from yfinance ---
-        source_cache_key = f"category_{original_category}"
-        owned_cache_key = "category_Owned"
-        stock_to_move = None
-
-        # Determine source and destination lists in the cache
-        source_list_key = owned_cache_key if not new_flag else source_cache_key
-        dest_list_key = owned_cache_key if new_flag else source_cache_key
-
-        source_list = cache.get(source_list_key)
-        if source_list:
-            for i, stock_data in enumerate(source_list):
-                if stock_data['Symbol'] == symbol:
-                    stock_to_move = source_list.pop(i)
-                    break
-        
-        if stock_to_move:
-            stock_to_move['flag'] = new_flag
-            dest_list = cache.get(dest_list_key)
-            if dest_list is None:
-                dest_list = []
-                cache.data[dest_list_key] = dest_list # Add new list to cache data directly
-            
-            dest_list.append(stock_to_move)
-
-            # Sort the destination list to place the new item correctly
-            if dest_list_key == owned_cache_key:
-                _sort_by_symbol(dest_list)
-            else:
-                _sort_by_market_cap(dest_list)
-
-            cache.save() # Save the modified cache to disk
-            logging.info(f"Moved {symbol} in cache and updated flag.")
-
-        # Finally, reload the watchlist structure for consistency
-        global watchlist_data
-        watchlist_data = load_watchlist_data()
-
-        return True
-    except Exception as e:
-        logging.error(f"Error updating flag for {symbol}: {e}")
-        return False
 
 def fetch_earnings_data(month, year):
     """Fetch earnings calendar data from cached stock data"""

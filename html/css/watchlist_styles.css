@@ -36,9 +36,9 @@
 }
 
 /* Company Logo */
-.company-logo {
-    width: 25px;
-    height: 25px;
+.company-logo { /* Increased size for better visibility */
+    width: 30px;
+    height: 30px;
     flex-shrink: 0;
     border-radius: 4px;
     object-fit: contain;
@@ -180,4 +180,105 @@ td.change {
   padding-right: 12px;
   padding-left: 12px;
   white-space: normal;
+}
+
+/* === Favorite Star Button === */
+.favorite-star {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: #cbd5e0; /* subtle gray stroke */
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    transition: color 0.2s ease;
+    user-select: none;
+    outline: none;
+    border-radius: 4px;
+}
+
+.favorite-star .star-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    color: inherit;
+    stroke: currentColor;
+    stroke-width: 2px;
+    pointer-events: none; /* Parent handles the click */
+}
+
+@media (hover: hover) {
+    .favorite-star:hover {
+        color: #ffd700;
+    }
+}
+
+.favorite-star.active {
+    color: #ffd700 !important;
+}
+
+.favorite-star.active .star-icon {
+    fill: #ffd700 !important;
+    stroke: #ffd700 !important;
+}
+
+.favorite-star:focus {
+    outline: none;
+}
+
+/* === Favorites Section === */
+.favorites-section {
+    border: 1px solid var(--border-color) !important;
+    margin-bottom: 40px !important;
+}
+
+.favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #f8fafc;
+}
+
+.favorites-header h2 {
+    color: var(--text-primary) !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.clear-favorites-btn {
+    background: none;
+    border: 1px solid #ccc;
+    color: #666;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.clear-favorites-btn:hover {
+    border-color: #ff6347;
+    color: #ff6347;
+    background-color: rgba(255, 99, 71, 0.05);
+}
+
+.favorites-container {
+    padding: 0;
+    background-color: white;
+}
+
+.favorites-empty {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 16px;
 }
