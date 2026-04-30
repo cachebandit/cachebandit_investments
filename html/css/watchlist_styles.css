@@ -36,9 +36,9 @@
 }
 
 /* Company Logo */
-.company-logo {
-    width: 25px;
-    height: 25px;
+.company-logo { /* Increased size for better visibility */
+    width: 30px;
+    height: 30px;
     flex-shrink: 0;
     border-radius: 4px;
     object-fit: contain;

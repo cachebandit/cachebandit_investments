@@ -225,6 +225,24 @@
                     "flag": false,
                     "Name": "Micron Technology, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/micron-technology.svg"
+                },
+                {
+                    "symbol": "QCOM",
+                    "flag": true,
+                    "Name": "Qualcomm Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/qualcomm.svg"
+                },
+                {
+                    "symbol": "LRCX",
+                    "flag": false,
+                    "Name": "Lam Research Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lam-research.svg"
+                },
+                {
+                    "symbol": "KLAC",
+                    "flag": false,
+                    "Name": "KLA Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kla-tencor.svg"
                 }
             ]
         },
@@ -313,6 +331,12 @@
                     "flag": false,
                     "Name": "Union Pacific Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/union-pacific.svg"
+                },
+                {
+                    "symbol": "JBHT",
+                    "flag": true,
+                    "Name": "J.B. Hunt Transport Services, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/j-b-hunt.svg"
                 }
             ],
             "Delivery": [
@@ -385,6 +409,12 @@
                     "flag": false,
                     "Name": "Honeywell International Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/honeywell.svg"
+                },
+                {
+                    "symbol": "EADSY",
+                    "flag": false,
+                    "Name": "Airbus SE",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/airbus.svg"
                 }
             ],
             "Power Management": [
@@ -681,6 +711,12 @@
                     "flag": false,
                     "Name": "Under Armour, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/under-armour.svg"
+                },
+                {
+                    "symbol": "LVMUY",
+                    "flag": false,
+                    "Name": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/lvmh.svg"
                 }
             ],
             "E-Commerce": [
@@ -707,6 +743,18 @@
                     "flag": false,
                     "Name": "Chewy, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/chewy.svg"
+                },
+                {
+                    "symbol": "PDD",
+                    "flag": false,
+                    "Name": "PDD Holdings Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/pinduoduo.svg"
+                },
+                {
+                    "symbol": "MELI",
+                    "flag": false,
+                    "Name": "MercadoLibre, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/mercadolibre.svg"
                 }
             ],
             "Home Improvement": [
@@ -953,6 +1001,12 @@
                     "flag": false,
                     "Name": "Stryker Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/stryker.svg"
+                },
+                {
+                    "symbol": "AMGN",
+                    "flag": false,
+                    "Name": "Amgen Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/amgen.svg"
                 }
             ],
             "Healthcare": [
@@ -1205,6 +1259,12 @@
                     "flag": false,
                     "Name": "Block, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/block.svg"
+                },
+                {
+                    "symbol": "COF",
+                    "flag": true,
+                    "Name": "Capital One Financial Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/capital-one.svg"
                 }
             ],
             "Brokerages": [
@@ -1373,6 +1433,12 @@
                     "flag": false,
                     "Name": "Prudential Financial, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/prudential.svg"
+                },
+                {
+                    "symbol": "CB",
+                    "flag": false,
+                    "Name": "Chubb Limited",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/chubb.svg"
                 }
             ]
         },

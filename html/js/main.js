@@ -417,6 +417,7 @@ function getStockRowHtml(stock) {
                         <span class="company-name-text chart-clickable" data-symbol="${symbol}">${stock.Name || stock.name}</span>
                         <span class="ticker-chip">${symbol}</span>
                     </div>
+                    <div class="company-subline">${stock.industry || '—'}</div>
                 </div>
                 <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
             </div>
