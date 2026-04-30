@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadVolatilityData() {
     try {
         const categoriesToFetch = [
-            'Owned', 'Information Technology', 'Industrials', 'Energy & Utilities',
+            'Information Technology', 'Industrials', 'Energy & Utilities',
             'Financial Services', 'Healthcare', 'Communication Services',
             'Real Estate', 'Consumer Staples', 'Consumer Discretionary'
         ];

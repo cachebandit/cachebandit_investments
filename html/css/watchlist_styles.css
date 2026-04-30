@@ -181,3 +181,128 @@ td.change {
   padding-left: 12px;
   white-space: normal;
 }
+
+/* === Favorite Star Button === */
+.favorite-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    color: #ccc;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    transition: all 0.2s ease;
+    user-select: none;
+    outline: none;
+    border-radius: 4px;
+}
+
+.favorite-star:hover {
+    color: #ffc107;
+    transform: scale(1.15);
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.favorite-star.active {
+    color: #ffc107;
+    text-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
+}
+
+.favorite-star:focus {
+    outline: 2px solid #ffc107;
+    outline-offset: 2px;
+}
+
+/* === Favorites Section === */
+.favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+}
+
+.favorites-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffc107;
+}
+
+.clear-favorites-btn {
+    background: none;
+    border: 1px solid #ccc;
+    color: #666;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.clear-favorites-btn:hover {
+    border-color: #ff6347;
+    color: #ff6347;
+    background-color: rgba(255, 99, 71, 0.05);
+}
+
+.favorites-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: rgba(255, 193, 7, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.favorite-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid #ffc107;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.favorite-chip:hover {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.favorite-chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 14px;
+    color: #ffc107;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.favorite-chip:hover .favorite-chip-remove {
+    color: #000;
+}
+
+.favorites-empty {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 16px;
+}

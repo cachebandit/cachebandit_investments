@@ -13,6 +13,7 @@ import {
 import { showInfoPopup } from './popup.js';
 import { showChartPopup } from './chart.js';
 import { getCategoryData } from './dataSource.js';
+import { isFavorite, toggleFavorite, getFavorites, removeFavorite } from './favorites.js';
 
 // Main JavaScript functionality
 
@@ -84,7 +85,6 @@ async function fetchWatchlistData(opts = {}) {
     if (spinner) spinner.style.display = 'inline-block';
 
     const categories = [
-        'Owned',
         'Information Technology',
         'Financial Services',
         'Industrials',
@@ -99,6 +99,7 @@ async function fetchWatchlistData(opts = {}) {
     try {
         let lastUpdated = '';
         const isRefreshing = opts.refresh || false;
+        const allStockData = new Map(); // Collect all stocks for favorites section
 
         for (const [index, category] of categories.entries()) {
             const responseData = await getCategoryData(category, { refresh: isRefreshing, scope: 'watchlist' });
@@ -107,6 +108,14 @@ async function fetchWatchlistData(opts = {}) {
             // Handle both local server format (data, last_updated) and static build format (items, updated_at)
             const data = responseData.items || responseData.data || [];
             lastUpdated = responseData.updated_at || responseData.last_updated;
+
+            // Collect all stocks into map for favorites section
+            data.forEach(stock => {
+                const symbol = (stock.Symbol || stock.symbol || '').toUpperCase();
+                if (symbol) {
+                    allStockData.set(symbol, stock);
+                }
+            });
 
             // On the first successful data fetch (either initial load or refresh),
             // clear the old content before rendering the new data.
@@ -117,6 +126,9 @@ async function fetchWatchlistData(opts = {}) {
             // Render the category data
             renderCategory(category, data);
         }
+        
+        // Render favorites section
+        renderFavoritesSection(allStockData);
         
         // Reset the refreshing flag
         const refreshButton = document.getElementById('refresh-button');
@@ -133,6 +145,69 @@ async function fetchWatchlistData(opts = {}) {
     } finally {
         if (spinner) spinner.style.display = 'none';
     }
+}
+
+function renderFavoritesSection(allStockData) {
+    /**
+     * Render the favorites section with chips for each favorited stock
+     * allStockData: Map of symbol -> stock data from all categories
+     */
+    const favoritesSection = document.getElementById('favorites-section');
+    const favoritesContainer = document.getElementById('favorites-container');
+    const clearBtn = document.getElementById('clear-favorites-btn');
+    
+    if (!favoritesSection || !favoritesContainer) return;
+    
+    const favorites = getFavorites();
+    
+    if (favorites.length === 0) {
+        favoritesSection.style.display = 'none';
+        return;
+    }
+    
+    favoritesSection.style.display = 'block';
+    favoritesContainer.innerHTML = '';
+    
+    favorites.forEach(symbol => {
+        const stock = allStockData.get(symbol);
+        if (!stock) return; // Stock not in current data
+        
+        const chip = document.createElement('div');
+        chip.className = 'favorite-chip';
+        chip.innerHTML = `
+            <span class="favorite-chip-name">${symbol}</span>
+            <span class="favorite-chip-remove" title="Remove from favorites">✕</span>
+        `;
+        
+        chip.addEventListener('click', function(event) {
+            event.stopPropagation();
+            if (event.target.classList.contains('favorite-chip-remove')) {
+                removeFavorite(symbol);
+                renderFavoritesSection(allStockData);
+                // Update star in table
+                const starInTable = document.querySelector(`.favorite-star[data-symbol="${symbol}"]`);
+                if (starInTable) {
+                    starInTable.classList.remove('active');
+                }
+            } else {
+                // Click on chip navigates to stock in table
+                showChartPopup(symbol);
+            }
+        });
+        
+        favoritesContainer.appendChild(chip);
+    });
+    
+    clearBtn.onclick = function() {
+        if (confirm('Clear all favorites?')) {
+            localStorage.removeItem('watchlist_favorites');
+            renderFavoritesSection(allStockData);
+            // Update all stars in table
+            document.querySelectorAll('.favorite-star.active').forEach(star => {
+                star.classList.remove('active');
+            });
+        }
+    };
 }
 
 // Helper to show a dismissible rate-limit banner. `seconds` controls auto-dismiss timeout.
@@ -217,124 +292,20 @@ function renderCategory(category, data) {
     categoryHeading.textContent = category;
     section.appendChild(categoryHeading);
 
-    // Check if the category is "Owned"
-    if (category === 'Owned') {
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-            <tr>
-                <th class="company-name">Company Name</th>
-                <th class="market-cap">Market Cap</th>
-                <th class="open">Open</th>
-                <th class="high">High</th>
-                <th class="low">Low</th>
-                <th class="close">Close</th>
-                <th class="change">Change</th>
-                <th class="rsi">RSI</th>
-            </tr>
-        `;
+    // Organize stocks by industry for all categories
+    const industries = {};
 
-        const tbody = document.createElement('tbody');
-        data.forEach(stock => {
-            const row = document.createElement('tr');
-            row.setAttribute('data-symbol', stock.Symbol || stock.symbol);
-            row.setAttribute('data-category', category);
-            row.setAttribute('data-industry', stock.industry || 'Uncategorized');
-            
-            const rsiColor = getRsiBackgroundStyle(stock.RSI);
-            const trailingPeColor = getTrailingPeColor(stock["Trailing PE"] || stock.trailingPE);
-            const forwardPeColor = getForwardPeColor(stock["Forward PE"] || stock.forwardPE, stock["Trailing PE"] || stock.trailingPE);
-            const logoUrl = stock.stockUrl;
+    // Organize stocks by industry
+    data.forEach(stock => {
+        const industry = stock.industry || 'Uncategorized';
+        if (!industries[industry]) {
+            industries[industry] = [];
+        }
+        industries[industry].push(stock);
+    });
 
-            const industry = stock.industry || '—';
-
-            // Combine Change and % Change
-            const changeNum = parseFloat(stock['Price Change']);
-            const pctChange = stock['Percent Change'];
-            const pctChangeNum = parseFloat(pctChange);
-            
-            // Check if pctChange is a string message (like "yfinance Missing Data")
-            const changeText = (typeof pctChange === 'string' && isNaN(pctChangeNum))
-                ? pctChange
-                : (isFinite(changeNum) && isFinite(pctChangeNum))
-                ? `${changeNum >= 0 ? '+' : ''}${changeNum.toFixed(2)} (${pctChangeNum >= 0 ? '+' : ''}${pctChangeNum.toFixed(2)}%)`
-                : 'N/A';
-
-            row.innerHTML = `
-                <td class="company-name">
-                    <div class="company-cell">
-                        <span class="star-icon ${stock.flag ? 'active' : ''}" 
-                              data-symbol="${stock.Symbol || stock.symbol}" 
-                              onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">★</span>
-                        <button class="company-info-btn"
-                                data-stock-name="${stock.Name || stock.name}"
-                                data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
-                                data-current-price="${stock.Close ? stock.Close.toFixed(2) : 'N/A'}"
-                                data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
-                                data-earnings-date="${stock.earningsDate || 'N/A'}"
-                                data-beta="${stock.beta || 'N/A'}"
-                                data-atr-percent="${stock.ATR_Percent || 'N/A'}"
-                                title="${stock.stock_description || 'No description available'}"
-                                data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"
-                                data-forward-pe="${stock['Forward PE'] || stock.forwardPE || 'N/A'}"
-                                data-ev-ebitda="${stock['EV/EBITDA'] || 'N/A'}"
-                                data-market-cap="${formatMarketCap(stock['Market Cap'] || stock.marketCap)}"
-                                data-dividend-yield="${stock.dividendYield || 'N/A'}"
-                                data-total-revenue="${stock.totalRevenue || 'N/A'}"
-                                data-net-income="${stock.netIncomeToCommon || 'N/A'}"
-                                data-profit-margins="${stock.profitMargins || 'N/A'}"
-                                data-url="${logoUrl}"><img src="info.png" alt="Info"></button>
-                        <img class="company-logo chart-clickable" src="${logoUrl}" alt="${stock.Name || stock.name} logo" onerror="this.style.display='none'" data-symbol="${stock.Symbol || stock.symbol}">
-                        <div class="company-text-block">
-                            <div class="company-name-line">
-                                <span class="company-name-text chart-clickable" data-symbol="${stock.Symbol || stock.symbol}">${stock.Name || stock.name}</span>
-                                <span class="ticker-chip">${stock.Symbol || stock.symbol}</span>
-                            </div>
-                            <div class="company-subline">${industry}</div>
-                        </div>
-                        <div class="market-cap-mobile">Market Cap: ${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div>
-                    </div>
-                </td>
-                <td class="market-cap"><div class="badge-metric">${formatMarketCap(stock['Market Cap'] || stock.marketCap)}</div></td>
-                <td class="open">${stock.Open != null ? formatValue(stock.Open) : '-'}</td>
-                <td class="high">${stock.High != null ? formatValue(stock.High) : '-'}</td>
-                <td class="low">${stock.Low != null ? formatValue(stock.Low) : '-'}</td>
-                <td class="close">${stock.Close != null ? formatValue(stock.Close) : '-'}</td>
-                <td class="change">
-                  <div class="badge-change" style="background-color: ${isFinite(pctChangeNum) ? changeBg(pctChangeNum) : 'var(--hover-bg)'};">
-                    ${changeText}
-                  </div>
-                </td>
-                <td class="rsi">
-                  <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 30px;">
-                    <div class="badge-metric" style="background-color: ${rsiColor};">${stock.RSI !== undefined ? formatRsi(stock.RSI) : '-'}</div>
-                    ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; left: 4px; width: 14px; height: 14px; cursor: pointer;">` : ''}
-                  </div>
-                </td>
-            `;
-
-            tbody.appendChild(row);
-        });
-
-        // Add event listeners after the table is added to the DOM
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        section.appendChild(table);
-    } else {
-        // Organize stocks by industry for other categories
-        const industries = {};
-
-        // Organize stocks by industry
-        data.forEach(stock => {
-            const industry = stock.industry || 'Uncategorized';
-            if (!industries[industry]) {
-                industries[industry] = [];
-            }
-            industries[industry].push(stock);
-        });
-
-        // Create a table for each industry
-        for (const [industry, stocks] of Object.entries(industries)) {
+    // Create a table for each industry
+    for (const [industry, stocks] of Object.entries(industries)) {
             if (stocks.length === 0) {
                 continue; // Skip rendering if there are no stocks in the industry
             }
@@ -388,9 +359,11 @@ function renderCategory(category, data) {
                 row.innerHTML = `
                     <td class="company-name">
                         <div class="company-cell">
-                            <span class="star-icon ${stock.flag ? 'active' : ''}" 
+                            <span class="favorite-star ${isFavorite(stock.Symbol || stock.symbol) ? 'active' : ''}" 
                                   data-symbol="${stock.Symbol || stock.symbol}" 
-                                  onclick="toggleFlag(event, '${stock.Symbol || stock.symbol}', this)">★</span>
+                                  role="button" 
+                                  tabindex="0"
+                                  title="Add to favorites">★</span>
                             <button class="company-info-btn"
                                     data-stock-name="${stock.Name || stock.name}"
                                     data-fifty-two-week-high="${stock.fiftyTwoWeekHigh || 'N/A'}"
@@ -445,7 +418,6 @@ function renderCategory(category, data) {
             industrySection.appendChild(table);
             section.appendChild(industrySection);
         }
-    }
 
     document.querySelector('.container').appendChild(section);
     
@@ -462,6 +434,25 @@ function renderCategory(category, data) {
         infoIcon.addEventListener('click', function(event) {
             event.stopPropagation();
             showInfoPopup(this);
+        });
+    });
+    
+    // Add event listeners for favorite stars
+    section.querySelectorAll('.favorite-star').forEach(star => {
+        star.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const symbol = this.dataset.symbol;
+            const isNowFavorite = toggleFavorite(symbol);
+            this.classList.toggle('active', isNowFavorite);
+            this.title = isNowFavorite ? 'Remove from favorites' : 'Add to favorites';
+        });
+        
+        // Support keyboard activation
+        star.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.click();
+            }
         });
     });
 }
@@ -511,7 +502,7 @@ function filterTable(query) {
                 }
             });
         } else {
-            // Handle "Owned" category
+            // Handle categories without industries (shouldn't happen now, but keep for safety)
             const rows = section.querySelectorAll('table tbody tr');
             rows.forEach(row => {
                 const name = row.querySelector('.company-name-text')?.textContent.toLowerCase() || '';
@@ -534,26 +525,3 @@ function filterTable(query) {
         }
     });
 }
-
-window.toggleFlag = function(event, symbol, element) {
-    event.stopPropagation();
-    const newFlag = !element.classList.contains('active');
-    
-    fetch('/api/update_flag', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            symbol: symbol,
-            flag: newFlag
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            element.classList.toggle('active');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-};

@@ -13,7 +13,6 @@ CACHE_FP  = Path("cache/stock_data.json")  # cache written by your server job
 
 # The categories your UI expects (must match what's rendered on watchlist/Market Movers/RSI/PE pages)
 ACTIVE_CATEGORIES = [
-    "Owned",
     "Information Technology",
     "Financial Services",
     "Industrials",
