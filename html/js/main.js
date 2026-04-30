@@ -211,6 +211,12 @@ function renderFavoritesSection(allStockData) {
     favoritesContainer.appendChild(table);
     attachStockTableListeners(favoritesContainer);
     
+    // Re-apply search filter if one is active to ensure new content respects search
+    const searchInput = document.getElementById('search-input');
+    if (searchInput && searchInput.value) {
+        filterTable(searchInput.value);
+    }
+
     clearBtn.onclick = function() {
         if (confirm('Clear all favorites?')) {
             localStorage.removeItem('watchlist_favorites');
