@@ -88,7 +88,3 @@
 .star-icon.active {
     color: gold;
 }
-
-.star-icon:hover {
-    transform: scale(1.2);
-}

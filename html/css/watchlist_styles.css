@@ -184,56 +184,74 @@ td.change {
 
 /* === Favorite Star Button === */
 .favorite-star {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    font-size: 18px;
-    color: #ccc;
+    width: 26px;
+    height: 26px;
+    color: #cbd5e0; /* subtle gray stroke */
     cursor: pointer;
     flex-shrink: 0;
     border: none;
     background: none;
     padding: 0;
     margin: 0;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     user-select: none;
     outline: none;
     border-radius: 4px;
 }
 
-.favorite-star:hover {
-    color: #ffc107;
-    transform: scale(1.15);
-    background-color: rgba(255, 193, 7, 0.1);
+.favorite-star .star-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    color: inherit;
+    stroke: currentColor;
+    stroke-width: 2px;
+    pointer-events: none; /* Parent handles the click */
+}
+
+@media (hover: hover) {
+    .favorite-star:hover {
+        color: #ffd700;
+    }
 }
 
 .favorite-star.active {
-    color: #ffc107;
-    text-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
+    color: #ffd700 !important;
+}
+
+.favorite-star.active .star-icon {
+    fill: #ffd700 !important;
+    stroke: #ffd700 !important;
 }
 
 .favorite-star:focus {
-    outline: 2px solid #ffc107;
-    outline-offset: 2px;
+    outline: none;
 }
 
 /* === Favorites Section === */
+.favorites-section {
+    border: 1px solid var(--border-color) !important;
+    margin-bottom: 40px !important;
+}
+
 .favorites-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+    padding: 12px 20px;
+    background-color: #f8fafc;
 }
 
 .favorites-header h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffc107;
+    color: var(--text-primary) !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .clear-favorites-btn {
@@ -254,50 +272,8 @@ td.change {
 }
 
 .favorites-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding: 16px;
-    background-color: rgba(255, 193, 7, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 193, 7, 0.2);
-}
-
-.favorite-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+    padding: 0;
     background-color: white;
-    border: 1px solid #ffc107;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.favorite-chip:hover {
-    background-color: #ffc107;
-    color: #000;
-}
-
-.favorite-chip-remove {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    font-size: 14px;
-    color: #ffc107;
-    cursor: pointer;
-    margin-left: 4px;
-}
-
-.favorite-chip:hover .favorite-chip-remove {
-    color: #000;
 }
 
 .favorites-empty {
