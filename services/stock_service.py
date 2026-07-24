@@ -16,6 +16,70 @@ class RateLimitError(Exception):
 # Initialize cache
 cache = StockCache()
 
+ATR_MULTIPLIER = 1.5
+
+def _process_stop_loss_logic(symbol, rsi, high, low, close, atr):
+    """
+    Maintains trailing stop state in the persistent cache.
+    Returns a dict with stop-loss info if active, else None.
+    
+    For overbought stocks (RSI >= 70), calculates a suggested sell price
+    using the 1.5x ATR trailing stop from the peak.
+    """
+    # Load the global tracking state from cache
+    tracking = cache.get('overbought_stop_loss_tracking') or {}
+    modified = False
+    was_new_entry = False
+    
+    sym = symbol.upper()
+    record = tracking.get(sym)
+    
+    # Ensure inputs are valid floats for calculation
+    try:
+        h, l, c, a = float(high), float(low), float(close), float(atr)
+        if math.isnan(c) or math.isnan(a):
+            return record
+        # Use high if available, otherwise close
+        peak = h if not math.isnan(h) else c
+        floor = l if not math.isnan(l) else c
+    except (TypeError, ValueError):
+        return record
+
+    # Logic: Enter on RSI >= 70 - use peak as anchor
+    if rsi != 'N/A':
+        try:
+            rsi_val = float(rsi)
+            if rsi_val >= 70:
+                # If overbought, create or update the record.
+                if not record:
+                    # Create a new record if it's the first time or if it was previously stopped out.
+                    record = {'anchor': peak, 'stop': peak - (a * ATR_MULTIPLIER)}
+                    tracking[sym] = record
+                    modified = True
+                    was_new_entry = True
+                elif peak > record['anchor']:
+                    # If a record already exists, update the anchor if we have a new peak.
+                    record['anchor'] = peak
+                    record['stop'] = peak - (a * ATR_MULTIPLIER)
+                    modified = True
+        except (ValueError, TypeError):
+            pass # rsi is not a valid float
+    
+    # Logic: Stop Out (only if not a new entry)
+    if record and not was_new_entry:
+        # Stop out if price falls below stop price
+        if floor < record['stop']:
+            del tracking[sym]
+            record = None
+            modified = True
+
+    # Save the modified tracking back to the cache if there were any changes
+    if modified:
+        cache.set('overbought_stop_loss_tracking', tracking)
+
+    # Return the final state of the record AFTER all logic has run
+    return record
+
 def _first(*vals):
     for v in vals:
         if v is not None:
@@ -145,7 +209,7 @@ def _clean_value(value):
     return value
 
 def load_watchlist_data():
-    """Load watchlist data from JSON file. All stocks returned to their original categories."""
+    """Load watchlist data from JSON file."""
     try:
         with open('list_watchlist.json', 'r') as file:
             data = json.load(file)
@@ -160,12 +224,7 @@ def load_watchlist_data():
                 for industry_name, stocks in industries.items():
                     for stock in stocks:
                         # Add context to each stock object
-                        stock_with_context = {
-                            **stock,
-                            'category': category_name,
-                            'industry': industry_name
-                        }
-                        category_stocks.append(stock_with_context)
+                        category_stocks.append({**stock, 'category': category_name, 'industry': industry_name})
                 
                 if category_stocks:
                     api_categories[category_name] = category_stocks
@@ -234,8 +293,8 @@ def fetch_category_data(category, refresh=False):
 
         try:
             # Then, try to get the company info, which can sometimes fail
-            ticker_obj = tickers.tickers.get(symbol)
-            info = ticker_obj.info if ticker_obj else {}
+            ticker_obj = tickers.tickers.get(symbol) if tickers else None
+            info = _load_info_safe(ticker_obj) if ticker_obj else {}
         except Exception as e:
             # If this error is a rate-limit, propagate a RateLimitError so the handler returns 429
             msg = str(e)
@@ -261,13 +320,20 @@ def fetch_category_data(category, refresh=False):
         if _is_etf_category(category):
             market_cap_raw = info.get('netAssets') or info.get('totalAssets')
         else:
-            market_cap_raw = info.get('marketCap')
+            # For stocks, try multiple field names as yfinance is inconsistent
+            market_cap_raw = (info.get('marketCap') or 
+                            info.get('market_cap') or 
+                            info.get('Market Cap'))
+        
+        # Log if we couldn't find market cap for debugging
+        if not market_cap_raw:
+            logging.warning(f"Missing market cap for {symbol} in {category}. Available keys: {list(info.keys())}")
 
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
             'Symbol': symbol,
             'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
-            'Market Cap': _clean_value(round(market_cap_raw / 1_000_000, 2)) if market_cap_raw else 'N/A',
+            'Market Cap': _clean_value(round(market_cap_raw / 1_000_000, 2)) if market_cap_raw and market_cap_raw > 0 else 'N/A',
             'Trailing PE': _clean_value(info.get('trailingPE')),
             'Forward PE': _clean_value(info.get('forwardPE')),
             'dividendYield': _clean_value(info.get('dividendYield')),
@@ -275,7 +341,6 @@ def fetch_category_data(category, refresh=False):
             'netIncomeToCommon': _clean_value(info.get('netIncomeToCommon')),
             'profitMargins': _clean_value(info.get('profitMargins')),
             'EV/EBITDA': _clean_value(info.get('enterpriseToEbitda')),
-            'flag': stock_info.get("flag", False),
             'category': stock_info.get('category', category),
             'industry': stock_info.get('industry', None),
             'stock_description': info.get('longBusinessSummary'),
@@ -380,6 +445,14 @@ def fetch_detailed_info(symbols):
                 
                 # Calculate volatility signals using the new service
                 signal_fields = get_vol_signal_fields(symbol_hist_daily, symbol_hist_hourly)
+                rsi_val = calculate_rsi(symbol_hist_daily)
+
+                # Process Stop Loss Logic
+                stop_loss = None
+                if rsi_val != 'N/A' and signal_fields.get('atr'):
+                    stop_loss = _process_stop_loss_logic(
+                        symbol, rsi_val, latest_data.get('High'), latest_data.get('Low'), current_close, signal_fields.get('atr')
+                    )
                 
                 # Check for missing data points (NaN values in Close column)
                 missing_data = symbol_hist_daily['Close'].isna().sum() > 0
@@ -394,9 +467,11 @@ def fetch_detailed_info(symbols):
                     'ATR': signal_fields.get('atr'),
                     'ATR_Percent': signal_fields.get('atr_percent'),
                     'RSI1H': signal_fields.get('RSI1H'),
-                    'RSI': calculate_rsi(symbol_hist_daily),
+                    'RSI': rsi_val,
                     'RSI_has_missing_data': bool(missing_data),
-                    'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]) # RSI of the day before
+                    'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]), # RSI of the day before
+                    'stop_price': stop_loss['stop'] if stop_loss else None,
+                    'anchor_price': stop_loss['anchor'] if stop_loss else None
                 }
             except Exception as e:
                 logging.error(f"Error processing symbol {symbol}: {e}", exc_info=True)

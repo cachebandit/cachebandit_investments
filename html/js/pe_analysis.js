@@ -113,18 +113,19 @@ function prepareChartData(categoryData) {
             ? Number(fpeRaw)
             : null;
 
-        const validCategory = activeCategories.includes(category);
-        const validCap = marketCap && isFinite(marketCap) && marketCap > 0;
-        const validFPE = forwardPE && isFinite(forwardPE) && forwardPE > 0;
+        const hasValidCategory = activeCategories.includes(category);
+        const hasValidMarketCap = marketCap && isFinite(marketCap) && marketCap > 0;
+        const hasValidForwardPE = forwardPE && isFinite(forwardPE) && forwardPE > 0;
 
-        if (validCategory && validCap && validFPE) {
+        // A stock should only be on the chart if it has valid values for both axes.
+        if (hasValidCategory && hasValidMarketCap && hasValidForwardPE) {
             if (!chartData[category][industry]) chartData[category][industry] = [];
             chartData[category][industry].push({
                 name: stock.Name || stock.name || (stock.Symbol || stock.symbol),
                 value: [marketCap, forwardPE], // market cap expected in millions in your data
                 symbol: stock.Symbol || stock.symbol
             });
-        } else {
+        } else if (!hasValidForwardPE) { // Only add to the negative list if the PE itself is invalid.
             negativePeStocks.push(stock);
         }
     });
