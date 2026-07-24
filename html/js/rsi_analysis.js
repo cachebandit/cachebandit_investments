@@ -201,6 +201,10 @@ function renderRowHtml(stock) {
     const margin   = stock.profitMargins || 'N/A';
     const desc     = stock.stock_description || 'No description available';
     const marketCap = formatMarketCap(stock['Market Cap'] || stock.marketCap);
+    const atr = stock.ATR || 'N/A';
+    const rsi = stock.RSI || 'N/A';
+    const stopPrice = stock.stop_price || '';
+    const anchorPrice = stock.anchor_price || '';
 
     return `
     <div class="rsi-row" data-symbol="${escapeHtml(symbol)}">
@@ -215,6 +219,10 @@ function renderRowHtml(stock) {
                         data-earnings-date="${escapeHtml(earningsDate)}"
                         data-beta="${escapeHtml(beta)}"
                         data-atr-percent="${escapeHtml(atrPercent)}"
+                        data-atr="${escapeHtml(atr)}"
+                        data-rsi="${escapeHtml(rsi)}"
+                        data-stop-price="${escapeHtml(stopPrice)}"
+                        data-anchor-price="${escapeHtml(anchorPrice)}"
                         title="${escapeHtml(desc)}"
                         data-trailing-pe="${escapeHtml(trailingPE)}"
                         data-forward-pe="${escapeHtml(forwardPE)}"

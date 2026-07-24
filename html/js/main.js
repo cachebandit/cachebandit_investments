@@ -101,7 +101,7 @@ async function fetchWatchlistData(opts = {}) {
     try {
         let lastUpdated = '';
         const isRefreshing = opts.refresh || false;
-        const allStockData = new Map(); // Collect all stocks for favorites section
+        const allStocksForTracking = [];
 
         for (const [index, category] of categories.entries()) {
             const responseData = await getCategoryData(category, { refresh: isRefreshing, scope: 'watchlist' });
@@ -109,10 +109,13 @@ async function fetchWatchlistData(opts = {}) {
             // Extract the data and last_updated timestamp
             // Handle both local server format (data, last_updated) and static build format (items, updated_at)
             const data = responseData.items || responseData.data || [];
+            allStocksForTracking.push(...data);
             lastUpdated = responseData.updated_at || responseData.last_updated;
 
-            // Collect all stocks into map for favorites section
-            data.forEach(stock => {
+            // On the first successful data fetch (either initial load or refresh),
+            // clear the old content before rendering the new data.
+            const allStockData = new Map();
+            allStocksForTracking.forEach(stock => {
                 const symbol = (stock.Symbol || stock.symbol || '').toUpperCase();
                 if (symbol) {
                     allStockData.set(symbol, stock);
@@ -120,7 +123,6 @@ async function fetchWatchlistData(opts = {}) {
             });
 
             // On the first successful data fetch (either initial load or refresh),
-            // clear the old content before rendering the new data.
             if (index === 0 && (isRefreshing || document.querySelector('.section') === null)) {
                 document.querySelectorAll('.section').forEach(section => section.remove());
             }
@@ -400,6 +402,10 @@ function getStockRowHtml(stock) {
                         data-fifty-two-week-low="${stock.fiftyTwoWeekLow || 'N/A'}"
                         data-earnings-date="${stock.earningsDate || 'N/A'}"
                         data-beta="${stock.beta || 'N/A'}"
+                        data-atr="${typeof stock.ATR === 'number' ? stock.ATR.toFixed(2) : 'N/A'}"
+                        data-rsi="${stock.RSI || 'N/A'}"
+                        data-stop-price="${typeof stock.stop_price === 'number' ? stock.stop_price.toFixed(2) : ''}"
+                        data-anchor-price="${typeof stock.anchor_price === 'number' ? stock.anchor_price.toFixed(2) : ''}"
                         data-atr-percent="${stock.ATR_Percent || 'N/A'}"
                         title="${stock.stock_description || 'No description available'}"
                         data-trailing-pe="${stock['Trailing PE'] || stock.trailingPE || 'N/A'}"

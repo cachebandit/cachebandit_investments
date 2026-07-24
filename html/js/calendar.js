@@ -1,7 +1,7 @@
 import { showChartPopup } from './chart.js';
 import { showInfoPopup } from './popup.js';
 import { getCategoryData } from './dataSource.js';
-import { getTrailingPeColor, getForwardPeColor } from './utils.js';
+import { formatMarketCap } from './utils.js';
 
 let currentDate = new Date();
 let cachedMonthsData = {}; // Cache for multiple months of data, e.g., {'2024-6': data}
@@ -170,7 +170,8 @@ function renderCalendar(earningsData = {}) {
                     const netInc = company.netIncomeToCommon || 'N/A';
                     const margin = company.profitMargins || 'N/A';
                     const desc = company.stock_description || 'No description available';
-                    const marketCap = company['Market Cap'] || company.marketCap;
+                    const marketCap = company['Market Cap'] || company.marketCap || 'N/A';
+                    const atr = company.ATR || 'N/A';
 
                     companyDiv.innerHTML = `
                         <button class="company-info-btn"
@@ -181,10 +182,20 @@ function renderCalendar(earningsData = {}) {
                                 data-earnings-date="${escapeHtml(earningsDate)}"
                                 data-beta="${escapeHtml(beta)}"
                                 data-atr-percent="${escapeHtml(atrPercent)}"
+                                data-atr="${escapeHtml(atr)}"
+                                data-rsi="${escapeHtml(company.RSI || 'N/A')}"
+                                data-stop-price="${escapeHtml(company.stop_price || '')}"
+                                data-anchor-price="${escapeHtml(company.anchor_price || '')}"
                                 title="${escapeHtml(desc)}"
                                 data-trailing-pe="${escapeHtml(trailingPE || 'N/A')}"
                                 data-forward-pe="${escapeHtml(forwardPE || 'N/A')}"
-                                data-market-cap="${escapeHtml(marketCap || 'N/A')}">
+                                data-ev-ebitda="${escapeHtml(evEbitda)}"
+                                data-market-cap="${escapeHtml(formatMarketCap(marketCap))}"
+                                data-dividend-yield="${escapeHtml(dividend)}"
+                                data-total-revenue="${escapeHtml(totalRev)}"
+                                data-net-income="${escapeHtml(netInc)}"
+                                data-profit-margins="${escapeHtml(margin)}"
+                                data-url="${escapeHtml(company.stockUrl)}">
                             <img src="info.png" alt="Info">
                         </button>
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${escapeHtml(stockName)} logo" onerror="this.style.display='none'"/>
@@ -253,7 +264,8 @@ function renderCalendar(earningsData = {}) {
                     const netInc = company.netIncomeToCommon || 'N/A';
                     const margin = company.profitMargins || 'N/A';
                     const desc = company.stock_description || 'No description available';
-                    const marketCap = company['Market Cap'] || company.marketCap;
+                    const marketCap = company['Market Cap'] || company.marketCap || 'N/A';
+                    const atr = company.ATR || 'N/A';
 
                     companyDiv.innerHTML = `
                         <button class="company-info-btn"
@@ -264,10 +276,20 @@ function renderCalendar(earningsData = {}) {
                                 data-earnings-date="${escapeHtml(earningsDate)}"
                                 data-beta="${escapeHtml(beta)}"
                                 data-atr-percent="${escapeHtml(atrPercent)}"
+                                data-atr="${escapeHtml(atr)}"
+                                data-rsi="${escapeHtml(company.RSI || 'N/A')}"
+                                data-stop-price="${escapeHtml(company.stop_price || '')}"
+                                data-anchor-price="${escapeHtml(company.anchor_price || '')}"
                                 title="${escapeHtml(desc)}"
                                 data-trailing-pe="${escapeHtml(trailingPE || 'N/A')}"
                                 data-forward-pe="${escapeHtml(forwardPE || 'N/A')}"
-                                data-market-cap="${escapeHtml(marketCap || 'N/A')}">
+                                data-ev-ebitda="${escapeHtml(evEbitda)}"
+                                data-market-cap="${escapeHtml(formatMarketCap(marketCap))}"
+                                data-dividend-yield="${escapeHtml(dividend)}"
+                                data-total-revenue="${escapeHtml(totalRev)}"
+                                data-net-income="${escapeHtml(netInc)}"
+                                data-profit-margins="${escapeHtml(margin)}"
+                                data-url="${escapeHtml(company.stockUrl)}">
                             <img src="info.png" alt="Info">
                         </button>
                         <img src="${company.stockUrl}" class="earnings-logo" alt="${escapeHtml(stockName)} logo" onerror="this.style.display='none'"/>
