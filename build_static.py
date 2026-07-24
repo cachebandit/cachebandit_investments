@@ -2,6 +2,7 @@
 from __future__ import annotations
 from pathlib import Path
 import json
+import re
 from subprocess import run
 from datetime import datetime
 import shutil
@@ -59,16 +60,32 @@ def build_payload(category: str, items: list, updated_at: str) -> dict:
 
 def add_cache_buster(version_str: str):
     """
-    Adds a cache-busting query string to assets in all HTML files.
+    Adds a cache-busting query string to local assets in all HTML files.
     This ensures browsers fetch the new version after a deployment.
     """
     print(f"Adding cache-buster version: {version_str}")
+    pattern = re.compile(r'(?P<attr>href|src)="(?P<value>[^"]+)"')
+
     for html_file in HTML_DIR.glob("*.html"):
-        content = html_file.read_text()
-        # Replace in both preload links and image sources
-        content = content.replace('href="cachebandit_logo.png"', f'href="cachebandit_logo.png?v={version_str}"')
-        content = content.replace('src="cachebandit_logo.png"', f'src="cachebandit_logo.png?v={version_str}"')
-        html_file.write_text(content)
+        content = html_file.read_text(encoding="utf-8")
+
+        def version_asset(match: re.Match[str]) -> str:
+            value = match.group("value")
+            if not value or value.startswith(("http://", "https://", "//", "data:", "mailto:", "tel:", "#", "javascript:")):
+                return match.group(0)
+
+            if "?" in value:
+                separator = "&"
+            else:
+                separator = "?"
+
+            if "v=" in value:
+                return match.group(0)
+
+            return f'{match.group("attr")}="{value}{separator}v={version_str}"'
+
+        updated_content = pattern.sub(version_asset, content)
+        html_file.write_text(updated_content, encoding="utf-8")
 
 def main():
     # 1) Prep dirs
