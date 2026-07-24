@@ -2,7 +2,6 @@ from .stock_service import fetch_category_data, cache, _is_etf_category
 
 # These categories must match the ones used by the UI and build_static.py
 ACTIVE_CATEGORIES = [
-    "Owned",
     "Information Technology",
     "Financial Services",
     "Industrials",
@@ -18,9 +17,16 @@ ACTIVE_CATEGORIES = [
 def main():
     print("Starting cache refresh process...")
     
+    # Preserve the stop loss tracking data across refreshes by reading it from the
+    # old cache before starting the refresh operation.
+    existing_tracking = cache.get('overbought_stop_loss_tracking') or {}
+
     # Start the refresh operation. This tells the cache to use temporary storage
     # and prevents saving the file after every category.
     cache.start_refresh()
+
+    # Immediately write the historical tracking data into the new temporary cache.
+    cache.set('overbought_stop_loss_tracking', existing_tracking)
 
     for category in ACTIVE_CATEGORIES:
         print(f"  - Fetching data for: {category}")

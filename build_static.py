@@ -79,11 +79,6 @@ def main():
     # 2) Load cache
     cache = load_cache()
 
-    # Expected cache structure example:
-    # {
-    #   "data": { "category_Owned": [ {...stocks...} , ... ] },
-    #   "last_updated": "10/14 02:00 PM"
-    # }
     updated_at = cache.get("last_updated") or datetime.now().strftime("%m/%d %I:%M %p")
     cached_categories = cache.get("data") or {}
 

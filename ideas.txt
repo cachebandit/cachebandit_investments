@@ -1,6 +1,3 @@
-- add individaul category refresh
-- make phone accessable
-- use localstorage to allow to save favorites
-- add beta to info button
-- add 3M RSI as short-term-rsi
-- Short Term RSI Volitility Strategy
+- Fix 8:30 Cache Issue
+- Set up individual accounts
+- Set up actual website
