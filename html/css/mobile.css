@@ -326,12 +326,20 @@
     padding: 12px !important;
     display: flex !important;
     flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
 
   .earnings-container {
     overflow: visible !important;
+    overflow-x: hidden !important;
     margin-top: 8px !important;
     flex-grow: 1;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .day-number {
@@ -362,14 +370,35 @@
   .earnings-item {
     font-size: 13px !important;
     padding: 3px 4px !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .earnings-item > span {
+    display: inline-block !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: calc(100% - 70px) !important;
   }
 
   .earnings-logo {
     width: 16px !important;
     height: 16px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .company-info-btn {
+    flex-shrink: 0 !important;
   }
 
   .company-info-btn img {
