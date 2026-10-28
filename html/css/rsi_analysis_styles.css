@@ -3,9 +3,10 @@
 /* Grid that holds all RSI boxes */
 .rsi-grid-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* Ensure 5 columns */
-    gap: 5px; /* Reduce space between columns */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
     align-items: start;
+    min-width: 0;
 }
 
 /* Each box/card */
@@ -18,19 +19,23 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    container-type: inline-size;
 }
 
 .rsi-box h2 {
     margin: 0;
-    padding: 12px 16px;
+    height: 60px;
+    box-sizing: border-box;
+    padding: 8px 10px;
     background-color: #f5f6f5;
     border-bottom: 1px solid var(--border-color);
     font-size: 16px;
+    line-height: 1.2;
     font-weight: 600;
     color: var(--text-primary);
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
 }
 
 .rsi-box h2 .subtext {
@@ -40,34 +45,36 @@
     line-height: 1.2;
 }
 
-/* Scrollable section inside each card */
+.rsi-box h2 > span {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: normal;
+}
+
+/* Let each category grow naturally so the document handles scrolling. */
 .rsi-table {
-    max-height: 70vh;
-    overflow-y: auto;
-    position: relative;
+    max-height: none;
+    overflow: visible;
     background-color: var(--container-bg);
     border-radius: 0 0 8px 8px;
 }
 
-/* HEADER ROW + BODY ROW
-   New layout: 2 columns
-   1) Company block (flex)
-   2) RSI badge (fixed ~60-70px)
-*/
+/* Header and data rows share the company and RSI columns. */
 .rsi-header-row,
 .rsi-row {
     display: grid;
-    grid-template-columns:
-        minmax(0, 1fr)   /* company block */
-        auto             /* ticker chip */
-        50px;            /* RSI badge */
-    column-gap: 12px;
+    grid-template-columns: minmax(0, 1fr) var(--rsi-column-width, 64px);
+    column-gap: var(--rsi-column-gap, 10px);
     align-items: start;  /* base alignment */
+    min-width: 0;
 }
 
-/* Sticky header */
+/* Category header */
 .rsi-header-row {
-    padding: 10px 16px;
+    padding: 10px;
     background-color: var(--hover-bg);
     border-bottom: 1px solid var(--border-color);
     font-size: 11px;
@@ -78,26 +85,28 @@
     line-height: 1.2;
 }
 
-.rsi-header-row > :nth-child(3) {
-    text-align: center; /* Center the "RSI" header text */
+.rsi-header-row > :first-child {
+    width: 65px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.rsi-header-row > :nth-child(2) {
+    text-align: center;
 }
 
 
 .rsi-header-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 5;
     background-color: var(--hover-bg);
     border-bottom: 1px solid var(--border-color);
 }
 
 /* Rows */
 .rsi-list {
-    /* no max-height here; that's on .rsi-table */
 }
 
 .rsi-row {
-    padding: 10px 16px;
+    padding: 10px;
     border-bottom: 1px solid var(--border-color);
     font-size: 13px;
     line-height: 1.4;
@@ -116,10 +125,28 @@
 /* COMPANY CELL - left column of row */
 .company-cell {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    width: 100%;
     min-width: 0;
     gap: 6px;
 }
+
+.company-logo-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex: 0 0 45px;
+    width: 45px;
+    height: 25px;
+    gap: 6px;
+}
+
+.company-info-controls {
+    position: relative;
+    flex: 0 0 14px;
+    width: 14px;
+}
+
 /* Info icon button (same style as volatility page) */
 .company-info-btn {
     background: none;
@@ -149,6 +176,7 @@
 
 /* Company logo square */
 .company-logo {
+    display: block;
     width: 25px;
     height: 25px;
     flex-shrink: 0;
@@ -161,16 +189,20 @@
 /* Text block to the right of icon+logo */
 .company-text-block {
     display: flex;
+    flex: 1 1 0%;
     flex-direction: column;
+    width: 0;
+    max-width: 100%;
     min-width: 0;
 }
 
-/* First line: name + ticker chip baseline-locked as grid */
+/* Keep the company name on one line and reserve a fixed-height name row. */
 .company-name-line {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0px;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 1.2em;
     min-width: 0;
     font-weight: 600;
     color: var(--text-primary);
@@ -179,63 +211,86 @@
 }
 
 .company-name-text {
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.ticker-col {
-    display: flex;
-    align-items: flex-start;   /* top-align within the row */
-    justify-content: flex-start;
-    min-width: 0;
-    position: relative;
-    top: 2px;                 /* nudge upward visually to match first line */
-}
-
-
-.ticker-chip {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent-color);
-    background-color: rgba(0,123,255,0.08);
-    border-radius: 4px;
-    padding: 2px 6px;
-    line-height: 1.2;
+.company-ticker-text {
+    display: none;
+    flex-shrink: 0;
     white-space: nowrap;
 }
 
+@media (min-width: 769px) {
+    .rsi-box .rsi-row.show-desktop-ticker .company-ticker-text {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        margin-left: 6px;
+        padding: 2px 6px;
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+        background-color: var(--hover-bg);
+        color: var(--text-secondary);
+        font-size: 10px;
+        line-height: 1.2;
+    }
+}
+
 .company-subline {
+    display: block;
+    width: 100%;
+    min-width: 0;
     font-size: 11px;
     font-weight: 500;
     color: var(--text-secondary);
     line-height: 1.2;
-    white-space: nowrap;
+    height: 1.2em;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
     margin-top: 2px;
 }
 
 /* Third line under that: price + change */
 .company-price-line {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: center;
+    justify-items: center;
+    row-gap: 2px;
     font-size: 12px;
     line-height: 1.3;
     font-weight: 500;
     color: var(--text-primary);
-    white-space: nowrap;
+    text-align: center;
 }
 
 .company-price-line .price-text {
+    display: block;
     font-weight: 600;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .company-price-line .change-text {
+    display: block;
+    max-width: 100%;
     font-weight: 600;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.rsi-row > .company-price-line {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    margin-top: 6px;
 }
 
 .metric-change-up {
@@ -246,11 +301,13 @@
     color: var(--price-down-color);
 }
 
-/* RIGHT COLUMN: RSI badge */
+/* RSI badge */
 .badge-metric {
-    align-self: top;
-    margin: 0 auto; /* Center the badge within its table cell */
-    min-width: 56px;
+    align-self: start;
+    justify-self: center;
+    margin: 0;
+    width: 56px;
+    min-width: 48px;
     height: 30px;
     box-sizing: border-box;
     display: flex;
@@ -270,48 +327,133 @@
     color: #000;
 }
 
-/* scrollbar styling */
-.rsi-table::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
-}
-.rsi-table::-webkit-scrollbar-track {
-    background: transparent;
-}
-.rsi-table::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.15);
-    border-radius: 3px;
-}
-
-/* responsive tweaks */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .rsi-grid-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (min-width: 601px) {
+    @container (max-width: 230px) {
+        .rsi-header-row,
+        .rsi-row {
+            --rsi-column-width: 52px;
+            --rsi-column-gap: 6px;
+        }
+
+        .rsi-row {
+            padding: 8px 6px;
+        }
+
+        .rsi-header-row {
+            padding: 8px 6px;
+            font-size: 10px;
+            letter-spacing: 0;
+        }
+
+        .rsi-header-row > :first-child {
+            width: 65px;
+        }
+
+        .badge-metric {
+            width: 100%;
+            min-width: 0;
+            padding: 3px 2px;
+            font-size: 12px;
+        }
+
+        .company-name-line {
+            height: 1.2em;
+            justify-content: flex-start;
+        }
     }
 
-    .rsi-box h2 {
-        font-size: 15px;
-        flex-wrap: wrap;
-        row-gap: 4px;
+    @container (max-width: 180px) {
+        .rsi-header-row,
+        .rsi-row {
+            --rsi-column-width: 44px;
+            --rsi-column-gap: 4px;
+        }
+
+        .rsi-row {
+            padding: 6px 4px;
+        }
+
+        .rsi-header-row {
+            padding: 7px 4px;
+            font-size: 9px;
+        }
+
+        .rsi-header-row > :first-child {
+            width: 65px;
+        }
+
+        .badge-metric {
+            padding: 2px 1px;
+            font-size: 11px;
+        }
     }
 
-    .company-name-line {
-        font-size: 13px;
+    @container (max-width: 230px) {
+        .company-name-text {
+            display: none;
+        }
+
+        .company-ticker-text {
+            display: block;
+        }
     }
 
-    .ticker-chip {
-        font-size: 10px;
-        padding: 2px 4px;
-    }
+    @container (max-width: 160px) {
+        .company-text-block {
+            display: none;
+        }
 
-    .company-price-line {
-        font-size: 12px;
-    }
+        .rsi-box .company-cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 0;
+            gap: 0;
+        }
 
-    .badge-metric {
-        min-width: 48px;
-        height: 22px;
-        font-size: 12px;
-        padding: 3px 5px;
+        .rsi-box .company-logo-wrap {
+            display: grid;
+            grid-template-columns: 14px 4px minmax(0, 44px);
+            align-items: center;
+            justify-content: center;
+            flex: 0 1 62px;
+            width: min(62px, 100%);
+            height: auto;
+            min-width: 0;
+            max-width: 62px;
+            margin: 0 auto;
+            padding: 0;
+            gap: 0;
+        }
+
+        .rsi-box .company-logo-wrap > .company-info-controls {
+            position: relative;
+            grid-column: 1;
+            align-self: start;
+            width: 14px;
+        }
+
+        .rsi-box .company-logo-wrap > .company-logo {
+            grid-column: 3;
+            flex: none;
+            width: 100%;
+            min-width: 0;
+            max-width: 44px;
+            height: auto;
+            aspect-ratio: 1;
+        }
+
+        .rsi-header-row > :first-child {
+            width: 100%;
+            transform: translateX(9px);
+        }
     }
 }

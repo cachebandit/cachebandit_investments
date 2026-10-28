@@ -1,5 +1,25 @@
 /* === Styles for the Watchlist Company Cell === */
 
+.stock-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.stock-table {
+    width: 100%;
+    min-width: 1100px;
+    table-layout: auto;
+}
+
+.stock-table th,
+.stock-table td {
+    padding: 14px 6px;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
 /* Main container for the cell */
 .company-cell {
     display: flex;
@@ -168,7 +188,7 @@ td.rsi {
   line-height: 1;
   color: #000; /* black text */
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 0 2px;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -281,4 +301,301 @@ td.change {
     color: #999;
     font-size: 14px;
     padding: 16px;
+}
+
+/* Keep Watchlist stocks in the same readable card layout at every viewport width. */
+.stock-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table.stock-table {
+    --stock-value-font-size: clamp(12px, calc(1vw + 2px), 14px);
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+.stock-table thead {
+    display: none;
+}
+
+.stock-table tbody {
+    display: block;
+    width: 100%;
+}
+
+.stock-table tbody tr {
+    display: grid;
+    grid-template-columns:
+        minmax(250px, 2fr)
+        minmax(100px, 1fr)
+        repeat(4, minmax(75px, 0.8fr))
+        minmax(140px, 1.5fr)
+        minmax(70px, 0.8fr);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0 0 8px;
+    padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--container-bg);
+}
+
+.stock-table tbody tr > td.company-name {
+    display: flex !important;
+    width: auto !important;
+    flex-basis: auto !important;
+    order: 0 !important;
+    padding: 8px 6px !important;
+    border: none !important;
+    min-width: 0;
+}
+
+.stock-table .company-cell {
+    width: 100%;
+    min-width: 0;
+    gap: 6px;
+}
+
+.stock-table .favorite-star {
+    width: 20px !important;
+    margin-right: -2px;
+}
+
+.stock-table .company-text-block {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.stock-table tbody tr > td.market-cap {
+    display: grid !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    grid-template-rows: 12px 24px;
+    row-gap: 5px;
+    align-content: start;
+    justify-items: center;
+    align-items: center;
+    min-width: 0;
+    padding: 4px 2px !important;
+    overflow: visible !important;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.stock-table td.market-cap::before {
+    content: "Market Cap";
+    display: block;
+    grid-row: 1;
+    height: 12px;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: clamp(8px, 0.7vw, 10px);
+    font-weight: 600;
+    line-height: 12px;
+    text-transform: uppercase;
+}
+
+.stock-table td.market-cap .badge-metric {
+    grid-row: 2;
+    align-self: center;
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 24px !important;
+    font-size: var(--stock-value-font-size) !important;
+    line-height: 24px !important;
+    white-space: nowrap;
+}
+
+.stock-table .market-cap-mobile {
+    display: none !important;
+}
+
+.stock-table tbody tr > td.open,
+.stock-table tbody tr > td.high,
+.stock-table tbody tr > td.low,
+.stock-table tbody tr > td.close,
+.stock-table tbody tr > td.change,
+.stock-table tbody tr > td.rsi {
+    display: grid !important;
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-rows: 12px 24px;
+    row-gap: 5px;
+    align-content: start;
+    justify-items: center;
+    align-items: center;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    border: none !important;
+    box-sizing: border-box;
+    overflow: visible !important;
+    text-align: center;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
+
+.stock-table tbody tr > td.change,
+.stock-table tbody tr > td.rsi {
+    grid-column: auto;
+}
+
+.stock-table tbody tr > td.open::before { content: "Open"; }
+.stock-table tbody tr > td.high::before { content: "High"; }
+.stock-table tbody tr > td.low::before { content: "Low"; }
+.stock-table tbody tr > td.close::before { content: "Close"; }
+.stock-table tbody tr > td.change::before { content: "Change"; }
+.stock-table tbody tr > td.rsi::before { content: "RSI"; }
+
+.stock-table tbody tr > td.open::before,
+.stock-table tbody tr > td.high::before,
+.stock-table tbody tr > td.low::before,
+.stock-table tbody tr > td.close::before,
+.stock-table tbody tr > td.change::before,
+.stock-table tbody tr > td.rsi::before {
+    display: block;
+    grid-row: 1;
+    height: 12px;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: clamp(8px, 0.7vw, 10px) !important;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 12px;
+    text-transform: uppercase;
+}
+
+.stock-table tbody tr > td.open,
+.stock-table tbody tr > td.high,
+.stock-table tbody tr > td.low,
+.stock-table tbody tr > td.close {
+    font-size: var(--stock-value-font-size) !important;
+    font-weight: 600;
+    align-content: start;
+    line-height: 24px !important;
+}
+
+.stock-table td.change .badge-change {
+    grid-row: 2;
+    align-self: center;
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    font-size: var(--stock-value-font-size) !important;
+    line-height: 24px !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+    overflow-wrap: normal !important;
+}
+
+.stock-table td.rsi .badge-metric {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    font-size: var(--stock-value-font-size) !important;
+    line-height: 24px !important;
+}
+
+.stock-table td.rsi > div {
+    grid-row: 2;
+    align-self: center;
+    min-height: 24px !important;
+    height: 24px !important;
+}
+
+@media (max-width: 1000px) {
+    .stock-table tbody tr {
+        grid-template-columns:
+            250px
+            minmax(72px, 0.9fr)
+            repeat(4, minmax(44px, 0.65fr))
+            minmax(100px, 1.3fr)
+            minmax(44px, 0.7fr);
+        column-gap: 4px;
+        width: 100%;
+        min-width: 740px;
+    }
+
+    .stock-table .company-cell .market-cap-mobile {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .stock-table tbody tr {
+        grid-template-columns:
+            minmax(120px, 1.4fr)
+            repeat(4, minmax(28px, 0.65fr))
+            minmax(76px, 1.3fr)
+            minmax(36px, 0.75fr);
+        column-gap: 2px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .stock-table tbody tr > td.market-cap {
+        display: none !important;
+    }
+
+    .stock-table .company-name-text {
+        display: none !important;
+    }
+
+    .stock-table .company-subline {
+        display: none !important;
+    }
+
+    .stock-table .company-text-block {
+        justify-content: center;
+    }
+
+    .stock-table .company-name-line {
+        align-items: center;
+    }
+
+    .stock-table .ticker-chip {
+        grid-column: 1;
+        justify-self: start;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 13px !important;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .stock-table td.rsi .badge-metric {
+        padding: 0 5px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    table.stock-table {
+        --stock-value-font-size: 8px;
+    }
+
+    .stock-table tbody tr {
+        grid-template-columns:
+            minmax(100px, 1.4fr)
+            repeat(4, minmax(30px, 0.65fr))
+            minmax(82px, 1.3fr)
+            minmax(38px, 0.75fr);
+    }
+
+    .stock-table td.change .badge-change,
+    .stock-table td.rsi .badge-metric {
+        padding-right: 2px !important;
+        padding-left: 2px !important;
+    }
 }

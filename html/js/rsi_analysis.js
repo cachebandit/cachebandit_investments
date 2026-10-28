@@ -8,9 +8,37 @@ import {
 } from './utils.js';
 import { getCategoryData } from './dataSource.js';
 
+let tickerBadgeUpdateScheduled = false;
+
 document.addEventListener('DOMContentLoaded', function () {
     loadRsiData();
 });
+
+window.addEventListener('resize', scheduleDesktopTickerBadges);
+
+function scheduleDesktopTickerBadges() {
+    if (tickerBadgeUpdateScheduled) return;
+
+    tickerBadgeUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        tickerBadgeUpdateScheduled = false;
+        updateDesktopTickerBadges();
+    });
+}
+
+function updateDesktopTickerBadges() {
+    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+    document.querySelectorAll('.rsi-box .rsi-row').forEach(row => {
+        row.classList.remove('show-desktop-ticker');
+        if (!isDesktop) return;
+
+        const name = row.querySelector('.company-name-text');
+        const ticker = row.querySelector('.company-ticker-text');
+        if (!name || !ticker || getComputedStyle(name).display === 'none') return;
+
+        row.classList.add('show-desktop-ticker');
+    });
+}
 
 async function loadRsiData() {
     try {
@@ -145,6 +173,7 @@ function renderList(containerId, stocks) {
     }
 
     container.innerHTML = stocks.map(renderRowHtml).join('');
+    scheduleDesktopTickerBadges();
 }
 
 /**
@@ -210,59 +239,57 @@ function renderRowHtml(stock) {
     <div class="rsi-row" data-symbol="${escapeHtml(symbol)}">
         <!-- COL 1: company block -->
         <div class="company-cell">
-            <div style="position: relative;">
-                <button class="company-info-btn"
-                        data-stock-name="${escapeHtml(name)}"
-                        data-fifty-two-week-high="${escapeHtml(high52)}"
-                        data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
-                        data-fifty-two-week-low="${escapeHtml(low52)}"
-                        data-earnings-date="${escapeHtml(earningsDate)}"
-                        data-beta="${escapeHtml(beta)}"
-                        data-atr-percent="${escapeHtml(atrPercent)}"
-                        data-atr="${escapeHtml(atr)}"
-                        data-rsi="${escapeHtml(rsi)}"
-                        data-stop-price="${escapeHtml(stopPrice)}"
-                        data-anchor-price="${escapeHtml(anchorPrice)}"
-                        title="${escapeHtml(desc)}"
-                        data-trailing-pe="${escapeHtml(trailingPE)}"
-                        data-forward-pe="${escapeHtml(forwardPE)}"
-                        data-ev-ebitda="${escapeHtml(evEbitda)}"
-                        data-market-cap="${escapeHtml(marketCap)}"
-                        data-dividend-yield="${escapeHtml(dividend)}"
-                        data-total-revenue="${escapeHtml(totalRev)}"
-                        data-net-income="${escapeHtml(netInc)}"
-                        data-profit-margins="${escapeHtml(margin)}"
-                        data-url="${escapeHtml(logoUrl)}">
-                    <img src="info.png" alt="Info">
-                </button>
-                ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; cursor: pointer;">` : ''}
+            <div class="company-logo-wrap">
+                <div class="company-info-controls">
+                    <button class="company-info-btn"
+                            data-stock-name="${escapeHtml(name)}"
+                            data-fifty-two-week-high="${escapeHtml(high52)}"
+                            data-current-price="${isFinite(closeNum) ? closeNum.toFixed(2) : 'N/A'}"
+                            data-fifty-two-week-low="${escapeHtml(low52)}"
+                            data-earnings-date="${escapeHtml(earningsDate)}"
+                            data-beta="${escapeHtml(beta)}"
+                            data-atr-percent="${escapeHtml(atrPercent)}"
+                            data-atr="${escapeHtml(atr)}"
+                            data-rsi="${escapeHtml(rsi)}"
+                            data-stop-price="${escapeHtml(stopPrice)}"
+                            data-anchor-price="${escapeHtml(anchorPrice)}"
+                            title="${escapeHtml(desc)}"
+                            data-trailing-pe="${escapeHtml(trailingPE)}"
+                            data-forward-pe="${escapeHtml(forwardPE)}"
+                            data-ev-ebitda="${escapeHtml(evEbitda)}"
+                            data-market-cap="${escapeHtml(marketCap)}"
+                            data-dividend-yield="${escapeHtml(dividend)}"
+                            data-total-revenue="${escapeHtml(totalRev)}"
+                            data-net-income="${escapeHtml(netInc)}"
+                            data-profit-margins="${escapeHtml(margin)}"
+                            data-url="${escapeHtml(logoUrl)}">
+                        <img src="info.png" alt="Info">
+                    </button>
+                    ${stock.RSI_has_missing_data ? `<img src="warning.png" alt="!" data-tooltip="yfinance has a missing data point. RSI may be slightly different" style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; cursor: pointer;">` : ''}
+                </div>
+                <img class="company-logo"
+                     src="${escapeHtml(logoUrl)}"
+                     alt="${escapeHtml(name)} logo"
+                     onerror="this.style.display='none'"/>
             </div>
-
-            <img class="company-logo"
-                 src="${escapeHtml(logoUrl)}"
-                 alt="${escapeHtml(name)} logo"
-                 onerror="this.style.display='none'"/>
 
             <div class="company-text-block">
                 <div class="company-name-line">
                     <span class="company-name-text">${escapeHtml(name)}</span>
+                    <span class="company-ticker-text">${escapeHtml(symbol)}</span>
                 </div>
                 <div class="company-subline">${escapeHtml(industry)}</div>
-                <div class="company-price-line">
-                    <span class="price-text">${escapeHtml(priceText)}</span>
-                    <span class="change-text ${changeClass}">${escapeHtml(changeText)}</span>
-                </div>
             </div>
         </div>
 
-        <!-- COL 2: fixed ticker chip lane -->
-        <div class="ticker-col">
-            <span class="ticker-chip">${escapeHtml(symbol)}</span>
-        </div>
-
-        <!-- COL 3: RSI badge -->
+        <!-- RSI badge -->
         <div class="badge-metric" style="background-color:${escapeHtml(rsiBg)};">
             ${escapeHtml(rsiText)}
+        </div>
+
+        <div class="company-price-line">
+            <span class="price-text">${escapeHtml(priceText)}</span>
+            <span class="change-text ${changeClass}">${escapeHtml(changeText)}</span>
         </div>
     </div>`;
 }

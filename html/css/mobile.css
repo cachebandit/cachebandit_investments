@@ -292,7 +292,7 @@
   }
 
   .search-wrapper {
-    padding: 8px 12px;
+    padding: 0;
   }
 
   /* Expand row mobile styling */
@@ -559,4 +559,66 @@
     font-size: 14px !important;
     overflow: hidden !important;
   }
+
+  .rsi-box .company-cell {
+    width: auto;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .rsi-box .rsi-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, max-content) 56px;
+    column-gap: 8px;
+  }
+
+  .rsi-box .rsi-row > .company-price-line {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  .rsi-box .rsi-row > .badge-metric {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .rsi-box .company-ticker-text {
+    display: inline-flex !important;
+    flex: 0 0 auto;
+    align-items: center;
+    margin-left: 0;
+    padding: 2px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--hover-bg);
+    color: var(--text-secondary);
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .rsi-box .company-info-btn img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .rsi-box .company-logo {
+    width: 25px;
+    height: 25px;
+  }
+
+  .rsi-box .company-name-line {
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .rsi-box .company-name-text {
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
 }

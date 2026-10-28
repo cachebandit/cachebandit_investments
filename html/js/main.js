@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             filterTable(this.value);
-            clearSearch.style.display = this.value ? 'inline' : 'none';
+            clearSearch.style.display = this.value ? 'flex' : 'none';
         });
     }
 
@@ -182,7 +182,10 @@ function renderFavoritesSection(allStockData) {
 
     favoritesContainer.innerHTML = '';
     
+    const tableScroll = document.createElement('div');
+    tableScroll.className = 'stock-table-scroll';
     const table = document.createElement('table');
+    table.className = 'stock-table';
     table.innerHTML = `
         <thead>
             <tr>
@@ -210,7 +213,8 @@ function renderFavoritesSection(allStockData) {
         tbody.appendChild(row);
     });
 
-    favoritesContainer.appendChild(table);
+    tableScroll.appendChild(table);
+    favoritesContainer.appendChild(tableScroll);
     attachStockTableListeners(favoritesContainer);
     
     // Re-apply search filter if one is active to ensure new content respects search
@@ -338,7 +342,10 @@ function renderCategory(category, data) {
             industryHeading.textContent = industry;
             industrySection.appendChild(industryHeading);
 
+            const tableScroll = document.createElement('div');
+            tableScroll.className = 'stock-table-scroll';
             const table = document.createElement('table');
+            table.className = 'stock-table';
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
@@ -364,7 +371,8 @@ function renderCategory(category, data) {
 
             table.appendChild(thead);
             table.appendChild(tbody);
-            industrySection.appendChild(table);
+            tableScroll.appendChild(table);
+            industrySection.appendChild(tableScroll);
             section.appendChild(industrySection);
         }
 

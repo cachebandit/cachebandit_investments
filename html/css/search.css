@@ -9,67 +9,75 @@
     position: relative;
     width: 100%;
     max-width: 400px;
+    padding: 0;
 }
 
 /* Search icon */
 .search-icon {
     position: absolute;
-    left: 14px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: #6b7a8c; /* muted blue-gray for idle state */
+    color: #718096;
     pointer-events: none;
-    transition: color 0.25s ease;
+    transition: color 0.2s ease;
 }
 
 /* Input styling */
 #search-input {
     width: 100%;
-    padding: 10px 42px;
+    padding: 12px 50px;
     font-size: 15px;
-    border: 1.5px solid transparent;
-    border-radius: 8px;
-    background-color: #f4f8fa; /* subtle blue-tinted background */
+    border: 1px solid #d6e0e8;
+    border-radius: 12px;
+    background-color: #ffffff;
     color: var(--text-primary);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    box-shadow: 0 2px 8px rgba(27, 55, 75, 0.06);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
 }
 
 /* Placeholder style */
 #search-input::placeholder {
-    color: #94a3b8; /* soft grayish-blue placeholder */
+    color: #94a3b8;
 }
 
 /* Focus / active state */
 #search-input:focus {
     border-color: #155881;
-    box-shadow: 0 0 0 3px rgba(21, 88, 129, 0.25); /* soft glow in theme color */
+    box-shadow: 0 0 0 3px rgba(21, 88, 129, 0.16), 0 3px 10px rgba(27, 55, 75, 0.08);
     outline: none;
-    background-color: #ffffff;
 }
 
-#search-input:focus + .search-icon {
-    color: #155881; /* make icon match focus color */
+.search-wrapper:focus-within .search-icon {
+    color: #155881;
 }
 
 /* Clear (×) icon */
 .clear-search {
     position: absolute;
-    right: 14px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 18px;
-    color: #7a8b9e;
+    width: 30px;
+    height: 30px;
     display: none;
-    transition: color 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    color: #718096;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .clear-search:hover {
     color: #155881;
+    background-color: #edf4f8;
 }
 
-/* Show × icon only when text present */
+/* Show × icon only when text is present */
 #search-input:not(:placeholder-shown) ~ .clear-search {
-    display: inline;
+    display: flex;
 }
