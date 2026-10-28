@@ -228,3 +228,39 @@
     min-height: 0;
   }
 }
+
+/* Match the Watchlist table while keeping ETF detail rows full-width. */
+#etf-content-container .section > .industry-section + .industry-section {
+  border-top: 0;
+}
+
+.etf-table td.market-cap::before {
+  content: "Net Assets";
+}
+
+.etf-table td.market-cap {
+  font-size: var(--stock-value-font-size);
+  font-weight: 600;
+}
+
+.etf-table tbody tr.expand-row {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transition: none;
+}
+
+.etf-table tbody tr.expand-row:hover {
+  background: transparent;
+}
+
+.etf-table tbody tr.expand-row > td {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 12px;
+  border: 0;
+}
