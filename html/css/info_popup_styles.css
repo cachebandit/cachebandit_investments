@@ -4,25 +4,94 @@
     inset: 0; /* top, right, bottom, left = 0 */
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* was center; top-anchor keeps top edge fixed */
-    padding-top: 5vh;        /* small breathing room from top */
+    display: block;
+    padding: 5vh 0;
+    height: 100vh;
+    height: 100dvh;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .info-popup {
     background-color: var(--container-bg);
     border: 1px solid var(--border-color);
-    padding: 15px;
     border-radius: 6px;
-    z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 600px;
+    margin: 0 auto;
     font-size: 14px;
     color: var(--text-primary);
-    max-height: 80vh; /* Set a max height for the popup */
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    box-sizing: border-box;
+}
+
+.info-popup-header {
+    position: relative;
+    padding: 48px 15px 12px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--container-bg);
+    border-radius: 5px 5px 0 0;
+    z-index: 1;
+}
+
+.info-popup-header.is-fixed {
+    position: fixed;
+    top: 0;
+    box-sizing: border-box;
+    z-index: 2001;
+    border: 1px solid var(--border-color);
+    border-top: 0;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.info-popup-header-spacer {
+    height: 0;
+}
+
+.info-popup-header > div {
+    margin-bottom: 0 !important;
+}
+
+.info-popup-body {
+    padding: 0 15px 15px;
+}
+
+.info-popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+@media (max-width: 768px) {
+    .info-overlay {
+        padding: 8px;
+    }
+
+    .info-popup {
+        width: 100%;
+        max-width: none;
+        border-radius: 10px;
+    }
+
+    .info-popup-header {
+        padding: 42px 12px 10px;
+    }
+
+    .info-popup-body {
+        padding: 0 12px 12px;
+    }
 }
 
 /* === Description block: collapsed vs expanded === */
@@ -46,9 +115,9 @@
 
 .popup-description.expanded {
     -webkit-line-clamp: unset; /* Remove line limit when expanded */
-    padding-right: 10px; /* Add space for scrollbar when expanded */
-    max-height: 300px; /* Fixed reading window so popup top stays put */
-    overflow-y: auto; /* Enable vertical scrolling within the description */
+    padding-right: 5px;
+    max-height: none;
+    overflow: visible;
 }
 
 .expand-description-btn {

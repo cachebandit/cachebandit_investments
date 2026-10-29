@@ -363,7 +363,7 @@ function formatCT(ts) {
         month: "2-digit", day: "2-digit",
         hour: "2-digit", minute: "2-digit",
         hour12: false, timeZone: "America/Chicago"
-      }).format(d) + " CT";
+      }).format(d);
     }
   } catch {}
   return ts; // fallback to whatever string came back
