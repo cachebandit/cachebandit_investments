@@ -1,3 +1,5 @@
 - Fix 8:30 Cache Issue
 - Set up individual accounts
 - Set up actual website
+- popup chart dont allow background edits to fix chart
+- create fidelity etf page

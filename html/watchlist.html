@@ -39,7 +39,7 @@
     </div>
 
     <div class="container">
-        <div class="header-container">
+        <div class="header-container watchlist-header">
             <div class="header-left">
                 <span class="hamburger-icon" id="openNav">&#9776;</span>
                 <img src="cachebandit_logo.png" alt="Logo" class="header-logo">
@@ -56,17 +56,12 @@
             </div>
         </div>
 
-        <!-- TradingView Market Trends Widget Container -->
-<div id="market-trends-widget" class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-        </div>
-
         <div class="search-container">
             <div class="search-wrapper">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                 </svg>
-                <input type="text" id="search-input" placeholder="Search For Stocks...">
+                <input type="text" id="search-input" placeholder="Search For Stocks..." autocorrect="off" autocapitalize="off" spellcheck="false">
                 <span id="clear-search" class="clear-search">&times;</span>
             </div>
         </div>
@@ -87,14 +82,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Script to Load TradingView Widgets -->
-    <script type="module">
-        import { loadMarketTrendsWidget } from './js/widgets.js';
-
-        // Load the market trends widget
-        loadMarketTrendsWidget();
-    </script>
 
     <script type="module" src="./js/utils.js"></script>
     <script type="module" src="./js/chart.js"></script>

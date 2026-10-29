@@ -1,8 +1,11 @@
 import { getForwardPeColor, getTrailingPeColor } from './utils.js';
+const popupCleanup = new WeakMap();
+
 function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     // Close any existing popup before opening a new one
     const existingOverlay = document.querySelector('.info-overlay');
     if (existingOverlay) {
+        popupCleanup.get(existingOverlay)?.();
         document.body.removeChild(existingOverlay);
         // Restore body overflow from the existing popup if needed
         if (document.body.style.overflow === 'hidden') {
@@ -69,34 +72,9 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'info-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = '1000';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-
-    // ★ ADD: pin popup to top so its top edge never moves
-    overlay.style.alignItems = 'flex-start';
-    overlay.style.paddingTop = '5vh';
-
     // Create popup container
     const popup = document.createElement('div');
     popup.className = 'info-popup';
-    popup.style.backgroundColor = 'white';
-    popup.style.padding = '15px';
-    popup.style.borderRadius = '5px';
-    popup.style.width = '80%';
-    popup.style.maxWidth = '600px';
-    popup.style.position = 'relative';
-
-    // ★ ADD: make the popup its own scroll container (prevents page shift)
-    popup.style.maxHeight = '80vh';
-    popup.style.overflowY = 'auto';
 
     // ★ ADD: lock page scroll while popup open (so only popup scrolls)
     const previousBodyOverflow = document.body.style.overflow;
@@ -106,7 +84,7 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
     const position = ((currentPrice - fiftyTwoWeekLow) / (fiftyTwoWeekHigh - fiftyTwoWeekLow)) * 100;
 
     // Create content for the popup
-    const content = `
+    const header = `
         <div style="display: flex; align-items: flex-start; margin-bottom: 15px; gap: 15px;">
             <img src="${logoUrl}" alt="${stockName} Logo" onerror="this.style.display='none'" 
                 style="width: 60px; height: 60px; border-radius: 6px; flex-shrink: 0;"/>
@@ -136,6 +114,9 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
                 </div>
             </div>
         </div>
+    `;
+
+    const content = `
         <div style="font-size: 14px; margin: 15px 0 5px 0;">
             <span style=""><strong>Market Cap:</strong> ${marketCap}</span>
             <span style="margin-left: 20px;"><strong>Dividend Yield (TTM):</strong> ${formattedDividendYield}</span>
@@ -200,9 +181,48 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
         </div>
     `;
 
-    popup.innerHTML = content;
+    popup.innerHTML = `
+        <div class="info-popup-header-spacer" aria-hidden="true"></div>
+        <div class="info-popup-header">
+            <button class="info-popup-close" type="button" aria-label="Close stock details">&times;</button>
+            ${header}
+        </div>
+        <div class="info-popup-body">${content}</div>
+    `;
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
+
+    const popupHeader = popup.querySelector('.info-popup-header');
+    const headerSpacer = popup.querySelector('.info-popup-header-spacer');
+    const syncPopupHeader = () => {
+        const spacerTop = headerSpacer.getBoundingClientRect().top;
+        if (spacerTop <= 0) {
+            const popupBounds = popup.getBoundingClientRect();
+            headerSpacer.style.height = `${popupHeader.offsetHeight}px`;
+            popupHeader.classList.add('is-fixed');
+            popupHeader.style.left = `${popupBounds.left}px`;
+            popupHeader.style.width = `${popupBounds.width}px`;
+        } else {
+            popupHeader.classList.remove('is-fixed');
+            popupHeader.style.left = '';
+            popupHeader.style.width = '';
+            headerSpacer.style.height = '0px';
+        }
+    };
+
+    overlay.addEventListener('scroll', syncPopupHeader, { passive: true });
+    const handlePopupResize = () => syncPopupHeader();
+    window.addEventListener('resize', handlePopupResize);
+    popupCleanup.set(overlay, () => {
+        window.removeEventListener('resize', handlePopupResize);
+    });
+
+    popup.querySelector('.info-popup-close').addEventListener('click', () => {
+        popupCleanup.get(overlay)?.();
+        popupCleanup.delete(overlay);
+        overlay.remove();
+        document.body.style.overflow = previousBodyOverflow || '';
+    });
 
     // --- Add logic for stop loss calculator ---
     const buyPriceInput = popup.querySelector('#buyPriceInput');
@@ -257,39 +277,19 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
                 expandBtn.style.display = 'block';
 
                 expandBtn.addEventListener('click', () => {
-                    // Capture the element’s position before changing layout
-                    const prevTop = descriptionElement.getBoundingClientRect().top;
                     const wasExpanded = descriptionElement.classList.contains('expanded');
 
                     // Toggle expanded/collapsed state
                     descriptionElement.classList.toggle('expanded');
                     const isExpanded = !wasExpanded;
 
-                    // Keep the description visually anchored in the same place
-                    const nextTop = descriptionElement.getBoundingClientRect().top;
-                    popup.scrollTop += (nextTop - prevTop);
-
                     // Button text
                     expandBtn.innerHTML = isExpanded ? 'Less ▲' : 'More ▼';
-
-                    if (!isExpanded) {
-                        // On collapse, reset ONLY the description scroll to top (don’t move the whole popup)
-                        descriptionElement.scrollTop = 0;
-                    }
                 });
             }
         }, 10); // A minimal delay is sufficient
     }
 
-    // Close popup when clicking outside
-    overlay.addEventListener('click', function(event) {
-        if (event.target === overlay) {
-            document.body.removeChild(overlay);
-
-            // ★ ADD: restore page scroll when closing
-            document.body.style.overflow = previousBodyOverflow || '';
-        }
-    });
 }
 
 export { showInfoPopup };

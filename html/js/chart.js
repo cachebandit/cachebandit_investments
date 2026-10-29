@@ -92,12 +92,6 @@ function showChartPopup(symbol) {
         document.body.removeChild(overlay);
     });
     
-    // Close popup when clicking outside
-    overlay.addEventListener('click', function(event) {
-        if (event.target === overlay) {
-            document.body.removeChild(overlay);
-        }
-    });
 } 
 
 export { showChartPopup };

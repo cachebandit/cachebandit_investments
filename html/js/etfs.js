@@ -264,6 +264,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
+    const searchInput = document.getElementById('search-input');
+    const clearSearch = document.getElementById('clear-search');
+    if (searchInput && clearSearch) {
+        searchInput.addEventListener('input', () => {
+            filterEtfTable(searchInput.value);
+            clearSearch.style.display = searchInput.value ? 'flex' : 'none';
+        });
+
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            filterEtfTable('');
+            clearSearch.style.display = 'none';
+            searchInput.focus();
+        });
+    }
+
     // NEW: prepare logos
     await loadLogoMap();
 
@@ -347,7 +363,7 @@ function formatCT(ts) {
         month: "2-digit", day: "2-digit",
         hour: "2-digit", minute: "2-digit",
         hour12: false, timeZone: "America/Chicago"
-      }).format(d) + " CT";
+      }).format(d);
     }
   } catch {}
   return ts; // fallback to whatever string came back
@@ -368,6 +384,8 @@ async function loadEtfData(opts = {}) {
         
         const etfs = response.data || [];
         renderEtfTable(etfs);
+        const searchInput = document.getElementById('search-input');
+        if (searchInput?.value) filterEtfTable(searchInput.value);
 
     } catch (error) {
         console.error('Error loading ETF data:', error);
@@ -415,7 +433,10 @@ function renderEtfTable(etfs) {
         industryHeading.textContent = subCategory;
         industrySection.appendChild(industryHeading);
 
+        const tableScroll = document.createElement('div');
+        tableScroll.className = 'stock-table-scroll';
         const table = document.createElement('table');
+        table.className = 'stock-table etf-table';
         table.innerHTML = `
             <thead>
                 <tr>
@@ -434,7 +455,8 @@ function renderEtfTable(etfs) {
             </tbody>
         `;
 
-        industrySection.appendChild(table);
+        tableScroll.appendChild(table);
+        industrySection.appendChild(tableScroll);
         section.appendChild(industrySection);
 
         // Add event listeners for this specific table
@@ -448,6 +470,30 @@ function renderEtfTable(etfs) {
 
     container.innerHTML = ''; // Clear placeholder
     container.appendChild(section);
+}
+
+function filterEtfTable(query) {
+    const searchTerm = query.trim().toLowerCase();
+    document.querySelectorAll('#etf-content-container .industry-section').forEach(industrySection => {
+        let hasVisibleEtf = false;
+
+        industrySection.querySelectorAll('.stock-table tbody tr:not(.expand-row)').forEach(row => {
+            const name = row.querySelector('.company-name-text')?.textContent.toLowerCase() || '';
+            const symbol = row.querySelector('.ticker-chip')?.textContent.toLowerCase() || '';
+            const matches = !searchTerm || name.includes(searchTerm) || symbol.includes(searchTerm);
+            const expandRow = row.nextElementSibling;
+
+            row.style.display = matches ? '' : 'none';
+            if (expandRow?.classList.contains('expand-row')) {
+                const expandToggle = row.querySelector('.expand-toggle');
+                expandRow.style.display = matches && expandToggle?.classList.contains('is-open') ? '' : 'none';
+            }
+
+            hasVisibleEtf ||= matches;
+        });
+
+        industrySection.style.display = hasVisibleEtf ? '' : 'none';
+    });
 }
 
 function renderEtfRow(etf) {
