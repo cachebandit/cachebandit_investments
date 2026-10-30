@@ -217,11 +217,16 @@ function showInfoPopup(button) { // eslint-disable-line no-unused-vars
         window.removeEventListener('resize', handlePopupResize);
     });
 
-    popup.querySelector('.info-popup-close').addEventListener('click', () => {
+    const closeInfoPopup = () => {
         popupCleanup.get(overlay)?.();
         popupCleanup.delete(overlay);
         overlay.remove();
         document.body.style.overflow = previousBodyOverflow || '';
+    };
+
+    popup.querySelector('.info-popup-close').addEventListener('click', closeInfoPopup);
+    overlay.addEventListener('click', event => {
+        if (event.target === overlay) closeInfoPopup();
     });
 
     // --- Add logic for stop loss calculator ---
