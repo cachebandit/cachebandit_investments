@@ -1,6 +1,9 @@
 // Chart functionality
 
 function showChartPopup(symbol) {
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'chart-overlay';
@@ -14,6 +17,7 @@ function showChartPopup(symbol) {
     overlay.style.display = 'flex';
     overlay.style.justifyContent = 'center';
     overlay.style.alignItems = 'center';
+    overlay.style.overscrollBehavior = 'contain';
     
     // Create popup container
     const popup = document.createElement('div');
@@ -87,10 +91,24 @@ function showChartPopup(symbol) {
     // Append the script to the widget container
     widgetContainer.appendChild(script);
     
-    // Close popup when clicking the close button
-    closeButton.addEventListener('click', function() {
-        document.body.removeChild(overlay);
+    const closeChartPopup = () => {
+        overlay.remove();
+        document.body.style.overflow = previousBodyOverflow;
+    };
+
+    closeButton.addEventListener('click', closeChartPopup);
+
+    overlay.addEventListener('click', function(event) {
+        if (event.target === overlay) {
+            closeChartPopup();
+        }
     });
+
+    overlay.addEventListener('touchmove', function(event) {
+        if (event.target === overlay) {
+            event.preventDefault();
+        }
+    }, { passive: false });
     
 } 
 
