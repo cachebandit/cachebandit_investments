@@ -41,6 +41,21 @@
                     "symbol": "LITE",
                     "Name": "Lumentum Holdings Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/lumentum-hldgs.svg"
+                },
+                {
+                    "symbol": "WDC",
+                    "Name": "Western Digital Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/western-digital.svg"
+                },
+                {
+                    "symbol": "ANET",
+                    "Name": "Arista Networks, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/arista-networks.svg"
+                },
+                {
+                    "symbol": "GLW",
+                    "Name": "Corning Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/corning.svg"
                 }
             ],
             "Software & Cloud": [
@@ -88,6 +103,21 @@
                     "symbol": "CRWV",
                     "Name": "CoreWeave",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/coreweave.svg"
+                },
+                {
+                    "symbol": "NBIS",
+                    "Name": "Nebius Group N.V.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/nebius-group-nv.svg"
+                },
+                {
+                    "symbol": "FROG",
+                    "Name": "JFrog Ltd.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/jfrog.svg"
+                },
+                {
+                    "symbol": "IREN",
+                    "Name": "IREN Limited",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/iris-energy.svg"
                 }
             ],
             "Enterprise Software": [
@@ -135,6 +165,21 @@
                     "symbol": "MSFT",
                     "Name": "Microsoft Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/microsoft.svg"
+                },
+                {
+                    "symbol": "DT",
+                    "Name": "Dynatrace, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/dynatrace.svg"
+                },
+                {
+                    "symbol": "CDNS",
+                    "Name": "Cadence Design Systems, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cadence-design-systems.svg"
+                },
+                {
+                    "symbol": "SNPS",
+                    "Name": "Synopsys, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/synopsys.svg"
                 }
             ],
             "Cybersecurity": [
@@ -244,6 +289,26 @@
                     "symbol": "TER",
                     "Name": "Teradyne, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/teradyne.svg"
+                },
+                {
+                    "symbol": "SKHY",
+                    "Name": "SK hynix Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sk-telecom.svg"
+                },
+                {
+                    "symbol": "ALAB",
+                    "Name": "Astera Labs, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/astera-labs.svg"
+                },
+                {
+                    "symbol": "ADI",
+                    "Name": "Analog Devices, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/analog-devices.svg"
+                },
+                {
+                    "symbol": "MPWR",
+                    "Name": "Monolithic Power Systems, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/monolithic-power-system.svg"
                 }
             ]
         },
@@ -268,6 +333,33 @@
                     "symbol": "LIN",
                     "Name": "Linde plc",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/linde.svg"
+                }
+            ],
+            "Mining & Materials": [
+                {
+                    "symbol": "RIO",
+                    "Name": "Rio Tinto Group",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/rio-tinto.svg"
+                },
+                {
+                    "symbol": "NEM",
+                    "Name": "Newmont Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/newmont.svg"
+                },
+                {
+                    "symbol": "FCX",
+                    "Name": "Freeport-McMoRan Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/freeport-mcmoran.svg"
+                },
+                {
+                    "symbol": "AEM",
+                    "Name": "Agnico Eagle Mines Limited",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/agnico-eagle-mines.svg"
+                },
+                {
+                    "symbol": "B",
+                    "Name": "Barrick Mining Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/barrick-gold.svg"
                 }
             ],
             "Machinery": [
@@ -390,6 +482,11 @@
                     "symbol": "EADSY",
                     "Name": "Airbus SE",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/airbus.svg"
+                },
+                {
+                    "symbol": "HWM",
+                    "Name": "Howmet Aerospace Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/howmet-aerospace.svg"
                 }
             ],
             "Power Management": [
@@ -397,6 +494,16 @@
                     "symbol": "ETN",
                     "Name": "Eaton Corporation plc",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/eaton.svg"
+                },
+                {
+                    "symbol": "VRT",
+                    "Name": "Vertiv Holdings Co.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/vertiv-holdings.svg"
+                },
+                {
+                    "symbol": "PWR",
+                    "Name": "Quanta Services, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/quanta-services.svg"
                 }
             ]
         },
@@ -436,6 +543,31 @@
                     "symbol": "MPC",
                     "Name": "Marathon Petroleum Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/marathon-petroleum.svg"
+                },
+                {
+                    "symbol": "PBR",
+                    "Name": "Petróleo Brasileiro S.A. - Petrobras",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/brasileiro-petrobras.svg"
+                },
+                {
+                    "symbol": "VLO",
+                    "Name": "Valero Energy Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/valero-energy.svg"
+                },
+                {
+                    "symbol": "ENB",
+                    "Name": "Enbridge Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/enbridge.svg"
+                },
+                {
+                    "symbol": "WMB",
+                    "Name": "The Williams Companies, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/williams.svg"
+                },
+                {
+                    "symbol": "SU",
+                    "Name": "Suncor Energy Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/suncor-energy.svg"
                 }
             ],
             "Renewables & Utilities": [
@@ -468,6 +600,26 @@
                     "symbol": "VST",
                     "Name": "Vistra Corp.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/vistra-energy.svg"
+                },
+                {
+                    "symbol": "BE",
+                    "Name": "Bloom Energy Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bloom-energy.svg"
+                },
+                {
+                    "symbol": "D",
+                    "Name": "Dominion Energy, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/dominion-energy.svg"
+                },
+                {
+                    "symbol": "SO",
+                    "Name": "The Southern Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/southern.svg"
+                },
+                {
+                    "symbol": "DUK",
+                    "Name": "Duke Energy Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/duke-energy.svg"
                 }
             ]
         },
@@ -519,6 +671,11 @@
                     "symbol": "PEP",
                     "Name": "PepsiCo, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/pepsico.svg"
+                },
+                {
+                    "symbol": "MNST",
+                    "Name": "Monster Beverage Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/monster-beverage.svg"
                 }
             ],
             "Tobacco": [
@@ -656,6 +813,11 @@
                     "symbol": "LVMUY",
                     "Name": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/lvmh.svg"
+                },
+                {
+                    "symbol": "DKS",
+                    "Name": "DICK'S Sporting Goods, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/dicks-sporting-goods.svg"
                 }
             ],
             "E-Commerce": [
@@ -764,6 +926,11 @@
                     "symbol": "F",
                     "Name": "Ford Motor Company",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/ford.svg"
+                },
+                {
+                    "symbol": "HOG",
+                    "Name": "Harley-Davidson, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/harley-davidson.svg"
                 }
             ],
             "Airlines": [
@@ -808,6 +975,11 @@
                     "symbol": "HLT",
                     "Name": "Hilton Worldwide Holdings Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/hilton-worldwide.svg"
+                },
+                {
+                    "symbol": "CAKE",
+                    "Name": "The Cheesecake Factory Incorporated",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/cheesecake-factory.svg"
                 }
             ],
             "Leisure": [
@@ -864,6 +1036,16 @@
                     "symbol": "AZN",
                     "Name": "AstraZeneca PLC",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/astrazeneca.svg"
+                },
+                {
+                    "symbol": "GILD",
+                    "Name": "Gilead Sciences, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/gilead.svg"
+                },
+                {
+                    "symbol": "BMY",
+                    "Name": "Bristol Myers Squibb Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bristol-myers-squibb.svg"
                 }
             ],
             "Biotech & Medical Devices": [
@@ -906,6 +1088,16 @@
                     "symbol": "ISRG",
                     "Name": "Intuitive Surgical, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/intuitive-surgical.svg"
+                },
+                {
+                    "symbol": "MRNA",
+                    "Name": "Moderna, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/moderna.svg"
+                },
+                {
+                    "symbol": "REGN",
+                    "Name": "Regeneron Pharmaceuticals, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/regeneron-pharmaceuticals.svg"
                 }
             ],
             "Healthcare": [
@@ -994,6 +1186,11 @@
                     "symbol": "SPCX",
                     "Name": "SpaceX",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/spacex.svg"
+                },
+                {
+                    "symbol": "CHTR",
+                    "Name": "Charter Communications, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/charter.svg"
                 }
             ],
             "Media": [
@@ -1228,6 +1425,11 @@
                     "symbol": "CG",
                     "Name": "The Carlyle Group Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/the-carlyle-group.svg"
+                },
+                {
+                    "symbol": "BN",
+                    "Name": "Brookfield Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/brookfield.svg"
                 }
             ],
             "Asset & Wealth Managment": [
