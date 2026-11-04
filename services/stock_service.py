@@ -332,7 +332,7 @@ def fetch_category_data(category, refresh=False):
         # Assemble the final stock object, ensuring market_data is always included
         final_stock = {
             'Symbol': symbol,
-            'Name': info.get('longName', stock_info.get('Name', 'Unknown')),
+            'Name': stock_info.get('Name') or info.get('longName') or 'Unknown',
             'Market Cap': _clean_value(round(market_cap_raw / 1_000_000, 2)) if market_cap_raw and market_cap_raw > 0 else 'N/A',
             'Trailing PE': _clean_value(info.get('trailingPE')),
             'Forward PE': _clean_value(info.get('forwardPE')),

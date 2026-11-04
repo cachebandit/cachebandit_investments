@@ -455,6 +455,11 @@
                     "symbol": "LHX",
                     "Name": "L3Harris Technologies, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/l3-harris.svg"
+                },
+                {
+                    "symbol": "AXON",
+                    "Name": "Axon Enterprise, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/axon-enterprise.svg"
                 }
             ],
             "Aerospace": [
@@ -676,6 +681,11 @@
                     "symbol": "MNST",
                     "Name": "Monster Beverage Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/monster-beverage.svg"
+                },
+                {
+                    "symbol": "CELH",
+                    "Name": "Celsius Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/celsius-holdings.svg"
                 }
             ],
             "Tobacco": [
@@ -720,6 +730,16 @@
                     "symbol": "TSN",
                     "Name": "Tyson Foods, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/tyson-foods.svg"
+                },
+                {
+                    "symbol": "SYY",
+                    "Name": "Sysco Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/sysco.svg"
+                },
+                {
+                    "symbol": "HSY",
+                    "Name": "The Hershey Company",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/hershey.svg"
                 }
             ],
             "Household Products": [
@@ -744,14 +764,14 @@
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/colgate-palmolive.svg"
                 },
                 {
-                    "symbol": "KVUE",
-                    "Name": "Kenvue Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kenvue.svg"
-                },
-                {
                     "symbol": "CHD",
                     "Name": "Church & Dwight Co., Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/church-and-dwight.svg"
+                },
+                {
+                    "symbol": "KMB",
+                    "Name": "Kimberly-Clark Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/kimberly-clark.svg"
                 }
             ]
         },
@@ -818,6 +838,11 @@
                     "symbol": "DKS",
                     "Name": "DICK'S Sporting Goods, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/dicks-sporting-goods.svg"
+                },
+                {
+                    "symbol": "ESLOY",
+                    "Name": "EssilorLuxottica",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/essilorluxottica.svg"
                 }
             ],
             "E-Commerce": [
@@ -872,6 +897,33 @@
                     "symbol": "ORLY",
                     "Name": "O'Reilly Automotive, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/o-reilly-auto.svg"
+                }
+            ],
+            "Video Games": [
+                {
+                    "symbol": "TTWO",
+                    "Name": "Take-Two Interactive Software, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/take-two-interactive-software.svg"
+                },
+                {
+                    "symbol": "RBLX",
+                    "Name": "Roblox Corporation",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/roblox.svg"
+                },
+                {
+                    "symbol": "NTDOY",
+                    "Name": "Nintendo Co., Ltd.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/nintendo.svg"
+                },
+                {
+                    "symbol": "U",
+                    "Name": "Unity Software Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/unity.svg"
+                },
+                {
+                    "symbol": "GME",
+                    "Name": "GameStop Corp.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/gamestop.svg"
                 }
             ],
             "Gambling": [
@@ -931,6 +983,21 @@
                     "symbol": "HOG",
                     "Name": "Harley-Davidson, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/harley-davidson.svg"
+                },
+                {
+                    "symbol": "BMWKY",
+                    "Name": "Bayerische Motoren Werke Aktiengesellschaft",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bmw.svg"
+                },
+                {
+                    "symbol": "MBGYY",
+                    "Name": "Mercedes-Benz Group AG",
+                    "stockUrl": "https://images.seeklogo.com/logo-png/9/2/mercedes-benz-logo-png_seeklogo-91081.png"
+                },
+                {
+                    "symbol": "DRPRY",
+                    "Name": "Porsche AG",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/porsche-automobil-holding.svg"
                 }
             ],
             "Airlines": [
@@ -1139,11 +1206,6 @@
                     "symbol": "NFLX",
                     "Name": "Netflix, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/netflix.svg"
-                },
-                {
-                    "symbol": "WBD",
-                    "Name": "Warner Bros. Discovery, Inc.",
-                    "stockUrl": "https://s3-symbol-logo.tradingview.com/warner-bros-discovery.svg"
                 },
                 {
                     "symbol": "FOX",
