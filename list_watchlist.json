@@ -681,6 +681,11 @@
                     "symbol": "MNST",
                     "Name": "Monster Beverage Corporation",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/monster-beverage.svg"
+                },
+                {
+                    "symbol": "CELH",
+                    "Name": "Celsius Holdings, Inc.",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/celsius-holdings.svg"
                 }
             ],
             "Tobacco": [
@@ -833,6 +838,11 @@
                     "symbol": "DKS",
                     "Name": "DICK'S Sporting Goods, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/dicks-sporting-goods.svg"
+                },
+                {
+                    "symbol": "ESLOY",
+                    "Name": "EssilorLuxottica",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/essilorluxottica.svg"
                 }
             ],
             "E-Commerce": [
@@ -973,6 +983,21 @@
                     "symbol": "HOG",
                     "Name": "Harley-Davidson, Inc.",
                     "stockUrl": "https://s3-symbol-logo.tradingview.com/harley-davidson.svg"
+                },
+                {
+                    "symbol": "BMWKY",
+                    "Name": "Bayerische Motoren Werke Aktiengesellschaft",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/bmw.svg"
+                },
+                {
+                    "symbol": "MBGYY",
+                    "Name": "Mercedes-Benz Group AG",
+                    "stockUrl": "https://images.seeklogo.com/logo-png/9/2/mercedes-benz-logo-png_seeklogo-91081.png"
+                },
+                {
+                    "symbol": "DRPRY",
+                    "Name": "Porsche AG",
+                    "stockUrl": "https://s3-symbol-logo.tradingview.com/porsche-automobil-holding.svg"
                 }
             ],
             "Airlines": [
