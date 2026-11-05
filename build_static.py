@@ -95,6 +95,7 @@ def main():
 
     # 2) Load cache
     cache = load_cache()
+    json.dumps(cache, allow_nan=False)
 
     updated_at = cache.get("last_updated") or datetime.now().strftime("%m/%d %I:%M %p")
     cached_categories = cache.get("data") or {}
@@ -125,7 +126,7 @@ def main():
             items = sorted(items, key=cap, reverse=True)
 
         payload = build_payload(cat, items, updated_at)
-        (DATA_DIR / f"{cat}.json").write_text(json.dumps(payload, indent=2))
+        (DATA_DIR / f"{cat}.json").write_text(json.dumps(payload, indent=2, allow_nan=False))
 
     # 4) Add cache-buster to static assets
     version_str = datetime.now().strftime("%Y%m%d%H%M%S")

@@ -3,6 +3,7 @@ import json
 import logging
 from datetime import datetime
 import math
+from numbers import Real
 from zoneinfo import ZoneInfo
 from models.stock_cache import StockCache
 import pandas as pd
@@ -202,9 +203,8 @@ def fetch_etf_top_holdings(symbol: str):
     return []
 
 def _clean_value(value):
-    """Converts NaN to None, otherwise returns value."""
-    # Check for NaN, which can be a float. math.isnan() will fail on non-floats.
-    if isinstance(value, float) and math.isnan(value):
+    """Converts non-finite real numbers to None."""
+    if isinstance(value, Real) and not math.isfinite(value):
         return None
     return value
 
@@ -464,9 +464,9 @@ def fetch_detailed_info(symbols):
                     'Low': _clean_value(latest_data.get('Low')),
                     'Price Change': _clean_value(price_change),
                     'Percent Change': _clean_value(percent_change),
-                    'ATR': signal_fields.get('atr'),
-                    'ATR_Percent': signal_fields.get('atr_percent'),
-                    'RSI1H': signal_fields.get('RSI1H'),
+                    'ATR': _clean_value(signal_fields.get('atr')),
+                    'ATR_Percent': _clean_value(signal_fields.get('atr_percent')),
+                    'RSI1H': _clean_value(signal_fields.get('RSI1H')),
                     'RSI': rsi_val,
                     'RSI_has_missing_data': bool(missing_data),
                     'yRSI': calculate_rsi(symbol_hist_daily.iloc[:-1]), # RSI of the day before
