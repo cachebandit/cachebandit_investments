@@ -47,23 +47,20 @@ class StockCache:
     
     def save(self):
         """Save cache to file"""
-        try:
-            # Get current UTC time, convert to US/Central, and format it
-            utc_now = datetime.now(ZoneInfo("UTC"))
-            ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
-            self.last_updated = ct_time.strftime('%m/%d %I:%M %p CT')
-            
-            # Save both the data and the timestamp
-            cache_data = {
-                'data': self.data,
-                'last_updated': self.last_updated
-            }
-            
-            with open(self.cache_file, 'w') as f:
-                json.dump(cache_data, f)
-            logging.info(f"Cache saved with {len(self.data)} entries")
-        except Exception as e:
-            logging.error(f"Error saving cache: {e}")
+        # Get current UTC time, convert to US/Central, and format it
+        utc_now = datetime.now(ZoneInfo("UTC"))
+        ct_time = utc_now.astimezone(ZoneInfo("US/Central"))
+        self.last_updated = ct_time.strftime('%m/%d %I:%M %p CT')
+
+        cache_data = {
+            'data': self.data,
+            'last_updated': self.last_updated
+        }
+        serialized = json.dumps(cache_data, allow_nan=False)
+
+        with open(self.cache_file, 'w') as f:
+            f.write(serialized)
+        logging.info(f"Cache saved with {len(self.data)} entries")
     
     def get(self, key):
         """Get item from cache"""

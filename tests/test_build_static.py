@@ -48,6 +48,15 @@ class BuildStaticTests(unittest.TestCase):
         self.assertIn('./js/main.js?v=', built_html)
         self.assertIn('cachebandit_logo.png?v=', built_html)
 
+    def test_main_rejects_non_finite_cache_values(self):
+        (Path("cache") / "stock_data.json").write_text(
+            '{"last_updated": "01/01 12:00 AM", "data": {"invalid": NaN}}',
+            encoding="utf-8",
+        )
+
+        with self.assertRaises(ValueError):
+            self.build_static.main()
+
 
 if __name__ == "__main__":
     unittest.main()
